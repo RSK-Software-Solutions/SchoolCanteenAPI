@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap');
+
+.roboto-mono {
+    color: #000;
+    font-family: Roboto Mono, serif;
+    font-style: normal;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: normal;
+    letter-spacing: 2px;
+}
+
+.input-credentials {
+    border-radius: 0.200rem;
+    background-color: #F9FAFB;
+}
+
+.input-credentials:focus {
+    outline: #cbcbcb solid 3px;
+}
+
+.btn {
+    background-color: #696969;
+    width: fit-content;
+    border-radius: 0.275rem;
+    padding: 0.375rem 0.25rem;
+    border-width: 2px;
+    border-color: black;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+}
+
+.btn:hover {
+    background-color: #808080;
+}
+
+.form {
+    backdrop-filter: blur(2px);
+    background-color: #787878;
+    border-radius: 0.300rem;
+}
+
+.bg-main-register {
+    background-color: #DAD9D9;
+}
+
+.info {
+    backdrop-filter: blur(2px);
+    background-color: #787878;
+    border-radius: 0.300rem;
+}
