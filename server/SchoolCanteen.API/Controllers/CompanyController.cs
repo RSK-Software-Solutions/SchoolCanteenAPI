@@ -1,43 +1,72 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SchoolCanteen.API.Models;
+using SchoolCanteen.Logic.DTOs.Company;
+using SchoolCanteen.Logic.Services;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace SchoolCanteen.API.Controllers;
 
-namespace SchoolCanteen.API.Controllers
+[Route("api/[controller]")]
+[ApiController]
+public class CompanyController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CompanyController : ControllerBase
+    private readonly ICompanyService _companyService;
+
+    public CompanyController(ICompanyService companyService)
     {
-        // GET: api/<CompanyController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        _companyService = companyService;
+    }
+
+    // GET: api/<CompanyController>
+    [HttpGet]
+    public ActionResult<IEnumerable<SimpleCompanyDTO>> Get()
+    {
+        try
         {
-            return new string[] { "value1", "value2" };
+            var companies = _companyService.GetAll();
+            return Ok(companies);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
 
-        // GET api/<CompanyController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+    }
 
-        // POST api/<CompanyController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+    // GET api/<CompanyController>/5
+    [HttpGet("{id}")]
+    public string Get(int id)
+    {
+        return "value";
+    }
 
-        // PUT api/<CompanyController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+    // POST api/<CompanyController>
+    [HttpPost]
+    public ActionResult<SimpleCompanyDTO> Post([FromBody] CreateCompanyData createCompany)
+    {
+        //var createCompany = JsonSerializer.Deserialize<CreateCompanyDTO>(body);
 
-        // DELETE api/<CompanyController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        try
         {
+            var company = _companyService.CreateCompany(new CreateCompanyDTO { Name = createCompany.Name });
+            return Ok (company);
         }
+        catch (Exception ex)
+        {
+            return BadRequest($"Could not create {createCompany.Name}");
+        }
+    }
+
+    // PUT api/<CompanyController>/5
+    [HttpPut("{id}")]
+    public void Put(int id, [FromBody] string value)
+    {
+    }
+
+    // DELETE api/<CompanyController>/5
+    [HttpDelete("{id}")]
+    public void Delete(int id)
+    {
     }
 }
