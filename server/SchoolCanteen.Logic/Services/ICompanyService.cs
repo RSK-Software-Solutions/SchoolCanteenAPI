@@ -1,5 +1,4 @@
 ﻿using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.Models;
 
 namespace SchoolCanteen.Logic.Services
 {
@@ -7,6 +6,7 @@ namespace SchoolCanteen.Logic.Services
     {
         SimpleCompanyDTO CreateCompany(CreateCompanyDTO company);
         bool UpdateCompany(EditCompanyDTO company);
+        bool RemoveCompany(SimpleCompanyDTO company);
         SimpleCompanyDTO GetCompany(string companyName);
         IEnumerable<SimpleCompanyDTO> GetAll();
     }

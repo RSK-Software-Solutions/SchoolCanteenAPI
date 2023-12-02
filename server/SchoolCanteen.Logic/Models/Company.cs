@@ -10,7 +10,6 @@ public class Company
     public string Number { get; set; }
     public string City { get; set; }
     public string PostalCode { get; set; }
-    public string Country { get; set; }
     public string Phone { get; set; }
     public string Email { get; set; }
     public List<User> Users { get; set; }
