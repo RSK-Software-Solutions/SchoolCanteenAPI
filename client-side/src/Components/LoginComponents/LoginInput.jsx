@@ -1,15 +1,11 @@
 import React, {useState} from 'react';
-
 const RegisterInput = () => {
     const [formData, setFormData] = useState({
-        Name: '', Login: '', Password: ''
+        Login: '', Password: ''
     });
-
     const URL = process.env.REACT_APP_URL
 
     const formFields = [{
-        label: "Firma", key: "Name"
-    }, {
         label: "Email", key: "Login"
     }, {
         label: "Hasło", key: "Password"
@@ -51,7 +47,7 @@ const RegisterInput = () => {
             />
         </div>))}
         <div className='flex justify-center'>
-            <button type="submit" className='btn my-5 shadow-md' onClick={handleSubmit}>Zarejestruj</button>
+            <button type="submit" className='btn my-5 shadow-md' onClick={handleSubmit}>Zaloguj</button>
         </div>
     </div>);
 };
