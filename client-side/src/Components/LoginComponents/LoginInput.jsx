@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from "axios";
 const RegisterInput = () => {
     const [formData, setFormData] = useState({
         Login: '', Password: ''
@@ -17,20 +18,11 @@ const RegisterInput = () => {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const HandleLogin = async (e) => {
+        e.preventDefault();
         try {
-            e.preventDefault();
-            console.log(formData)
-            const response = await fetch(URL, {
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {"Content-Type": "application/json"}
-            })
-            let jsonData = response.json();
-
-            console.log(jsonData);
+             await axios.post(URL,formData);
         } catch (error) {
-
             console.error('Error:', error.message);
         }
     };
@@ -41,13 +33,13 @@ const RegisterInput = () => {
             <label>{field.label}</label>
             <input
                 type="text"
-                className='input-credentials flex flex-col'
+                className='input-credentials flex'
                 value={formData[field.key]}
                 onChange={(e) => handleChange(e, field.key)}
             />
         </div>))}
         <div className='flex justify-center'>
-            <button type="submit" className='btn my-5 shadow-md' onClick={handleSubmit}>Zaloguj</button>
+            <button type="submit" className='btn my-5' onClick={HandleLogin}>Zaloguj</button>
         </div>
     </div>);
 };

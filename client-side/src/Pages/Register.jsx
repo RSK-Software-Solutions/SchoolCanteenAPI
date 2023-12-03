@@ -16,8 +16,7 @@ const Register = () => {
                 <Link to={'/login'} className='btn my-5 mx-4 shadow-md'>Zaloguj się</Link>
             </div>
             {/* 2. Register form */}
-            <div
-                className='self-center h-[300px] form-class shadow-md w-full md:w-fit md:mr-12 flex items-center justify-center  max-md:w-[250px] max-sm:[250px]'>
+            <div className='self-center h-[300px] form-class shadow-md w-full md:w-fit md:mr-12 flex items-center justify-center  max-md:w-[250px] max-sm:[250px]'>
                 <form className='form-class flex flex-col items-center'>
                     <span className='pt-3 '>Rejestracja</span>
                     <RegisterInput/>

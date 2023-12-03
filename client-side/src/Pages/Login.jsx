@@ -3,8 +3,6 @@ import LoginInput from "../Components/LoginComponents/LoginInput";
 import {Link} from "react-router-dom";
 
 const Login = () => {
-
-
     return (
         <div
             className='bg-main-register h-screen flex flex-col md:flex-row justify-center gap-8 md:gap-28 max-sm:flex-col-reverse max-md:flex-col-reverse'>
@@ -23,7 +21,6 @@ const Login = () => {
                 <form className='form-class flex flex-col items-center'>
                     <span className='pt-3 '>Logowanie</span>
                     <LoginInput/>
-                    <button className='btn my-5 shadow-md '>Zarejestruj</button>
                 </form>
             </div>
         </div>
