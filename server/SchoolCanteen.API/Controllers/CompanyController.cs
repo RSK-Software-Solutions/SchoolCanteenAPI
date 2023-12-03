@@ -68,5 +68,6 @@ public class CompanyController : ControllerBase
     [HttpDelete("{id}")]
     public void Delete(int id)
     {
-    }
+    } 
+    
 }

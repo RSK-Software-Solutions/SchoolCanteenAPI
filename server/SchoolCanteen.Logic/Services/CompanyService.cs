@@ -22,6 +22,7 @@ public class CompanyService : ICompanyService
         _simpleCompany = new SimpleCompanyDTOFactory();
         _editCompany = new EditCompanyDTOFactory();
     }
+
     public SimpleCompanyDTO CreateCompany(CreateCompanyDTO companyDTO)
     {
         var company = _createCompany.ConvertFromDTO(companyDTO);
@@ -29,7 +30,7 @@ public class CompanyService : ICompanyService
 
         return _simpleCompany.ConvertFromModel(company);
     }
-
+    
     public IEnumerable<SimpleCompanyDTO> GetAll()
     {
         var result = new List<SimpleCompanyDTO>();
@@ -37,6 +38,7 @@ public class CompanyService : ICompanyService
         {
             result.Add(_simpleCompany.ConvertFromModel(company));
         }
+
         return result;
     }
 
@@ -51,7 +53,7 @@ public class CompanyService : ICompanyService
         if (existingCompany == null) return false;
 
         UpdateProperties<Company>(_editCompany.ConvertFromDTO(companyDTO), existingCompany);
-        
+
         //existingCompany.Name = companyDTO.Name;
         //existingCompany.Nip = companyDTO.Nip;
         //existingCompany.Street = companyDTO.Street;

@@ -1,4 +1,5 @@
 ﻿using SchoolCanteen.Logic.DTOs.Company;
+using SchoolCanteen.Logic.Models;
 
 namespace SchoolCanteen.Logic.Services
 {

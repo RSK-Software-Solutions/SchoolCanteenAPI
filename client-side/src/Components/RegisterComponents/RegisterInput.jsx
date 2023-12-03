@@ -1,59 +1,70 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 
 const RegisterInput = () => {
     const [formData, setFormData] = useState({
-        Name: '', Login: '', Password: ''
+        Name: '',
+        Login: '',
+        Password: ''
     });
 
-    const URL = process.env.REACT_APP_URL
+    const URL = process.env.REACT_APP_URL;
 
-    const formFields = [{
-        label: "Firma", key: "Name"
-    }, {
-        label: "Email", key: "Login"
-    }, {
-        label: "Hasło", key: "Password"
-    }];
+    const formFields = [
+        {label: 'Firma', key: 'Name'},
+        {label: 'Email', key: 'Login'},
+        {label: 'Hasło', key: 'Password'}
+    ];
 
     const handleChange = (e, field) => {
         setFormData({
-            ...formData, [field]: e.target.value
+            ...formData,
+            [field]: e.target.value
         });
     };
 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        getAllCompanies()
+    }, []);
+    const getAllCompanies = async () => {
         try {
-            e.preventDefault();
-            console.log(formData)
-            const response = await fetch(URL, {
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {"Content-Type": "application/json"}
-            })
-            let jsonData = response.json();
-
-            console.log(jsonData);
+            const companies = await axios.get(URL);
+            console.log(formData.Name)
+            console.log(companies.data.filter(s => s.name === formData.Name))
+            return companies.data;
+        } catch (err) {
+            console.error(err)
+        }
+    }
+    const HandleRegisterCompany = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(URL, formData);
         } catch (error) {
-
             console.error('Error:', error.message);
         }
     };
 
-
-    return (<div>
-        {formFields.map(field => (<div key={field.key} className='mt-3 mx-3'>
-            <label>{field.label}</label>
-            <input
-                type="text"
-                className='input-credentials flex flex-col'
-                value={formData[field.key]}
-                onChange={(e) => handleChange(e, field.key)}
-            />
-        </div>))}
-        <div className='flex justify-center'>
-            <button type="submit" className='btn my-5 shadow-md' onClick={handleSubmit}>Zarejestruj</button>
+    return (
+        <div>
+            {formFields.map((field) => (
+                <div key={field.key} className="mt-3 mx-3">
+                    <label>{field.label}</label>
+                    <input
+                        type="text"
+                        className="input-credentials flex flex-col"
+                        value={formData[field.key]}
+                        onChange={(e) => handleChange(e, field.key)}
+                    />
+                </div>
+            ))}
+            <div className="flex justify-center">
+                <button type="button" className="btn my-5 shadow-md" onClick={HandleRegisterCompany}>
+                    Zarejestruj
+                </button>
+            </div>
         </div>
-    </div>);
+    );
 };
 
 export default RegisterInput;
