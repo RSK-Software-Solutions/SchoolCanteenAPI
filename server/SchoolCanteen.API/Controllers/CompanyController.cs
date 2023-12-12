@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.API.Models;
 using SchoolCanteen.Logic.DTOs.Company;
+using SchoolCanteen.Logic.DTOs.User;
 using SchoolCanteen.Logic.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -20,12 +21,11 @@ public class CompanyController : ControllerBase
 
     // GET: api/<CompanyController>
     [HttpGet]
-    public ActionResult<IEnumerable<SimpleCompanyDTO>> Get()
+    public ActionResult<IEnumerable<SimpleCompanyDTO>> GetAll()
     {
         try
         {
-            var companies = _companyService.GetAll();
-            return Ok(companies);
+            return Ok(_companyService.GetAll());
         }
         catch (Exception ex)
         {
@@ -36,21 +36,27 @@ public class CompanyController : ControllerBase
 
     // GET api/<CompanyController>/5
     [HttpGet("{id}")]
-    public string Get(int id)
+    public ActionResult<SimpleCompanyDTO> GetByName(string name)
     {
-        return "value";
-    }
-
-    // POST api/<CompanyController>
-    [HttpPost]
-    public ActionResult<SimpleCompanyDTO> Post([FromBody] CreateCompanyData createCompany)
-    {
-        //var createCompany = JsonSerializer.Deserialize<CreateCompanyDTO>(body);
-
         try
         {
-            var company = _companyService.CreateCompany(new CreateCompanyDTO { Name = createCompany.Name });
-            return Ok (company);
+            return Ok(_companyService.GetCompany(name));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Could not find {name}");
+        }
+    }
+
+    [HttpPost]
+    public ActionResult<SimpleCompanyDTO> CreateCompany([FromBody] CreateCompanyDTO createCompany)
+    {
+        try
+        {
+            var company = _companyService
+                .CreateCompany(new CreateCompanyDTO { Name = createCompany.Name });
+
+            return Ok (company); 
         }
         catch (Exception ex)
         {
@@ -60,14 +66,32 @@ public class CompanyController : ControllerBase
 
     // PUT api/<CompanyController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public ActionResult<bool> EditCompany(int id, [FromBody] EditCompanyDTO editCompany)
     {
+        try
+        {
+            var result = _companyService
+                .UpdateCompany(editCompany);
+            return Ok(true);
+        }
+        catch (Exception ex)
+        { 
+            return BadRequest(ex.Message);
+        }
     }
 
     // DELETE api/<CompanyController>/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public ActionResult<bool> DeleteCompany(SimpleCompanyDTO id)
     {
+        try
+        {
+            return Ok (_companyService.RemoveCompany(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     } 
     
 }
