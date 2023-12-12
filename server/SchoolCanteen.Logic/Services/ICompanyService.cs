@@ -1,14 +1,14 @@
 ﻿using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.Models;
+using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.Logic.Services
 {
     public interface ICompanyService
     {
         SimpleCompanyDTO CreateCompany(CreateCompanyDTO company);
-        bool UpdateCompany(EditCompanyDTO company);
+        Task<bool> UpdateCompany(EditCompanyDTO company);
         bool RemoveCompany(SimpleCompanyDTO company);
-        SimpleCompanyDTO GetCompany(string companyName);
+        SimpleCompanyDTO GetCompanyByName(string companyName);
         IEnumerable<SimpleCompanyDTO> GetAll();
     }
 }

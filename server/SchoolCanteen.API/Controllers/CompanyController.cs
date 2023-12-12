@@ -35,12 +35,12 @@ public class CompanyController : ControllerBase
     }
 
     // GET api/<CompanyController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{name}")]
     public ActionResult<SimpleCompanyDTO> GetByName(string name)
     {
         try
         {
-            return Ok(_companyService.GetCompany(name));
+            return Ok(_companyService.GetCompanyByName(name));
         }
         catch (Exception ex)
         {
@@ -81,7 +81,7 @@ public class CompanyController : ControllerBase
     }
 
     // DELETE api/<CompanyController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public ActionResult<bool> DeleteCompany(SimpleCompanyDTO id)
     {
         try

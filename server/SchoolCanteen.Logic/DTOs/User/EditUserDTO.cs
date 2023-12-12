@@ -1,5 +1,5 @@
 ﻿
-using SchoolCanteen.Logic.Models;
+using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.Logic.DTOs.User;
 
