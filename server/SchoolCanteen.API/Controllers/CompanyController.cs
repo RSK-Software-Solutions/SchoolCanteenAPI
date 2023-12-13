@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.API.Models;
 using SchoolCanteen.Logic.DTOs.Company;
 using SchoolCanteen.Logic.Services;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -19,38 +16,43 @@ public class CompanyController : ControllerBase
     }
 
     // GET: api/<CompanyController>
-    [HttpGet]
-    public ActionResult<IEnumerable<SimpleCompanyDTO>> Get()
+    [HttpGet("GetAll")]
+    public async Task<ActionResult<IEnumerable<SimpleCompanyDTO>>> GetAllAsync()
     {
         try
         {
-            var companies = _companyService.GetAll();
-            return Ok(companies);
+            return Ok(await _companyService.GetAllAsync());
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
-
     }
 
     // GET api/<CompanyController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
+    [HttpGet("GetByName")]
+    public async Task<ActionResult<SimpleCompanyDTO>> GetByNameAsync([FromQuery] string name)
     {
-        return "value";
-    }
-
-    // POST api/<CompanyController>
-    [HttpPost]
-    public ActionResult<SimpleCompanyDTO> Post([FromBody] CreateCompanyData createCompany)
-    {
-        //var createCompany = JsonSerializer.Deserialize<CreateCompanyDTO>(body);
-
         try
         {
-            var company = _companyService.CreateCompany(new CreateCompanyDTO { Name = createCompany.Name });
-            return Ok (company);
+            var company = await _companyService.GetCompanyByNameAsync(name);
+            if (company == null) return NotFound();
+
+            return Ok(company);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Could not find {name}");
+        }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<SimpleCompanyDTO>> CreateCompanyAsync([FromBody] CreateCompanyDTO createCompany)
+    {
+        try
+        {
+            var company = await _companyService.CreateCompanyAsync(new CreateCompanyDTO { Name = createCompany.Name });
+            return Ok (company); 
         }
         catch (Exception ex)
         {
@@ -58,16 +60,30 @@ public class CompanyController : ControllerBase
         }
     }
 
-    // PUT api/<CompanyController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    [HttpPut]
+    public async Task<ActionResult<bool>> EditCompanyAsync([FromBody] EditCompanyDTO editCompany)
     {
+        try
+        {
+            return Ok(await _companyService.UpdateCompanyAsync(editCompany));
+        }
+        catch (Exception ex)
+        { 
+            return BadRequest(ex.Message);
+        }
     }
 
-    // DELETE api/<CompanyController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    [HttpDelete]
+    public async Task<ActionResult<bool>> DeleteCompanyAsync([FromQuery]Guid id)
     {
+        try
+        {
+            return Ok (await _companyService.RemoveCompanyAsync(id));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     } 
     
 }

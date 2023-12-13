@@ -1,11 +1,6 @@
 ﻿
 using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.ComponentModel.Design;
-using System.IO;
-using System.Numerics;
-using System.Xml.Linq;
+using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.Logic.Factories.CompanyFactory;
 

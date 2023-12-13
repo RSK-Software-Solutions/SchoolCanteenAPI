@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,14 +10,23 @@ builder.Services.AddControllers();
 // Enable CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddDefaultPolicy(corsPolicyBuilder => corsPolicyBuilder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ICompanyService, CompanyService>();
 
+var connectionString = builder.Configuration["ConnectionString"];
+var serverVersion = ServerVersion.Parse("10.6.12-mariadb");
+
+builder.Services.AddDbContext<DatabaseApiContext>(options => options
+.UseMySql(connectionString, serverVersion));
+
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var app = builder.Build();
 
