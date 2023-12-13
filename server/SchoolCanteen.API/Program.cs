@@ -21,10 +21,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration["ConnectionString"];
-var serverVersion = ServerVersion.Parse("10.6.12-mariadb");
 
 builder.Services.AddDbContext<DatabaseApiContext>(options => options
-.UseMySql(connectionString, serverVersion));
+.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 

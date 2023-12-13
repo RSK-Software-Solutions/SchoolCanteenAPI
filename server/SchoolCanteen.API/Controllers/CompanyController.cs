@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.Logic.DTOs.Company;
+using SchoolCanteen.Logic.DTOs.User;
 using SchoolCanteen.Logic.Services;
 
 namespace SchoolCanteen.API.Controllers;
@@ -40,7 +41,7 @@ public class CompanyController : ControllerBase
 
             return Ok(company);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return BadRequest($"Could not find {name}");
         }
@@ -52,13 +53,14 @@ public class CompanyController : ControllerBase
         try
         {
             var company = await _companyService.CreateCompanyAsync(new CreateCompanyDTO { Name = createCompany.Name });
-            return Ok (company); 
+            return Ok (); 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return BadRequest($"Could not create {createCompany.Name}");
         }
     }
+
 
     [HttpPut]
     public async Task<ActionResult<bool>> EditCompanyAsync([FromBody] EditCompanyDTO editCompany)
