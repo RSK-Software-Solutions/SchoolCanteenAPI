@@ -7,10 +7,10 @@ namespace SchoolCanteen.Logic.Services.Repositories;
 
 public interface ICompanyRepository
 {
-    IEnumerable<Company> GetAll();
-    Company GetByName(string companyName);
-    Company GetById(Guid id);
-    Task<bool> Add(Company company);
-    Task<bool> Delete(Company company);
-    Task<bool> Update(Company company);
+    Task<IEnumerable<Company>> GetAllAsync();
+    Task<Company> GetByNameAsync(string companyName);
+    Task<Company> GetByIdAsync(Guid id);
+    Task<bool> AddAsync(Company company);
+    Task<bool> DeleteAsync(Company company);
+    Task<bool> UpdateAsync(Company company);
 }

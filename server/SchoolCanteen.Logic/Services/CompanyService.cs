@@ -24,18 +24,20 @@ public class CompanyService : ICompanyService
         _companyRepository = new CompanyRepository(databaseApiContext);
     }
 
-    public SimpleCompanyDTO CreateCompany(CreateCompanyDTO companyDTO)
+    public async Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO companyDTO)
     {
         var company = _createCompany.ConvertFromDTO(companyDTO);
-        _companyRepository.Add(company);
+        await _companyRepository.AddAsync(company);
 
         return _simpleCompany.ConvertFromModel(company);
     }
     
-    public IEnumerable<SimpleCompanyDTO> GetAll()
+    public async Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync()
     {
         var result = new List<SimpleCompanyDTO>();
-        foreach (var company in _companyRepository.GetAll())
+        var companies = await _companyRepository.GetAllAsync();
+
+        foreach (var company in companies)
         {
             result.Add(_simpleCompany.ConvertFromModel(company));
         }
@@ -43,41 +45,30 @@ public class CompanyService : ICompanyService
         return result;
     }
 
-    public SimpleCompanyDTO GetCompanyByName(string companyName)
+    public async Task<SimpleCompanyDTO> GetCompanyByNameAsync(string companyName)
     {
-        var company = _companyRepository.GetByName(companyName);
+        var company = await _companyRepository.GetByNameAsync(companyName);
         if (company == null) return null;
 
         return _simpleCompany.ConvertFromModel(company);
     }
 
-    public async Task<bool> UpdateCompany(EditCompanyDTO companyDTO)
+    public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDTO)
     {
-        var existingCompany = _companyRepository.GetById(companyDTO.CompanyId);
+        var existingCompany = await _companyRepository.GetByIdAsync(companyDTO.CompanyId);
         if (existingCompany == null) return false;
 
         UpdateProperties<Company>(_editCompany.ConvertFromDTO(companyDTO), existingCompany);
 
-        #region simpleVersion
-        //existingCompany.Name = companyDTO.Name;
-        //existingCompany.Nip = companyDTO.Nip;
-        //existingCompany.Street = companyDTO.Street;
-        //existingCompany.Number = companyDTO.Number;
-        //existingCompany.City = companyDTO.City;
-        //existingCompany.PostalCode = companyDTO.PostalCode;
-        //existingCompany.Phone = companyDTO.Phone;
-        //existingCompany.Email = companyDTO.Email;
-        #endregion
-
-        return await _companyRepository.Update(existingCompany);
+        return await _companyRepository.UpdateAsync(existingCompany);
     }
 
-    public bool RemoveCompany(Guid Id)
+    public async Task<bool> RemoveCompanyAsync(Guid Id)
     {
-        var company = _companyRepository.GetById(Id);
+        var company = await _companyRepository.GetByIdAsync(Id);
         if (company == null) return false;
 
-        _companyRepository.Delete(company);
+        await _companyRepository.DeleteAsync(company);
         return true;
     }
 

@@ -5,10 +5,10 @@ namespace SchoolCanteen.Logic.Services
 {
     public interface ICompanyService
     {
-        SimpleCompanyDTO CreateCompany(CreateCompanyDTO company);
-        Task<bool> UpdateCompany(EditCompanyDTO company);
-        bool RemoveCompany(Guid Id);
-        SimpleCompanyDTO GetCompanyByName(string companyName);
-        IEnumerable<SimpleCompanyDTO> GetAll();
+        Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO company);
+        Task<bool> UpdateCompanyAsync(EditCompanyDTO company);
+        Task<bool> RemoveCompanyAsync(Guid Id);
+        Task<SimpleCompanyDTO> GetCompanyByNameAsync(string companyName);
+        Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync();
     }
 }

@@ -17,11 +17,11 @@ public class CompanyController : ControllerBase
 
     // GET: api/<CompanyController>
     [HttpGet("GetAll")]
-    public ActionResult<IEnumerable<SimpleCompanyDTO>> GetAll()
+    public async Task<ActionResult<IEnumerable<SimpleCompanyDTO>>> GetAllAsync()
     {
         try
         {
-            return Ok(_companyService.GetAll());
+            return Ok(await _companyService.GetAllAsync());
         }
         catch (Exception ex)
         {
@@ -31,14 +31,14 @@ public class CompanyController : ControllerBase
 
     // GET api/<CompanyController>/5
     [HttpGet("GetByName")]
-    public ActionResult<SimpleCompanyDTO> GetByName([FromQuery] string name)
+    public async Task<ActionResult<SimpleCompanyDTO>> GetByNameAsync([FromQuery] string name)
     {
         try
         {
-            var company = _companyService.GetCompanyByName(name);
+            var company = await _companyService.GetCompanyByNameAsync(name);
             if (company == null) return NotFound();
 
-            return Ok(_companyService.GetCompanyByName(name));
+            return Ok(company);
         }
         catch (Exception ex)
         {
@@ -47,13 +47,11 @@ public class CompanyController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<SimpleCompanyDTO> CreateCompany([FromBody] CreateCompanyDTO createCompany)
+    public async Task<ActionResult<SimpleCompanyDTO>> CreateCompanyAsync([FromBody] CreateCompanyDTO createCompany)
     {
         try
         {
-            var company = _companyService
-                .CreateCompany(new CreateCompanyDTO { Name = createCompany.Name });
-
+            var company = await _companyService.CreateCompanyAsync(new CreateCompanyDTO { Name = createCompany.Name });
             return Ok (company); 
         }
         catch (Exception ex)
@@ -63,13 +61,11 @@ public class CompanyController : ControllerBase
     }
 
     [HttpPut]
-    public ActionResult<bool> EditCompany([FromBody] EditCompanyDTO editCompany)
+    public async Task<ActionResult<bool>> EditCompanyAsync([FromBody] EditCompanyDTO editCompany)
     {
         try
         {
-            var result = _companyService
-                .UpdateCompany(editCompany);
-            return Ok(true);
+            return Ok(await _companyService.UpdateCompanyAsync(editCompany));
         }
         catch (Exception ex)
         { 
@@ -78,11 +74,11 @@ public class CompanyController : ControllerBase
     }
 
     [HttpDelete]
-    public ActionResult<bool> DeleteCompany([FromQuery]Guid id)
+    public async Task<ActionResult<bool>> DeleteCompanyAsync([FromQuery]Guid id)
     {
         try
         {
-            return Ok (_companyService.RemoveCompany(id));
+            return Ok (await _companyService.RemoveCompanyAsync(id));
         }
         catch (Exception ex)
         {

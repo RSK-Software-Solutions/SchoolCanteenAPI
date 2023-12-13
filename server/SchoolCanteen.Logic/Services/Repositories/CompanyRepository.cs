@@ -1,11 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.DTOs.Company;
-using System.Reflection;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
@@ -17,18 +13,19 @@ public class CompanyRepository : ICompanyRepository
     {
         this.ctx = ctx;
     }
-    public IEnumerable<Company> GetAll()
+
+    public async Task<IEnumerable<Company>> GetAllAsync()
     {
         try
         {
-            return ctx.Companies.OrderBy(e => e.Name).ToList();
+            return await ctx.Companies.OrderBy(e => e.Name).ToListAsync();
         }
         catch (Exception ex)
         {
             return new List<Company>();
         }
     }
-    public async Task<bool> Add(Company company)
+    public async Task<bool> AddAsync(Company company)
     {
         try
         {
@@ -42,24 +39,24 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<bool> Delete(Company company)
+    public async Task<bool> DeleteAsync(Company company)
     {
         ctx.Companies.Remove(company);
         await ctx.SaveChangesAsync();
         return true;
     }
 
-    public Company GetByName(string companyName)
+    public async Task<Company> GetByNameAsync(string companyName)
     {
-        return ctx.Companies.FirstOrDefault(c => c.Name == companyName);
+        return await ctx.Companies.FirstOrDefaultAsync(c => c.Name == companyName);
     }
 
-    public Company GetById(Guid id)
+    public async Task<Company> GetByIdAsync(Guid id)
     {
-        return ctx.Companies.FirstOrDefault(c => c.CompanyId == id);
+        return await ctx.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
     }
 
-    public async Task<bool> Update(Company company)
+    public async Task<bool> UpdateAsync(Company company)
     {
         try
         {
