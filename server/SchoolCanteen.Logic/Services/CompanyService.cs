@@ -72,9 +72,9 @@ public class CompanyService : ICompanyService
         return await _companyRepository.Update(existingCompany);
     }
 
-    public bool RemoveCompany(SimpleCompanyDTO companyDTO)
+    public bool RemoveCompany(Guid Id)
     {
-        var company = _companyRepository.GetById(companyDTO.CompanyId);
+        var company = _companyRepository.GetById(Id);
         if (company == null) return false;
 
         _companyRepository.Delete(company);

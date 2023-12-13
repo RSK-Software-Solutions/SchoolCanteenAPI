@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.API.Models;
 using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.DTOs.User;
 using SchoolCanteen.Logic.Services;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -20,7 +16,7 @@ public class CompanyController : ControllerBase
     }
 
     // GET: api/<CompanyController>
-    [HttpGet]
+    [HttpGet("GetAll")]
     public ActionResult<IEnumerable<SimpleCompanyDTO>> GetAll()
     {
         try
@@ -31,15 +27,17 @@ public class CompanyController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-
     }
 
     // GET api/<CompanyController>/5
-    [HttpGet("{name}")]
-    public ActionResult<SimpleCompanyDTO> GetByName(string name)
+    [HttpGet("GetByName")]
+    public ActionResult<SimpleCompanyDTO> GetByName([FromQuery] string name)
     {
         try
         {
+            var company = _companyService.GetCompanyByName(name);
+            if (company == null) return NotFound();
+
             return Ok(_companyService.GetCompanyByName(name));
         }
         catch (Exception ex)
@@ -64,9 +62,8 @@ public class CompanyController : ControllerBase
         }
     }
 
-    // PUT api/<CompanyController>/5
-    [HttpPut("{id}")]
-    public ActionResult<bool> EditCompany(int id, [FromBody] EditCompanyDTO editCompany)
+    [HttpPut]
+    public ActionResult<bool> EditCompany([FromBody] EditCompanyDTO editCompany)
     {
         try
         {
@@ -80,9 +77,8 @@ public class CompanyController : ControllerBase
         }
     }
 
-    // DELETE api/<CompanyController>/5
     [HttpDelete]
-    public ActionResult<bool> DeleteCompany(SimpleCompanyDTO id)
+    public ActionResult<bool> DeleteCompany([FromQuery]Guid id)
     {
         try
         {

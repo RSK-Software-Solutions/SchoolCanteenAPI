@@ -7,7 +7,7 @@ namespace SchoolCanteen.Logic.Services
     {
         SimpleCompanyDTO CreateCompany(CreateCompanyDTO company);
         Task<bool> UpdateCompany(EditCompanyDTO company);
-        bool RemoveCompany(SimpleCompanyDTO company);
+        bool RemoveCompany(Guid Id);
         SimpleCompanyDTO GetCompanyByName(string companyName);
         IEnumerable<SimpleCompanyDTO> GetAll();
     }
