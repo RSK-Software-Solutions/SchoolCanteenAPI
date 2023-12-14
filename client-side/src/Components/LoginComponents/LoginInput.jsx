@@ -28,18 +28,18 @@ const RegisterInput = () => {
     };
 
 
-    return (<div>
-        {formFields.map(field => (<div key={field.key} className='mt-3 mx-3'>
+    return (<div className='border'>
+        {formFields.map(field => (<div key={field.key}>
             <label>{field.label}</label>
             <input
                 type="text"
-                className='input-credentials flex'
+                className='flex flex-col border'
                 value={formData[field.key]}
                 onChange={(e) => handleChange(e, field.key)}
             />
         </div>))}
-        <div className='flex justify-center'>
-            <button type="submit" className='btn my-5' onClick={HandleLogin}>Zaloguj</button>
+        <div className='text-center' >
+            <button type="submit" onClick={HandleLogin}>Zaloguj</button>
         </div>
     </div>);
 };
