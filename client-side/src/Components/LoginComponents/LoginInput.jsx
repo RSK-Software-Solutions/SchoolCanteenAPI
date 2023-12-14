@@ -21,7 +21,7 @@ const RegisterInput = () => {
     const HandleLogin = async (e) => {
         e.preventDefault();
         try {
-             await axios.post(URL,formData);
+             await axios.post(URL+"/login-auth",formData);
         } catch (error) {
             console.error('Error:', error.message);
         }
