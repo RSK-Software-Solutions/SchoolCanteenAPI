@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.Logic.DTOs.Company;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
+using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.Services;
 
 namespace SchoolCanteen.API.Controllers;
