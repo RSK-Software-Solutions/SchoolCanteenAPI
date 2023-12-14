@@ -38,7 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(<React.StrictMode>
         <div className='flex'>
             <Sidebar/>
             <Routes>
-                {router.map(routes => (<Route path={routes.path} element={routes.element}/>))}
+                {router.map(routes => (<Route key={router.path}path={routes.path} element={routes.element}/>))}
             </Routes>
         </div>
     </BrowserRouter>

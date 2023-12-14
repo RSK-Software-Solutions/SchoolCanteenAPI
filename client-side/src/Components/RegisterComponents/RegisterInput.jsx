@@ -25,7 +25,7 @@ const RegisterInput = () => {
 
     const isExistingCompany = async () => {
         try {
-            const companies = await axios.get(URL);
+            const companies = await axios.get(URL+"/GetAll");
             var exitingCompany = companies.data.filter(Firm => Firm.name === formData.Name)
             return exitingCompany.length > 0;
 

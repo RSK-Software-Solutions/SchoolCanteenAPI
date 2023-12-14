@@ -15,11 +15,12 @@ const Navbar = () => {
             path: "/ustawienia", element: "Ustawienia",
         }];
     return (
-        <div>
+        <div className="h-[80px] flex justify-center ">
             {navLinks.map(el =>
                 (
+                    <div key={el.element} className="px-5">
                     <Link to={el.path}>{el.element}</Link>
-                )
+                    </div>)
             )}
         </div>
     );
