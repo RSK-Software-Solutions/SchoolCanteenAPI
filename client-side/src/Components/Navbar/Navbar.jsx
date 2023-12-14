@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 
+
 const Navbar = () => {
     const navLinks =
         [{
@@ -15,13 +16,15 @@ const Navbar = () => {
             path: "/ustawienia", element: "Ustawienia",
         }];
     return (
-        <div className="h-[80px] flex justify-center ">
-            {navLinks.map(el =>
-                (
-                    <div key={el.element} className="px-5">
-                    <Link to={el.path}>{el.element}</Link>
-                    </div>)
-            )}
+        <div className='h-[80px] border-b flex'>
+            <span className='flex self-center justify-start'>logo</span>
+            <div className='w-full flex justify-center'>
+                {navLinks.map(el => (
+                    <div key={el.element} className="px-5 flex justify-center self-center">
+                        <Link to={el.path}>{el.element}</Link>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
