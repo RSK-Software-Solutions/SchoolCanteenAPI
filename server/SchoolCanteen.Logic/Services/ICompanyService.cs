@@ -1,14 +1,12 @@
-﻿using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.DATA.Models;
+﻿using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 
-namespace SchoolCanteen.Logic.Services
+namespace SchoolCanteen.Logic.Services;
+
+public interface ICompanyService
 {
-    public interface ICompanyService
-    {
-        Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO company);
-        Task<bool> UpdateCompanyAsync(EditCompanyDTO company);
-        Task<bool> RemoveCompanyAsync(Guid Id);
-        Task<SimpleCompanyDTO> GetCompanyByNameAsync(string companyName);
-        Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync();
-    }
+    Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO company);
+    Task<bool> UpdateCompanyAsync(EditCompanyDTO company);
+    Task<bool> RemoveCompanyAsync(Guid Id);
+    Task<SimpleCompanyDTO> GetCompanyByNameAsync(string companyName);
+    Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync();
 }
