@@ -1,5 +1,5 @@
 ﻿
-namespace SchoolCanteen.Logic.DTOs.User;
+namespace SchoolCanteen.Logic.DTOs.UserDTOs;
 
 public class LoginUserDTO
 {
