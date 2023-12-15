@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
-using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.DTOs.Company;
+﻿using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
