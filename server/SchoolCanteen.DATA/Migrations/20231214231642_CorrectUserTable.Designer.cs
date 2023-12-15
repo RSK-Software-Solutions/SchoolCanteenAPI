@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolCanteen.DATA.DatabaseConnector;
 
@@ -10,9 +11,11 @@ using SchoolCanteen.DATA.DatabaseConnector;
 namespace SchoolCanteen.DATA.Migrations
 {
     [DbContext(typeof(DatabaseApiContext))]
-    partial class DatabaseApiContextModelSnapshot : ModelSnapshot
+    [Migration("20231214231642_CorrectUserTable")]
+    partial class CorrectUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,16 +64,13 @@ namespace SchoolCanteen.DATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.User", b =>
@@ -83,9 +83,6 @@ namespace SchoolCanteen.DATA.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Login")
@@ -141,7 +138,7 @@ namespace SchoolCanteen.DATA.Migrations
 
                     b.HasKey("UserDetailsId");
 
-                    b.ToTable("UsersDetails");
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.UserRole", b =>

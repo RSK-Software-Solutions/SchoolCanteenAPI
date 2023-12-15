@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolCanteen.DATA.DatabaseConnector;
+using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services;
 
 namespace SchoolCanteen.API;
@@ -19,7 +20,7 @@ public class Startup
         services.AddCors();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        services.AddAutoMapper(typeof(Startup));
+        services.AddAutoMapper(typeof(AutoMapperProfile));
 
         var connectionString = Configuration["ConnectionString"];
         var serverVersion = ServerVersion.Parse("10.6.12-mariadb");
@@ -27,6 +28,9 @@ public class Startup
         services.AddDbContext<DatabaseApiContext>(options => options.UseMySql(connectionString, serverVersion));
 
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IUserDetailsService, UserDetailsService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,6 +49,7 @@ public class Startup
             //.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
+
 
         app.UseAuthentication();
 

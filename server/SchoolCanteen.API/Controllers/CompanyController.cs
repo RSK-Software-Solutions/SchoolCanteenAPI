@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services;
 
 namespace SchoolCanteen.API.Controllers;
@@ -11,10 +13,19 @@ namespace SchoolCanteen.API.Controllers;
 public class CompanyController : ControllerBase
 {
     private readonly ICompanyService _companyService;
+    private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
+    private readonly IUserDetailsService _userDetailsService;
+    private readonly IMapper _mapper;
 
-    public CompanyController(ICompanyService companyService)
+    public CompanyController(ICompanyService companyService, IUserService userService, IRoleService roleService, 
+        IUserDetailsService userDetailsService, IMapper mapper)
     {
         _companyService = companyService;
+        _userService = userService;
+        _roleService = roleService;
+        _userDetailsService = userDetailsService;
+        _mapper = mapper;
     }
 
     // GET: api/<CompanyController>
@@ -54,6 +65,16 @@ public class CompanyController : ControllerBase
         try
         {
             var company = await _companyService.CreateCompanyAsync(new CreateCompanyDTO { Name = createCompany.Name });
+            var role = await _roleService.CreateAsync(new Role { RoleName = "admin", CompanyId = company.CompanyId });
+            var userDetails = await _userDetailsService.CreateAsync(new UserDetails { UserId = Guid.NewGuid() });
+            await _userService.CreateUserAsync(new CreateUserDTO { 
+                UserId = userDetails.UserId,
+                CompanyId = company.CompanyId, 
+                RoleId = role.RoleId,
+                UserDetailsId = userDetails.UserDetailsId,
+                Login = createCompany.Login, 
+                Password = createCompany.Password 
+            });
             return Ok (company); 
         }
         catch (Exception ex)

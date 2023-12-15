@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolCanteen.DATA.DatabaseConnector;
 
@@ -10,9 +11,11 @@ using SchoolCanteen.DATA.DatabaseConnector;
 namespace SchoolCanteen.DATA.Migrations
 {
     [DbContext(typeof(DatabaseApiContext))]
-    partial class DatabaseApiContextModelSnapshot : ModelSnapshot
+    [Migration("20231215081234_CorrectRoleTable")]
+    partial class CorrectRoleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +73,7 @@ namespace SchoolCanteen.DATA.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.User", b =>
@@ -141,7 +144,7 @@ namespace SchoolCanteen.DATA.Migrations
 
                     b.HasKey("UserDetailsId");
 
-                    b.ToTable("UsersDetails");
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.UserRole", b =>

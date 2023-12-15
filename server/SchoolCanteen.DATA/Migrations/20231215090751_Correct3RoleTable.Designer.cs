@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolCanteen.DATA.DatabaseConnector;
 
@@ -10,9 +11,11 @@ using SchoolCanteen.DATA.DatabaseConnector;
 namespace SchoolCanteen.DATA.Migrations
 {
     [DbContext(typeof(DatabaseApiContext))]
-    partial class DatabaseApiContextModelSnapshot : ModelSnapshot
+    [Migration("20231215090751_Correct3RoleTable")]
+    partial class Correct3RoleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
