@@ -12,6 +12,7 @@ import Raports from "./Pages/Raports";
 import UserSettings from "./Pages/UserSettings";
 
 function App() {
+
     return (
         <div>
             <Routes>
@@ -20,7 +21,9 @@ function App() {
             </Routes>
             <Navbar/>
             <div className='flex'>
-                <Sidebar/>
+                <div className='flex flex-col'>
+                    <Sidebar/>
+                </div>
                 <Routes>
                     <Route path={"/dashboard"} element={<Dashboard/>}/>
                     <Route path={"/panel-admina"} element={<AdminPanel/>}/>

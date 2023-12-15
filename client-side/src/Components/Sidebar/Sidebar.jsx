@@ -1,33 +1,45 @@
 import React, {useState} from 'react';
 import {AnimatePresence, motion} from "framer-motion";
-import {AlignJustify} from "lucide-react";
+import {PanelLeftClose, PanelRightClose} from "lucide-react";
 
 const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-
+    const [isOpen, setIsOpen] = useState(false)
     const handleMenuToggle = () => {
         setIsOpen((prevState) => !prevState);
     };
 
     return (
         <AnimatePresence>
-            <div>
-                 <AlignJustify onClick={handleMenuToggle} className='flex flex-col justify-end'/>
-            </div>
-                {isOpen && ((
-                    <motion.section
-                        key={Math.random()}
-                        initial={{opacity: 0, x: '-100%'}}
-                        animate={{opacity: 1, x: 0}}
-                        transition={{duration: 0.5}}
-                    >
-                        <div className='flex flex-col h-screen w-[150px] border-r'>
-                            MENU
-                        </div>
-                    </motion.section>
-                ))}
-        </AnimatePresence>
-    )
-}
+                <motion.div
+                    animate={{
+                        transform: [{translateX: isOpen ? '100%' : '0%'}],
+                        transition: {type: "just", ease: 'easeInOut'},
+                    }}
+                >
+                    <div className='flex justify-end ' onClick={handleMenuToggle}>
+                        {isOpen ? <PanelLeftClose/> : <PanelRightClose/>}
+                    </div>
+                </motion.div>
+                    {isOpen && ((
+                        <motion.section
+                            key={Math.random()}
+                            initial={{x: '-100%'}}
+                            exit={{x: "-100%"}}
+                            animate={{x: 0}}
+                            transition={{type: "just", ease: "easeInOut"}}
+                        >
+                            {isOpen && (
+                                <section
+                                    className='flex flex-col h-screen w-[150px] border-r justify-center '>
+                                    <nav className='w-full flex justify-center'>
+                                        MENU
+                                    </nav>
+                                </section>)}
 
-export default Sidebar;
+                        </motion.section>
+                    ))}
+                </AnimatePresence>
+            )
+            }
+
+            export default Sidebar;
