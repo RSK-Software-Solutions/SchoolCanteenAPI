@@ -1,26 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 import {AnimatePresence, motion} from "framer-motion";
+import {navLinks} from "./NavbarLinks";
 
 
 const Navbar = () => {
-    const navLinks = [
-        {
-            path: "/panel-admina", element: "Panel admina",
-        },
-        {
-            path: "/powiadomienia", element: "powiadomienia",
-        },
-        {
-            path: "/jadlospis", element: "Menu",
-        },
-        {
-            path: "/raporty", element: "Raporty",
-        },
-        {
-            path: "/ustawienia", element: "Ustawienia",
-        }
-    ];
+
     return (
         <div className='h-[80px] border-b flex'>
             <AnimatePresence>
