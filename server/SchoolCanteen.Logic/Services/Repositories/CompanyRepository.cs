@@ -18,7 +18,9 @@ public class CompanyRepository : ICompanyRepository
     {
         try
         {
-            return await ctx.Companies.OrderBy(e => e.Name).ToListAsync();
+            return await ctx.Companies
+                .OrderBy(e => e.Name)
+                .ToListAsync();
         }
         catch (Exception ex)
         {
@@ -48,12 +50,14 @@ public class CompanyRepository : ICompanyRepository
 
     public async Task<Company> GetByNameAsync(string companyName)
     {
-        return await ctx.Companies.FirstOrDefaultAsync(c => c.Name == companyName);
+        return await ctx.Companies
+            .FirstOrDefaultAsync(c => c.Name == companyName);
     }
 
     public async Task<Company> GetByIdAsync(Guid id)
     {
-        return await ctx.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
+        return await ctx.Companies
+            .FirstOrDefaultAsync(c => c.CompanyId == id);
     }
 
     public async Task<bool> UpdateAsync(Company company)
