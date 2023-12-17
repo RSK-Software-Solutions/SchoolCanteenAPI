@@ -1,23 +1,24 @@
-﻿using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+﻿using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.Services.Repositories.Interfaces;
-using SchoolCanteen.DATA.DatabaseConnector;
-using AutoMapper;
-using SchoolCanteen.Logic.Services.Repositories;
-using Microsoft.Extensions.Logging;
-using System.Data;
+using SchoolCanteen.DATA.Repositories.Interfaces;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
+using SchoolCanteen.Logic.Services.Interfaces;
+using AutoMapper;
+using System.Data;
+using Microsoft.Extensions.Logging;
 
 namespace SchoolCanteen.Logic.Services;
 
 public class CompanyService : ICompanyService
 {
     private readonly IMapper _mapper;
-    private readonly ICompanyRepository _companyRepository;
+    private readonly ILogger _logger;
     private readonly IUserService _userService;
     private readonly IRoleService _roleService;
     private readonly IUserDetailsService _userDetailsService;
-    private readonly ILogger logger;
+    private readonly ICompanyRepository _companyRepository;
 
     public CompanyService(DatabaseApiContext databaseApiContext, 
         IUserService userService, 
@@ -27,7 +28,7 @@ public class CompanyService : ICompanyService
         ILogger<CompanyService> logger)
     {
         _mapper = mapper;
-        this.logger = logger;
+        _logger = logger;
         _companyRepository = new CompanyRepository(databaseApiContext, logger);
         _userService = userService;
         _roleService = roleService;
@@ -39,7 +40,7 @@ public class CompanyService : ICompanyService
         var existCompany = await _companyRepository.GetByNameAsync(companyDto.Name);
         if (existCompany != null) 
         {
-            logger.LogInformation($"Company {companyDto.Name} already exists.");
+            _logger.LogInformation($"Company {companyDto.Name} already exists.");
             return _mapper.Map<SimpleCompanyDTO>(existCompany);
         }
 
@@ -49,6 +50,7 @@ public class CompanyService : ICompanyService
         var role = await CreateAdminRoleForComapany(company);
         var userDetails = await CreateEmptyUserDetailsRecord();
         var userAdmin = await CreateAdminUserForCompany(companyDto, company, role, userDetails);
+
 
         return _mapper.Map<SimpleCompanyDTO>(company);
     }
@@ -103,7 +105,7 @@ public class CompanyService : ICompanyService
     {
         try
         {
-            await _userService.CreateUserAsync(new CreateUserDTO
+            await _userService.CreateAsync(new CreateUserDTO
             {
                 UserId = userDetails.UserId,
                 CompanyId = company.CompanyId,
@@ -117,7 +119,7 @@ public class CompanyService : ICompanyService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex.Message); return false;
+            _logger.LogError(ex.Message); return false;
         }
     }
 }

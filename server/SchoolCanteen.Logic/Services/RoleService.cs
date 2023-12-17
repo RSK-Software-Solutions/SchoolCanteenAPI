@@ -4,8 +4,9 @@ using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
-using SchoolCanteen.Logic.Services.Repositories;
-using SchoolCanteen.Logic.Services.Repositories.Interfaces;
+using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.DATA.Repositories.Interfaces;
 
 namespace SchoolCanteen.Logic.Services;
 
@@ -22,16 +23,16 @@ public class RoleService : IRoleService
         this.logger = logger;
     }
 
-    public async Task<Role> CreateAsync(Role role)
+    public async Task<Role> CreateAsync(Role newRole)
     {
-        var existRole = await _roleRepository.GetByNameAsync(role.RoleName, role.CompanyId);
-        if (existRole != null) 
+        var role = await _roleRepository.GetByNameAsync(newRole.RoleName, newRole.CompanyId);
+        if (role != null) 
         {
-            logger.LogInformation($"Role {role.RoleName} already exists.");
-            return existRole;
+            logger.LogInformation($"Role {newRole.RoleName} already exists.");
+            return role;
         }
-        await _roleRepository.AddAsync(role);
-        return role;
+        await _roleRepository.AddAsync(newRole);
+        return newRole;
     }
 
     public async Task<bool> DeleteAsync(Guid roleId)

@@ -1,6 +1,6 @@
 ﻿using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 
-namespace SchoolCanteen.Logic.Services;
+namespace SchoolCanteen.Logic.Services.Interfaces;
 
 public interface ICompanyService
 {

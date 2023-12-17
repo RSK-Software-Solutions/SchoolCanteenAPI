@@ -4,8 +4,10 @@ using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
-using SchoolCanteen.Logic.Services.Repositories;
-using SchoolCanteen.Logic.Services.Repositories.Interfaces;
+using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.DATA.Repositories.Interfaces;
+using System.Data;
 
 namespace SchoolCanteen.Logic.Services;
 
@@ -22,7 +24,7 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<SimpleUserDTO> CreateUserAsync(CreateUserDTO userDto)
+    public async Task<SimpleUserDTO> CreateAsync(CreateUserDTO userDto)
     {
         var user = _mapper.Map<User>(userDto);
         await _userRepository.AddAsync(user);
@@ -30,23 +32,37 @@ public class UserService : IUserService
         return _mapper.Map<SimpleUserDTO>(user);
     }
 
-    public Task<IEnumerable<SimpleUserDTO>> GetAllAsync()
+    public async Task<IEnumerable<SimpleUserDTO>> GetAllAsync(Guid companyId)
     {
-        throw new NotImplementedException();
+        var users = await _userRepository.GetAllAsync(companyId);
+
+        return users.Select(user => _mapper.Map<SimpleUserDTO>(user));
     }
 
-    public Task<SimpleUserDTO> GetUserByNameAsync(string userLogin)
+    public async Task<SimpleUserDTO> GetByNameAsync(string userLogin, Guid companyId)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetByNameAsync(userLogin, companyId);
+        if (user == null) return null;
+
+        return _mapper.Map<SimpleUserDTO>(user);
     }
 
-    public Task<bool> RemoveUserAsync(Guid Id)
+    public async Task<bool> DeleteAsync(Guid Id)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetByIdAsync(Id);
+        if (user == null) return false;
+
+        await _userRepository.DeleteAsync(user);
+        return true;
     }
 
-    public Task<bool> UpdateUserAsync(EditUserDTO company)
+    public async Task<bool> UpdateAsync(EditUserDTO userDto)
     {
-        throw new NotImplementedException();
+        var existingUser = await _userRepository.GetByIdAsync(userDto.UserId);
+        if (existingUser == null) return false;
+
+        _mapper.Map(userDto, existingUser);
+
+        return await _userRepository.UpdateAsync(existingUser);
     }
 }

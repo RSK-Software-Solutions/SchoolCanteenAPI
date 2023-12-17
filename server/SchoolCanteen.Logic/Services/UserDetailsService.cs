@@ -3,8 +3,9 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.Services.Repositories;
-using SchoolCanteen.Logic.Services.Repositories.Interfaces;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.DATA.Repositories.Interfaces;
+using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.Logic.Services;
 
