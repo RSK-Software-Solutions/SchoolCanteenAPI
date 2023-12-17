@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.DTOs.CompanyDTOs;
-using SchoolCanteen.Logic.Services;
+using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -13,7 +11,7 @@ public class RoleController : ControllerBase
     private readonly ILogger<RoleController> logger;
     private readonly IRoleService roleService;
 
-    public RoleController(IRoleService roleService, ILogger<RoleController> logger)
+    public RoleController(ILogger<RoleController> logger, IRoleService roleService )
     {
         this.logger = logger;
         this.roleService = roleService;
@@ -24,7 +22,10 @@ public class RoleController : ControllerBase
     {
         try
         {
-            return Ok(await roleService.GetAllAsync(companyId));
+            var roles = await roleService.GetAllAsync(companyId);
+            if (roles.Count() == 0) return NotFound($"No roles found.");
+
+            return Ok(roles);
         }
         catch (Exception ex)
         {
@@ -57,7 +58,7 @@ public class RoleController : ControllerBase
         {
             var role = await roleService.CreateAsync( new Role { RoleName = roleName, CompanyId = companyId });
 
-            return Ok(role);
+            return CreatedAtAction("CreateAsync", role);
         }
         catch (Exception ex)
         {

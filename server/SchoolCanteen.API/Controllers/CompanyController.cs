@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.Services;
+using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -28,6 +29,9 @@ public class CompanyController : ControllerBase
     {
         try
         {
+            var companies = await _companyService.GetAllAsync();
+            if (companies.Count() == 0) return NotFound($"No companies found.");
+
             return Ok(await _companyService.GetAllAsync());
         }
         catch (Exception ex)
@@ -76,6 +80,9 @@ public class CompanyController : ControllerBase
     {
         try
         {
+            var existingCompany = await _companyService.GetCompanyByNameAsync(editCompany.Name);
+            if (existingCompany == null) return NotFound();
+
             return Ok(await _companyService.UpdateCompanyAsync(editCompany));
         }
         catch (Exception ex)
