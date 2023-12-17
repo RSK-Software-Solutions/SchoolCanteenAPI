@@ -2,6 +2,7 @@
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services;
+using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API;
 
