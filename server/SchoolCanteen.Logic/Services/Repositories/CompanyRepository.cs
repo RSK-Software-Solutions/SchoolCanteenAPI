@@ -1,17 +1,21 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
+using SchoolCanteen.Logic.Services.Repositories.Interfaces;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
 public class CompanyRepository : ICompanyRepository
 {
     private readonly DatabaseApiContext ctx;
+    private readonly ILogger logger;
 
-    public CompanyRepository(DatabaseApiContext ctx)
+    public CompanyRepository(DatabaseApiContext ctx, ILogger logger)
     {
         this.ctx = ctx;
+        this.logger = logger;
     }
 
     public async Task<IEnumerable<Company>> GetAllAsync()
@@ -24,6 +28,7 @@ public class CompanyRepository : ICompanyRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return new List<Company>();
         }
     }
@@ -37,27 +42,54 @@ public class CompanyRepository : ICompanyRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return false;
         }
     }
 
     public async Task<bool> DeleteAsync(Company company)
     {
-        ctx.Companies.Remove(company);
-        await ctx.SaveChangesAsync();
-        return true;
+        try 
+        {
+            ctx.Companies.Remove(company);
+            await ctx.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return false;
+        }
+
     }
 
     public async Task<Company> GetByNameAsync(string companyName)
     {
-        return await ctx.Companies
-            .FirstOrDefaultAsync(c => c.Name == companyName);
+        try
+        {
+            return await ctx.Companies
+                .FirstOrDefaultAsync(c => c.Name == companyName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return default;
+        }
+
     }
 
     public async Task<Company> GetByIdAsync(Guid id)
     {
-        return await ctx.Companies
-            .FirstOrDefaultAsync(c => c.CompanyId == id);
+        try
+        {
+            return await ctx.Companies
+                .FirstOrDefaultAsync(c => c.CompanyId == id);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return default;
+        }
     }
 
     public async Task<bool> UpdateAsync(Company company)
@@ -70,6 +102,7 @@ public class CompanyRepository : ICompanyRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return false;
         }
     }

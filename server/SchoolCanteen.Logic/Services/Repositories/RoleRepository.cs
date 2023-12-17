@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using SchoolCanteen.Logic.Services.Repositories.Interfaces;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
@@ -12,7 +12,7 @@ internal class RoleRepository : IRoleRepository
     private readonly DatabaseApiContext ctx;
     private readonly ILogger logger;
 
-    public RoleRepository(DatabaseApiContext ctx, ILogger<RoleRepository> logger)
+    public RoleRepository(DatabaseApiContext ctx, ILogger logger)
     {
         this.ctx = ctx;
         this.logger = logger;
@@ -46,7 +46,6 @@ internal class RoleRepository : IRoleRepository
             logger.LogError(ex.Message);
             return false;
         }
-
     }
 
     public async Task<IEnumerable<Role>> GetAllAsync(Guid companyId)
@@ -69,8 +68,8 @@ internal class RoleRepository : IRoleRepository
     {
         try
         {
-            return ctx.Roles
-                .FirstOrDefault(e => e.CompanyId == companyId && e.RoleName == roleName);
+            return await ctx.Roles
+                .FirstOrDefaultAsync(e => e.CompanyId == companyId && e.RoleName == roleName);
         }
         catch (Exception ex)
         {
@@ -83,7 +82,7 @@ internal class RoleRepository : IRoleRepository
         try
         {
             return await ctx.Roles
-            .FirstOrDefaultAsync(e => e.CompanyId == id && e.RoleId == id);
+            .FirstOrDefaultAsync(e => e.RoleId == id);
         }
         catch (Exception ex)
         {

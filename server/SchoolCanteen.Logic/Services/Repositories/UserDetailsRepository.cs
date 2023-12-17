@@ -1,16 +1,20 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
+using SchoolCanteen.Logic.Services.Repositories.Interfaces;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
 public class UserDetailsRepository : IUserDetailsRepository
 {
     private readonly DatabaseApiContext ctx;
+    private readonly ILogger logger;
 
-    public UserDetailsRepository(DatabaseApiContext ctc)
+    public UserDetailsRepository(DatabaseApiContext ctx, ILogger logger)
     {
-        this.ctx = ctc;
+        this.ctx = ctx;
+        this.logger = logger;
     }
 
     public async Task<bool> AddAsync(UserDetails userDetails)
@@ -23,6 +27,7 @@ public class UserDetailsRepository : IUserDetailsRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return false;
         }
     }

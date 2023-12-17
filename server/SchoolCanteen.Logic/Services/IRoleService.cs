@@ -6,8 +6,8 @@ namespace SchoolCanteen.Logic.Services;
 public interface IRoleService
 {
     Task<Role> CreateAsync(Role role);
-    Task<Role> GetByNameAsync(string roleName);
+    Task<Role> GetByNameAsync(string roleName, Guid companyId);
     Task<bool> UpdateAsync(Role role);
-    Task DeleteAsync(Guid roleId);
-    Task<IEnumerable<Role>> GetAllAsync();
+    Task<bool> DeleteAsync(Guid roleId);
+    Task<IEnumerable<Role>> GetAllAsync(Guid companyId);
 }

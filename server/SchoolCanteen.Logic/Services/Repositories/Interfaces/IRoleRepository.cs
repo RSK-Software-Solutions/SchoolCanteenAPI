@@ -1,7 +1,6 @@
-﻿
-using SchoolCanteen.DATA.Models;
+﻿using SchoolCanteen.DATA.Models;
 
-namespace SchoolCanteen.Logic.Services.Repositories;
+namespace SchoolCanteen.Logic.Services.Repositories.Interfaces;
 
 public interface IRoleRepository
 {

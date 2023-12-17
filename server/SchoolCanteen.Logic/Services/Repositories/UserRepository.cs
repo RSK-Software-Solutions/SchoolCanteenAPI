@@ -1,18 +1,21 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using SchoolCanteen.Logic.Services.Repositories.Interfaces;
 
 namespace SchoolCanteen.Logic.Services.Repositories;
 
 public class UserRepository : IUserRepository
 {
     private readonly DatabaseApiContext ctx;
+    private readonly ILogger logger;
 
-    public UserRepository(DatabaseApiContext ctc)
+    public UserRepository(DatabaseApiContext ctc, ILogger logger)
     {
         this.ctx = ctc;
+        this.logger = logger;
     }
 
     public async Task<IEnumerable<User>> GetAllAsync()
@@ -23,6 +26,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return new List<User>();
         }
     }
@@ -37,6 +41,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return false;
         }
     }
@@ -69,6 +74,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return false;
         }
     }
