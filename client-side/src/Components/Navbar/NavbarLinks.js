@@ -3,7 +3,7 @@
             path: "/panel-admina", element: "Panel admina",
         },
         {
-            path: "/powiadomienia", element: "powiadomienia",
+            path: "/powiadomienia", element: "Powiadomienia",
         },
         {
             path: "/jadlospis", element: "Menu",
