@@ -14,11 +14,14 @@ public class UserDetailsService : IUserDetailsService
     private readonly IUserDetailsRepository _userDetailsRepository;
     private readonly IMapper _mapper;
     private readonly ILogger logger;
-    public UserDetailsService(DatabaseApiContext databaseApiContext, IMapper mapper, ILogger<UserDetailsService> logger)
+    public UserDetailsService(DatabaseApiContext databaseApiContext,
+        IUserDetailsRepository userDetailsRepository,
+        IMapper mapper, 
+        ILogger<UserDetailsService> logger)
     {
         _mapper = mapper;
         this.logger = logger;
-        _userDetailsRepository = new UserDetailsRepository(databaseApiContext, logger);
+        _userDetailsRepository = userDetailsRepository;
     }
     public async Task<UserDetails> CreateAsync(UserDetails userDetails)
     {

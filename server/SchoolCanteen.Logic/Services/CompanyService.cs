@@ -23,16 +23,15 @@ public class CompanyService : ICompanyService
     public CompanyService(DatabaseApiContext databaseApiContext, 
         IUserService userService, 
         IRoleService roleService,
-        
+        ICompanyRepository companyRepository,
         IMapper mapper, 
         ILogger<CompanyService> logger)
     {
         _mapper = mapper;
         _logger = logger;
-        _companyRepository = new CompanyRepository(databaseApiContext, logger);
+        _companyRepository = companyRepository;
         _userService = userService;
         _roleService = roleService;
-        
     }
 
     public async Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO companyDto)

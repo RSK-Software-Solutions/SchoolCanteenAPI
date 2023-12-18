@@ -19,8 +19,11 @@ public class UserService : IUserService
     private readonly IUserDetailsService _userDetailsService;
     private readonly IUserRepository _userRepository;
 
-    public UserService(DatabaseApiContext databaseApiContext, IMapper mapper, ILogger<UserService> logger,
-        IUserDetailsService userDetailsService, IUserRepository userRepository)
+    public UserService(DatabaseApiContext databaseApiContext, 
+        IMapper mapper, 
+        ILogger<UserService> logger,
+        IUserDetailsService userDetailsService, 
+        IUserRepository userRepository)
     {
         this.logger = logger;
         _mapper = mapper;

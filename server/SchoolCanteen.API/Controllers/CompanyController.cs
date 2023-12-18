@@ -12,16 +12,13 @@ namespace SchoolCanteen.API.Controllers;
 public class CompanyController : ControllerBase
 {
     private readonly ILogger<CompanyController> logger;
-    private readonly ICompanyService _companyService;
+    private readonly ICompanyService companyService;
 
-    private readonly IMapper _mapper;
-
-    public CompanyController(ICompanyService companyService, IMapper mapper, ILogger<CompanyController> logger)
+    public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
     {
         this.logger = logger;
-        _companyService = companyService;
+        this.companyService = companyService;
 
-        _mapper = mapper;
     }
 
     // GET: api/<CompanyController>
@@ -30,7 +27,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var companies = await _companyService.GetAllAsync();
+            var companies = await companyService.GetAllAsync();
             if (companies.Count() == 0) return NotFound($"No companies found.");
 
             return Ok(companies);
@@ -48,7 +45,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var company = await _companyService.GetCompanyByNameAsync(name);
+            var company = await companyService.GetCompanyByNameAsync(name);
             if (company == null) return NotFound();
 
             return Ok(company);
@@ -65,7 +62,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var company = await _companyService.CreateCompanyAsync(createCompany);
+            var company = await companyService.CreateCompanyAsync(createCompany);
 
             return Ok (company); 
         }
@@ -82,10 +79,10 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var existingCompany = await _companyService.GetCompanyByNameAsync(editCompany.Name);
+            var existingCompany = await companyService.GetCompanyByNameAsync(editCompany.Name);
             if (existingCompany == null) return NotFound();
 
-            return Ok(await _companyService.UpdateCompanyAsync(editCompany));
+            return Ok(await companyService.UpdateCompanyAsync(editCompany));
         }
         catch (Exception ex)
         {
@@ -99,7 +96,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            return Ok (await _companyService.RemoveCompanyAsync(id));
+            return Ok (await companyService.RemoveCompanyAsync(id));
         }
         catch (Exception ex)
         {

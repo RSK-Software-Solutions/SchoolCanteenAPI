@@ -16,9 +16,12 @@ public class RoleService : IRoleService
     private readonly IMapper _mapper;
     private readonly ILogger logger;
 
-    public RoleService(DatabaseApiContext databaseApiContext, IMapper mapper, ILogger<RoleService> logger)
+    public RoleService(DatabaseApiContext databaseApiContext,
+        IRoleRepository roleRepository, 
+        IMapper mapper, 
+        ILogger<RoleService> logger)
     {
-        _roleRepository = new RoleRepository(databaseApiContext, logger);
+        _roleRepository = roleRepository;
         _mapper = mapper;
         this.logger = logger;
     }

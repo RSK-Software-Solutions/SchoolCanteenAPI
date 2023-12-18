@@ -31,10 +31,13 @@ public class Startup
         services.AddDbContext<DatabaseApiContext>(options => options.UseMySql(connectionString, serverVersion));
 
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IRoleRepository,  RoleRepository>();
         services.AddScoped<IUserDetailsService, UserDetailsService>();
+        services.AddScoped<IUserDetailsRepository, UserDetailsRepository>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

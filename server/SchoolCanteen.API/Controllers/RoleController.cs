@@ -58,7 +58,7 @@ public class RoleController : ControllerBase
         {
             var role = await roleService.CreateAsync( new Role { RoleName = roleName, CompanyId = companyId });
 
-            return CreatedAtAction("CreateAsync", role);
+            return Ok(role);
         }
         catch (Exception ex)
         {
