@@ -1,48 +1,65 @@
-﻿using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.Factories.CompanyFactory;
+﻿using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using System.Reflection;
-using SchoolCanteen.Logic.Services.Repositories;
-using SchoolCanteen.DATA.DatabaseConnector;
-using Microsoft.Extensions.DependencyInjection;
+using SchoolCanteen.DATA.Repositories.Interfaces;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+using SchoolCanteen.Logic.DTOs.UserDTOs;
+using SchoolCanteen.Logic.Services.Interfaces;
+using AutoMapper;
+using System.Data;
+using Microsoft.Extensions.Logging;
 
 namespace SchoolCanteen.Logic.Services;
 
 public class CompanyService : ICompanyService
 {
-    private ICompanyDTOFactory<CreateCompanyDTO> _createCompany;
-    private ICompanyDTOFactory<SimpleCompanyDTO> _simpleCompany;
-    private ICompanyDTOFactory<EditCompanyDTO> _editCompany;
-    private ICompanyRepository _companyRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger _logger;
+    private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
+    private readonly IUserDetailsService _userDetailsService;
+    private readonly ICompanyRepository _companyRepository;
 
-    public CompanyService(DatabaseApiContext databaseApiContext )
+    public CompanyService(DatabaseApiContext databaseApiContext, 
+        IUserService userService, 
+        IRoleService roleService,
+        IUserDetailsService userDetailsService,
+        IMapper mapper, 
+        ILogger<CompanyService> logger)
     {
-        _createCompany = new CreateCompanyDTOFactory();
-        _simpleCompany = new SimpleCompanyDTOFactory();
-        _editCompany = new EditCompanyDTOFactory();
-
-        _companyRepository = new CompanyRepository(databaseApiContext);
+        _mapper = mapper;
+        _logger = logger;
+        _companyRepository = new CompanyRepository(databaseApiContext, logger);
+        _userService = userService;
+        _roleService = roleService;
+        _userDetailsService = userDetailsService;
     }
 
-    public async Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO companyDTO)
+    public async Task<SimpleCompanyDTO> CreateCompanyAsync(CreateCompanyDTO companyDto)
     {
-        var company = _createCompany.ConvertFromDTO(companyDTO);
+        var existCompany = await _companyRepository.GetByNameAsync(companyDto.Name);
+        if (existCompany != null) 
+        {
+            _logger.LogInformation($"Company {companyDto.Name} already exists.");
+            return _mapper.Map<SimpleCompanyDTO>(existCompany);
+        }
+
+        var company = _mapper.Map<Company>(companyDto);
         await _companyRepository.AddAsync(company);
 
-        return _simpleCompany.ConvertFromModel(company);
+        var role = await CreateAdminRoleForComapany(company);
+        var userDetails = await CreateEmptyUserDetailsRecord();
+        var userAdmin = await CreateAdminUserForCompany(companyDto, company, role, userDetails);
+
+
+        return _mapper.Map<SimpleCompanyDTO>(company);
     }
     
     public async Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync()
     {
-        var result = new List<SimpleCompanyDTO>();
-        var companies = await _companyRepository.GetAllAsync();
+        List<Company> companies = (await _companyRepository.GetAllAsync()).ToList();
 
-        foreach (var company in companies)
-        {
-            result.Add(_simpleCompany.ConvertFromModel(company));
-        }
-
-        return result;
+        return companies.Select(company => _mapper.Map<SimpleCompanyDTO>(company));
     }
 
     public async Task<SimpleCompanyDTO> GetCompanyByNameAsync(string companyName)
@@ -50,15 +67,15 @@ public class CompanyService : ICompanyService
         var company = await _companyRepository.GetByNameAsync(companyName);
         if (company == null) return null;
 
-        return _simpleCompany.ConvertFromModel(company);
+        return _mapper.Map<SimpleCompanyDTO>(company);
     }
 
-    public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDTO)
+    public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDto)
     {
-        var existingCompany = await _companyRepository.GetByIdAsync(companyDTO.CompanyId);
+        var existingCompany = await _companyRepository.GetByIdAsync(companyDto.CompanyId);
         if (existingCompany == null) return false;
 
-        UpdateProperties<Company>(_editCompany.ConvertFromDTO(companyDTO), existingCompany);
+        _mapper.Map(companyDto, existingCompany);
 
         return await _companyRepository.UpdateAsync(existingCompany);
     }
@@ -72,15 +89,37 @@ public class CompanyService : ICompanyService
         return true;
     }
 
-    private void UpdateProperties<T>(T source, T destination)
+    private async Task<Role> CreateAdminRoleForComapany(Company company)
     {
-        PropertyInfo[] properties = typeof(T).GetProperties();
-        foreach (PropertyInfo property in properties)
+        var role = await _roleService.CreateAsync(new Role { RoleName = "admin", CompanyId = company.CompanyId });
+        return role;
+    }
+
+    private async Task<UserDetails> CreateEmptyUserDetailsRecord()
+    {
+        var userDetails = await _userDetailsService.CreateAsync(new UserDetails { UserId = Guid.NewGuid() });
+        return userDetails;
+    }
+
+    private async Task<bool> CreateAdminUserForCompany(CreateCompanyDTO companyDto, Company company, Role role, UserDetails userDetails)
+    {
+        try
         {
-            if (property.CanWrite)
+            await _userService.CreateAsync(new CreateUserDTO
             {
-                property.SetValue(destination, property.GetValue(source), null);
-            }
+                UserId = userDetails.UserId,
+                CompanyId = company.CompanyId,
+                RoleId = role.RoleId,
+                UserDetailsId = userDetails.UserDetailsId,
+                Login = companyDto.Login,
+                Password = companyDto.Password
+            });
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message); return false;
         }
     }
 }
