@@ -8,51 +8,68 @@ public static class ModelBuilderExtentions
 {
     public static void ConfigureCompany(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Company>().HasKey(c => c.CompanyId);
+        modelBuilder.Entity<Company>()
+            .HasKey(c => c.CompanyId);
 
         modelBuilder.Entity<Company>()
-            .HasMany(e => e.Users)
-            .WithOne(e => e.Company)
-            .HasForeignKey(e => e.CompanyId)
+            .HasMany(c => c.Users)
+            .WithOne(u => u.Company)
+            .HasForeignKey(u => u.CompanyId)
             .IsRequired();
+
+        modelBuilder.Entity<Company>()
+            .HasMany(c => c.Roles)
+            .WithOne(r => r.Company)
+            .HasForeignKey(r => r.CompanyId);
     }
 
     public static void ConfigureUser(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasKey(c => c.UserId);
 
-        modelBuilder.Entity<UserDetails>()
-            .HasOne(e => e.User)
-            .WithOne(e => e.UserDetails)
-            .HasForeignKey<User>(e => e.UserDetailsId)
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.UserDetails)
+            .WithOne(d => d.User)
+            .HasForeignKey<UserDetails>(d => d.UserId)
             .IsRequired();
 
-        modelBuilder.Entity<User>()
-            .HasMany(e => e.Roles)
-            .WithMany(e => e.Users)
-            .UsingEntity<UserRole>(
-                l => l.HasOne<Role>(e => e.Role)
-                .WithMany(e => e.UserRoles)
-                .HasForeignKey(e => e.RoleForeignId),
+        //modelBuilder.Entity<User>()
+        //    .HasMany(u => u.Roles)
+        //    .WithMany(r => r.Users)
+        //    .UsingEntity(ur => ur.ToTable("UsersToRoles"));
 
-                r => r.HasOne<User>(e => e.User)
-                .WithMany(e => e.UserRoles)
-                .HasForeignKey(e => e.UserForeignId)
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Roles)
+            .WithMany(r => r.Users)
+            .UsingEntity<UserRole>(
+                u => u.HasOne(ur => ur.Role)
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleForeignId),
+
+                r => r.HasOne(ur => ur.User)
+                .WithMany()
+                .HasForeignKey(ur => ur.UserForeignId),
+
+                ur => ur.HasKey(x => new { x.RoleForeignId, x.UserForeignId })
+
                 );
     }
 
     public static void ConfigureRole(this ModelBuilder modelBuilder) 
     {
-        modelBuilder.Entity<Role>().HasKey(c => c.RoleId);
-        //modelBuilder.Entity<Role>().HasData(
-        //    new Role { RoleId=Guid.NewGuid(), RoleName = "admin"},
-        //    new Role { RoleId=Guid.NewGuid(), RoleName = "logistyk"},
-        //    new Role { RoleId = Guid.NewGuid(), RoleName = "kucharz" }
-        //    );
+        modelBuilder.Entity<Role>()
+            .HasKey(c => c.RoleId);
     }
 
     public static void ConfigureUserDetails(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserDetails>().HasKey(c => c.UserDetailsId);
+        modelBuilder.Entity<UserDetails>()
+            .HasKey(c => c.UserDetailsId);
     }
+
+    //public static void ConfigureUserRole(this ModelBuilder modelBuilder)
+    //{
+    //    modelBuilder.Entity<UserRole>()
+    //        .HasKey(key => new { key.UserForeignId, key.RoleForeignId });
+    //}
 }

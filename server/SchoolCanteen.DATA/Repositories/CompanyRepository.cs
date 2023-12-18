@@ -46,7 +46,6 @@ public class CompanyRepository : ICompanyRepository
             return false;
         }
     }
-
     public async Task<bool> DeleteAsync(Company company)
     {
         try 
@@ -62,7 +61,6 @@ public class CompanyRepository : ICompanyRepository
         }
 
     }
-
     public async Task<Company> GetByNameAsync(string companyName)
     {
         try
@@ -77,7 +75,6 @@ public class CompanyRepository : ICompanyRepository
         }
 
     }
-
     public async Task<Company> GetByIdAsync(Guid id)
     {
         try
@@ -91,7 +88,6 @@ public class CompanyRepository : ICompanyRepository
             return default;
         }
     }
-
     public async Task<bool> UpdateAsync(Company company)
     {
         try

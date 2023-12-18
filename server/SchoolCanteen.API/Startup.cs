@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolCanteen.DATA.DatabaseConnector;
+using SchoolCanteen.DATA.Repositories;
+using SchoolCanteen.DATA.Repositories.Interfaces;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.Interfaces;
@@ -30,6 +32,7 @@ public class Startup
 
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserDetailsService, UserDetailsService>();
     }

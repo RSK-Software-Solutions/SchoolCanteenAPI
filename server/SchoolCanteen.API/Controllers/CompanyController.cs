@@ -32,7 +32,7 @@ public class CompanyController : ControllerBase
             var companies = await _companyService.GetAllAsync();
             if (companies.Count() == 0) return NotFound($"No companies found.");
 
-            return Ok(await _companyService.GetAllAsync());
+            return Ok(companies);
         }
         catch (Exception ex)
         {

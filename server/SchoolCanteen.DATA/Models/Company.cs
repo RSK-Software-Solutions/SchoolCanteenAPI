@@ -25,4 +25,6 @@ public class Company
     public string? Email { get; set; }
     [AllowNull]
     public List<User> Users { get; } = new List<User> ();
+    [AllowNull]
+    public List<Role> Roles { get; set; } = new List<Role>();
 }

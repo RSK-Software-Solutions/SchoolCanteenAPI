@@ -1,4 +1,6 @@
-﻿namespace SchoolCanteen.Logic.DTOs.CompanyDTOs;
+﻿using SchoolCanteen.DATA.Models;
+
+namespace SchoolCanteen.Logic.DTOs.CompanyDTOs;
 
 public class SimpleCompanyDTO
 {
