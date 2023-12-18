@@ -53,7 +53,7 @@ public class CompanyController : ControllerBase
 
             return Ok(company);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             logger.LogError(ex.Message, ex);
             return BadRequest($"Could not find {name}");
@@ -69,7 +69,7 @@ public class CompanyController : ControllerBase
 
             return Ok (company); 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             logger.LogError(ex.Message, ex);
             return BadRequest($"Could not create {createCompany.Name}");
