@@ -8,26 +8,34 @@ using SchoolCanteen.Logic.Services.Interfaces;
 using SchoolCanteen.DATA.Repositories;
 using SchoolCanteen.DATA.Repositories.Interfaces;
 using System.Data;
+using SchoolCanteen.Logic.DTOs.RoleDTOs;
 
 namespace SchoolCanteen.Logic.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-    private readonly ILogger logger;
+    private readonly ILogger<UserService> logger;
+    private readonly IUserDetailsService _userDetailsService;
+    private readonly IUserRepository _userRepository;
 
-    public UserService(DatabaseApiContext databaseApiContext, IMapper mapper, ILogger<UserService> logger)
+    public UserService(DatabaseApiContext databaseApiContext, IMapper mapper, ILogger<UserService> logger,
+        IUserDetailsService userDetailsService, IUserRepository userRepository)
     {
         this.logger = logger;
-        _userRepository = new UserRepository(databaseApiContext, logger);
         _mapper = mapper;
+        _userRepository = userRepository;
+        _userDetailsService = userDetailsService;
     }
 
     public async Task<SimpleUserDTO> CreateAsync(CreateUserDTO userDto)
     {
         var user = _mapper.Map<User>(userDto);
+        user.Roles.Add(userDto.Role);
+
         await _userRepository.AddAsync(user);
+
+        var userDetails = await CreateEmptyUserDetailsRecord(user);
 
         return _mapper.Map<SimpleUserDTO>(user);
     }
@@ -36,7 +44,25 @@ public class UserService : IUserService
     {
         var users = await _userRepository.GetAllAsync(companyId);
 
-        return users.Select(user => _mapper.Map<SimpleUserDTO>(user));
+        //return users.Select(user => _mapper.Map<SimpleUserDTO>(user.Roles.Select(role => _mapper.Map<SimpleRoleDTO>(role))));
+        return users.Select(user => 
+        {
+            var simpleRoleDtos = new List<SimpleRoleDTO>();
+
+            foreach (var role in user.Roles)
+            {
+                simpleRoleDtos.Add(_mapper.Map<SimpleRoleDTO>(role));
+            }
+
+            return new SimpleUserDTO
+            {
+                UserId = user.UserId,
+                Login = user.Login,
+                FirstName = user.FirstName ?? string.Empty,
+                LastName = user.LastName ?? string.Empty,
+                Roles = simpleRoleDtos
+            };
+        });
     }
 
     public async Task<SimpleUserDTO> GetByNameAsync(string userLogin, Guid companyId)
@@ -64,5 +90,11 @@ public class UserService : IUserService
         _mapper.Map(userDto, existingUser);
 
         return await _userRepository.UpdateAsync(existingUser);
+    }
+
+    private async Task<UserDetails> CreateEmptyUserDetailsRecord(User user)
+    {
+        var userDetails = await _userDetailsService.CreateAsync(new UserDetails { User = user });
+        return userDetails;
     }
 }

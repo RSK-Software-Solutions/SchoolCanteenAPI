@@ -10,9 +10,9 @@ namespace SchoolCanteen.DATA.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly DatabaseApiContext ctx;
-    private readonly ILogger logger;
+    private readonly ILogger<UserRepository> logger;
 
-    public UserRepository(DatabaseApiContext ctc, ILogger logger)
+    public UserRepository(DatabaseApiContext ctc, ILogger<UserRepository> logger)
     {
         this.ctx = ctc;
         this.logger = logger;
@@ -23,6 +23,7 @@ public class UserRepository : IUserRepository
         try
         {
             return await ctx.Users
+                .Include(x => x.Roles)
                 .Where(e => e.CompanyId == companyId)
                 .OrderBy(e => e.Login)
                 .ToListAsync();
@@ -65,12 +66,18 @@ public class UserRepository : IUserRepository
 
     public async Task<User> GetByIdAsync(Guid id)
     {
-        return await ctx.Users.FirstOrDefaultAsync(e => e.UserId == id);
+        return await ctx.Users
+            .Include(d => d.UserDetails)
+            .Include(d => d.Company)
+            .FirstOrDefaultAsync(e => e.UserId == id);
     }
 
     public async Task<User> GetByNameAsync(string userLogin, Guid companyId)
     {
-        return await ctx.Users.FirstOrDefaultAsync(e => e.Login == userLogin && e.CompanyId == companyId);
+        return await ctx.Users
+            .Include(d => d.UserDetails)
+            .Include(d => d.Company)
+            .FirstOrDefaultAsync(e => e.Login == userLogin && e.CompanyId == companyId);
     }
 
     public async Task<bool> UpdateAsync(User user)

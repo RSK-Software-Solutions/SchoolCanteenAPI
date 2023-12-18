@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services;
@@ -21,7 +22,7 @@ namespace SchoolCanteen.API.Controllers
 
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllAsync([FromQuery] Guid companyId)
+        public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllAsync([FromQuery] Guid companyId)
         {
             try
             {
@@ -61,7 +62,7 @@ namespace SchoolCanteen.API.Controllers
             {
                 var user = await userService.CreateAsync(newUser);
 
-                return CreatedAtAction("CreateAsync", user);
+                return Ok( user);
             }
             catch (Exception ex)
             {
