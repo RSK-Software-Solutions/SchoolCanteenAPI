@@ -1,17 +1,16 @@
-import React from "react";
-import {Route, Routes} from "react-router-dom";
+import React, {useContext} from "react";
+import {Navigate, Route, Routes} from "react-router-dom";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Navbar from "./Components/Navbar/Navbar";
 import Sidebar from "./Components/Sidebar/Sidebar";
-import Dashboard from "./Pages/Dashboard";
-import AdminPanel from "./Pages/AdminPanel";
-import Notifications from "./Pages/Notifications";
-import Menu from "./Pages/Menu";
-import Raports from "./Pages/Raports";
-import UserSettings from "./Pages/UserSettings";
+import ProtectedRoutes from "./Pages/ProtectedRoutes/ProtectedRoutes";
+import {AuthContext} from "./Context/AuthContext";
 
 function App() {
+    const getSession = useContext(AuthContext)
+    const isLoggedin = getSession.token
+
 
     return (
         <div>
@@ -24,14 +23,8 @@ function App() {
                 <div className='flex flex-col'>
                     <Sidebar/>
                 </div>
-                <Routes>
-                    <Route path={"/dashboard"} element={<Dashboard/>}/>
-                    <Route path={"/panel-admina"} element={<AdminPanel/>}/>
-                    <Route path={"/powiadomienia"} element={<Notifications/>}/>
-                    <Route path={"/jadlospis"} element={<Menu/>}/>
-                    <Route path={"/raporty"} element={<Raports/>}/>
-                    <Route path={"/ustawienia"} element={<UserSettings/>}/>
-                </Routes>
+                {(isLoggedin) ? <ProtectedRoutes/> : <Navigate
+                    to={'/login'}/>} {/*this is protected route is user don't have token than redirect to log in*/}
             </div>
         </div>
     );

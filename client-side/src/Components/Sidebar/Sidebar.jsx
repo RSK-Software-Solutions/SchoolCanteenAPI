@@ -35,13 +35,13 @@ const Sidebar = () => {
                         className='flex flex-col w-[200px] border-r justify-center '>
                         <nav className='w-full flex justify-center flex-col gap-y-5'>
                             {sidebarLinks.map(sidebarContent => (
-                                <Link className='flex hover:bg-gray-300 hover:underline pl-5 py-2 text-lg'
+                                <Link key={sidebarContent.main} className='flex hover:bg-gray-300 hover:underline pl-5 py-2 text-lg'
                                       to={sidebarContent.link}>{sidebarContent.main}</Link>
 
                             ))}
                             {navLinks.map(navOnMobile =>
                                 (
-                                    <Link to={navOnMobile.path} className='flex hover:bg-gray-300 hover:underline pl-5 py-2 text-lg max-2xl:hidden max-sm:block'>
+                                    <Link key={navOnMobile.element} to={navOnMobile.path} className='flex hover:bg-gray-300  hover:underline pl-5 py-2 text-lg max-2xl:hidden max-sm:block'>
                                         {navOnMobile.element}
                                     </Link>
                                 ))}
