@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolCanteen.DATA.DatabaseConnector;
@@ -11,9 +12,11 @@ using SchoolCanteen.DATA.DatabaseConnector;
 namespace SchoolCanteen.DATA.Migrations
 {
     [DbContext(typeof(DatabaseApiContext))]
-    partial class DatabaseApiContextModelSnapshot : ModelSnapshot
+    [Migration("20231213132904_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,18 +67,13 @@ namespace SchoolCanteen.DATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("RoleId");
 
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.User", b =>
@@ -88,10 +86,8 @@ namespace SchoolCanteen.DATA.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Login")
                         .IsRequired()
@@ -101,9 +97,18 @@ namespace SchoolCanteen.DATA.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserDetailsId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("UserId");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserDetailsId")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -137,10 +142,7 @@ namespace SchoolCanteen.DATA.Migrations
 
                     b.HasKey("UserDetailsId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UsersDetails");
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.UserRole", b =>
@@ -151,32 +153,11 @@ namespace SchoolCanteen.DATA.Migrations
                     b.Property<Guid>("UserForeignId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("RoleId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("char(36)");
-
                     b.HasKey("RoleForeignId", "UserForeignId");
-
-                    b.HasIndex("RoleId");
 
                     b.HasIndex("UserForeignId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UsersRoles");
-                });
-
-            modelBuilder.Entity("SchoolCanteen.DATA.Models.Role", b =>
-                {
-                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
-                        .WithMany("Roles")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.User", b =>
@@ -187,41 +168,30 @@ namespace SchoolCanteen.DATA.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("SchoolCanteen.DATA.Models.UserDetails", b =>
-                {
-                    b.HasOne("SchoolCanteen.DATA.Models.User", "User")
-                        .WithOne("UserDetails")
-                        .HasForeignKey("SchoolCanteen.DATA.Models.UserDetails", "UserId")
+                    b.HasOne("SchoolCanteen.DATA.Models.UserDetails", "UserDetails")
+                        .WithOne("User")
+                        .HasForeignKey("SchoolCanteen.DATA.Models.User", "UserDetailsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Company");
+
+                    b.Navigation("UserDetails");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.UserRole", b =>
                 {
                     b.HasOne("SchoolCanteen.DATA.Models.Role", "Role")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("RoleForeignId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolCanteen.DATA.Models.Role", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId");
-
                     b.HasOne("SchoolCanteen.DATA.Models.User", "User")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserForeignId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("SchoolCanteen.DATA.Models.User", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Role");
 
@@ -230,8 +200,6 @@ namespace SchoolCanteen.DATA.Migrations
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.Company", b =>
                 {
-                    b.Navigation("Roles");
-
                     b.Navigation("Users");
                 });
 
@@ -242,9 +210,13 @@ namespace SchoolCanteen.DATA.Migrations
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.User", b =>
                 {
-                    b.Navigation("UserDetails");
-
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.UserDetails", b =>
+                {
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

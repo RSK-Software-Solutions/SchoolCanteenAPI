@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+
 using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.Interfaces;
 
@@ -52,7 +53,7 @@ public class CompanyController : ControllerBase
 
             return Ok(company);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogError(ex.Message, ex);
             return BadRequest($"Could not find {name}");
@@ -68,12 +69,13 @@ public class CompanyController : ControllerBase
 
             return Ok (company); 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             logger.LogError(ex.Message, ex);
             return BadRequest($"Could not create {createCompany.Name}");
         }
     }
+
 
     [HttpPut]
     public async Task<ActionResult<bool>> EditCompanyAsync([FromBody] EditCompanyDTO editCompany)

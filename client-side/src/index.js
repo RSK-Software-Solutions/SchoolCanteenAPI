@@ -1,31 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Register from './Pages/Register';
-import Login from './Pages/Login';
-import {
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
+import {AuthContextProvider} from "./Context/AuthContext";
+import App from "./App";
 
-const router = createBrowserRouter([
-    {
-        path: "/register",
-        element: <Register/>,
-    },
-    {
-        path: "/login",
-        element: <Login/>,
-    }
-]);
+//todo: authProvider, auth-context ???? refactor code login register to useReducer
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <font className="font-class">
-            <RouterProvider
-                router={router}
-            />
-        </font>
+        <BrowserRouter>
+            <AuthContextProvider>
+                <App/>
+            </AuthContextProvider>
+        </BrowserRouter>
     </React.StrictMode>
 );
 
