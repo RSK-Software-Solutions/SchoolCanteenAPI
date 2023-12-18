@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.Logic.DTOs.Company;
-using SchoolCanteen.Logic.DTOs.User;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+
 using SchoolCanteen.Logic.Services;
+using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -9,11 +11,17 @@ namespace SchoolCanteen.API.Controllers;
 [ApiController]
 public class CompanyController : ControllerBase
 {
+    private readonly ILogger<CompanyController> logger;
     private readonly ICompanyService _companyService;
 
-    public CompanyController(ICompanyService companyService)
+    private readonly IMapper _mapper;
+
+    public CompanyController(ICompanyService companyService, IMapper mapper, ILogger<CompanyController> logger)
     {
+        this.logger = logger;
         _companyService = companyService;
+
+        _mapper = mapper;
     }
 
     // GET: api/<CompanyController>
@@ -22,10 +30,14 @@ public class CompanyController : ControllerBase
     {
         try
         {
+            var companies = await _companyService.GetAllAsync();
+            if (companies.Count() == 0) return NotFound($"No companies found.");
+
             return Ok(await _companyService.GetAllAsync());
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return BadRequest(ex.Message);
         }
     }
@@ -43,6 +55,7 @@ public class CompanyController : ControllerBase
         }
         catch (Exception)
         {
+            logger.LogError(ex.Message, ex);
             return BadRequest($"Could not find {name}");
         }
     }
@@ -52,11 +65,13 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var company = await _companyService.CreateCompanyAsync(new CreateCompanyDTO { Name = createCompany.Name });
-            return Ok (); 
+            var company = await _companyService.CreateCompanyAsync(createCompany);
+
+            return Ok (company); 
         }
         catch (Exception)
         {
+            logger.LogError(ex.Message, ex);
             return BadRequest($"Could not create {createCompany.Name}");
         }
     }
@@ -67,10 +82,14 @@ public class CompanyController : ControllerBase
     {
         try
         {
+            var existingCompany = await _companyService.GetCompanyByNameAsync(editCompany.Name);
+            if (existingCompany == null) return NotFound();
+
             return Ok(await _companyService.UpdateCompanyAsync(editCompany));
         }
         catch (Exception ex)
-        { 
+        {
+            logger.LogError(ex.Message, ex);
             return BadRequest(ex.Message);
         }
     }
@@ -84,8 +103,8 @@ public class CompanyController : ControllerBase
         }
         catch (Exception ex)
         {
+            logger.LogError(ex.Message, ex);
             return BadRequest(ex.Message);
         }
     } 
-    
 }

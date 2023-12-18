@@ -1,48 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using SchoolCanteen.DATA.DatabaseConnector;
-using SchoolCanteen.Logic.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace SchoolCanteen.API;
 
-// Add services to the container.
-builder.Services.AddControllers();
-
-// Enable CORS
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddDefaultPolicy(corsPolicyBuilder => corsPolicyBuilder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
-});
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
-var connectionString = builder.Configuration["ConnectionString"];
-
-builder.Services.AddDbContext<DatabaseApiContext>(options => options
-.UseNpgsql(connectionString));
-
-builder.Services.AddScoped<ICompanyService, CompanyService>();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+            //.UseUrls("http://localhost:5000");
+        });
 }
-
-app.UseHttpsRedirection();
-
-// Use CORS before other middleware
-app.UseCors();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

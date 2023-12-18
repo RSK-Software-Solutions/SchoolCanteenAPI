@@ -1,7 +1,7 @@
 ﻿
 using SchoolCanteen.DATA.Models;
 
-namespace SchoolCanteen.Logic.DTOs.User;
+namespace SchoolCanteen.Logic.DTOs.UserDTOs;
 
 public class EditUserDTO
 {

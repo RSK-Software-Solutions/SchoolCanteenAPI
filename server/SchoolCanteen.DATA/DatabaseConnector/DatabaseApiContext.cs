@@ -9,7 +9,8 @@ public class DatabaseApiContext : DbContext
 {
     public DbSet<Company> Companies { get; set; }
     public DbSet<User> Users { get; set; }
-
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<UserDetails> UsersDetails { get; set; }
 
     public DatabaseApiContext(DbContextOptions<DatabaseApiContext> options) : base(options)
     {
@@ -22,6 +23,11 @@ public class DatabaseApiContext : DbContext
         modelBuilder.Entity<Company>().HasKey(c => c.CompanyId);
         modelBuilder.Entity<User>().HasKey(c => c.UserId);
         modelBuilder.Entity<Role>().HasKey(c => c.RoleId);
+        //modelBuilder.Entity<Role>().HasData(
+        //    new Role { RoleId=Guid.NewGuid(), RoleName = "admin"},
+        //    new Role { RoleId=Guid.NewGuid(), RoleName = "logistyk"},
+        //    new Role { RoleId = Guid.NewGuid(), RoleName = "kucharz" }
+        //    );
         modelBuilder.Entity<UserDetails>().HasKey(c => c.UserDetailsId);
 
         modelBuilder.Entity<Company>()
