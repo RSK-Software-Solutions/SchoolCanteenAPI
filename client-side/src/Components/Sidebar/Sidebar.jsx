@@ -1,33 +1,57 @@
-import React, {useRef, useState} from 'react';
-import {motion} from "framer-motion";
-import {AlignJustify} from "lucide-react";
-const Sidebar = () => {
-    const menuRef = useRef(null);
-    const [isOpen, setIsOpen] = useState(false)
+import React, {useState} from 'react';
+import {AnimatePresence, motion} from "framer-motion";
+import {PanelLeftClose, PanelRightClose} from "lucide-react";
+import sidebarLinks from "./SidebarLinks";
+import {Link} from 'react-router-dom'
+import {navLinks} from "../Navbar/NavbarLinks";
 
+const Sidebar = () => {
+    const [isOpen, setIsOpen] = useState(false)
     const handleMenuToggle = () => {
         setIsOpen((prevState) => !prevState);
     };
 
     return (
-        <div>
-            <span className='max-sm:block max-2xl:hidden'>
-                <AlignJustify onClick={handleMenuToggle} className='flex justify-end'/>
-            </span>
+        <AnimatePresence>
+            <motion.div
+                animate={{
+                    transform: [{translateX: isOpen ? '100%' : '0%'}],
+                    transition: {type: "just", ease: 'easeInOut'},
+                }}
+            >
+                <div className='flex justify-end ' onClick={handleMenuToggle}>
+                    {isOpen ? <PanelLeftClose/> : <PanelRightClose/>}
+                </div>
+            </motion.div>
             {isOpen && ((
                 <motion.section
-                    ref={menuRef}
-                    className="menu"
-                    initial={{ opacity: 0, x: '-100%' }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
+                    key={Math.random()}
+                    initial={{x: '-100%'}}
+                    exit={{x: "-100%"}}
+                    animate={{x: 0}}
+                    transition={{type: "just", ease: "easeInOut"}}
                 >
-                    <div className='flex flex-col h-screen w-[150px] border'>
-                        Menu
-                    </div>
+                    <section
+                        className='flex flex-col w-[200px] border-r justify-center '>
+                        <nav className='w-full flex justify-center flex-col gap-y-5'>
+                            {sidebarLinks.map(sidebarContent => (
+                                <Link key={sidebarContent.main} className='flex hover:bg-gray-300 hover:underline pl-5 py-2 text-lg'
+                                      to={sidebarContent.link}>{sidebarContent.main}</Link>
+
+                            ))}
+                            {navLinks.map(navOnMobile =>
+                                (
+                                    <Link key={navOnMobile.element} to={navOnMobile.path} className='flex hover:bg-gray-300  hover:underline pl-5 py-2 text-lg max-2xl:hidden max-sm:block'>
+                                        {navOnMobile.element}
+                                    </Link>
+                                ))}
+                            <nav>
+                            </nav>
+                        </nav>
+                    </section>
                 </motion.section>
             ))}
-        </div>
+        </AnimatePresence>
     )
 }
 
