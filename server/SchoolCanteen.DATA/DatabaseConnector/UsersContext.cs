@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace SchoolCanteen.DATA.DatabaseConnector;
 
-public class UsersContext : IdentityUserContext<IdentityUser>
+public class UsersContext : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
     public UsersContext(DbContextOptions<UsersContext> options) : base(options) { }
 

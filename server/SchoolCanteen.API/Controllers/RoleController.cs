@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.Logic.Services.Roles;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -11,11 +14,13 @@ public class RoleController : ControllerBase
 {
     private readonly ILogger<RoleController> logger;
     private readonly IRoleService roleService;
+    private readonly IRolesService rolesService;
 
-    public RoleController(ILogger<RoleController> logger, IRoleService roleService )
+    public RoleController(ILogger<RoleController> logger, IRoleService roleService, IRolesService rolesService )
     {
         this.logger = logger;
         this.roleService = roleService;
+        this.rolesService = rolesService;
     }
 
     [HttpGet("GetAll")]
@@ -52,14 +57,15 @@ public class RoleController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = "Admin")]
     public async Task<ActionResult<Role>> CreateAsync([FromBody] string roleName, Guid companyId)
     {
         try
         {
-            var role = await roleService.CreateAsync( new Role { RoleName = roleName, CompanyId = companyId });
+            //var role = await roleService.CreateAsync( new Role { RoleName = roleName, CompanyId = companyId });
+            var role = await rolesService.CreateRoleAsync(roleName);
 
-            return CreatedAtAction("CreateAsync", role);
+            return Ok(role);
         }
         catch (Exception ex)
         {

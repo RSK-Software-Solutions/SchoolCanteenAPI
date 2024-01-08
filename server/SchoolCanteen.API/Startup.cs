@@ -11,6 +11,7 @@ using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.Authentication;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.Logic.Services.Roles;
 using System.Text;
 
 namespace SchoolCanteen.API;
@@ -45,6 +46,7 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<IRolesService, RolesService>();
         services.AddScoped<IUserDetailsService, UserDetailsService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITokenService, TokenService>();
@@ -77,6 +79,8 @@ public class Startup
         { 
             endpoints.MapControllers(); 
         });
+
+        AddRoles(app);
     }
 
     private void AddAuthentication(IServiceCollection services)
@@ -124,6 +128,7 @@ public class Startup
                 options.Password.RequireLowercase = false;
 
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<UsersContext>();
     }
 
@@ -155,5 +160,30 @@ public class Startup
                 }
             });
         });
+    }
+
+    void AddRoles(IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope(); 
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        var tAdmin = CreateRole(roleManager, "Admin");
+        tAdmin.Wait();
+
+        var tManager = CreateRole(roleManager, "Manager");
+        tManager.Wait();
+
+        var tUser = CreateRole(roleManager, "User");
+        tUser.Wait();
+
+    }
+
+    private async Task CreateRole(RoleManager<IdentityRole> roleManager, string roleName)
+    {
+        var adminRoleExists = await roleManager.RoleExistsAsync(roleName);
+        if (!adminRoleExists)
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
     }
 }
