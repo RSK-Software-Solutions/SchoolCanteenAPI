@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
+using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API.Controllers;
@@ -18,7 +19,7 @@ public class RoleController : ControllerBase
     }
 
     [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<Role>>> GetAllAsync([FromQuery] Guid companyId)
+    public async Task<ActionResult<IEnumerable<SimpleRoleDTO>>> GetAllAsync([FromQuery] Guid companyId)
     {
         try
         {

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
-using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.Interfaces;
 
 namespace SchoolCanteen.API.Controllers

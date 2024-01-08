@@ -7,6 +7,8 @@ using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.Services.Interfaces;
 using SchoolCanteen.DATA.Repositories;
 using SchoolCanteen.DATA.Repositories.Interfaces;
+using SchoolCanteen.Logic.DTOs.RoleDTOs;
+using SchoolCanteen.Logic.DTOs.UserDTOs;
 
 namespace SchoolCanteen.Logic.Services;
 
@@ -44,9 +46,21 @@ public class RoleService : IRoleService
         return true;
     }
 
-    public async Task<IEnumerable<Role>> GetAllAsync(Guid companyId)
+    public async Task<IEnumerable<SimpleRoleDTO>> GetAllAsync(Guid companyId)
     {
-        return await _roleRepository.GetAllAsync(companyId);
+        var roles = await _roleRepository.GetAllAsync(companyId);
+
+        return roles.Select(role =>
+        {
+            var simpleUserDtos = new List<SimpleUserDTO>();
+
+            foreach (var user in role.Users)
+            {
+                simpleUserDtos.Add(_mapper.Map<SimpleUserDTO>(user));
+            }
+
+            return new SimpleRoleDTO(role.RoleId, role.RoleName);
+        });
     }
 
     public async Task<Role> GetByNameAsync(string roleName, Guid companyId)
