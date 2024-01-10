@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.RoleDTOs;
-using SchoolCanteen.Logic.Services.Interfaces;
 using SchoolCanteen.Logic.Services.Roles;
 
 namespace SchoolCanteen.API.Controllers;
@@ -13,22 +11,20 @@ namespace SchoolCanteen.API.Controllers;
 public class RoleController : ControllerBase
 {
     private readonly ILogger<RoleController> logger;
-    private readonly IRoleService roleService;
     private readonly IRolesService rolesService;
 
-    public RoleController(ILogger<RoleController> logger, IRoleService roleService, IRolesService rolesService )
+    public RoleController(ILogger<RoleController> logger, IRolesService rolesService )
     {
         this.logger = logger;
-        this.roleService = roleService;
         this.rolesService = rolesService;
     }
 
     [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<SimpleRoleDTO>>> GetAllAsync([FromQuery] Guid companyId)
+    public async Task<ActionResult<IEnumerable<SimpleRoleDTO>>> GetAllAsync()
     {
         try
         {
-            var roles = await roleService.GetAllAsync(companyId);
+            var roles = new List<IdentityRole>();
             if (roles.Count() == 0) return NotFound($"No roles found.");
 
             return Ok(roles);
@@ -41,14 +37,13 @@ public class RoleController : ControllerBase
     }
 
     [HttpGet("GetByName")]
-    public async Task<ActionResult<Role>> GetByNameAsync([FromQuery] string name, Guid companyId)
+    public async Task<ActionResult<SimpleRoleDTO>> GetByNameAsync([FromQuery] string name)
     {
         try
         {
-            var company = await roleService.GetByNameAsync(name, companyId);
-            if (company == null) return NotFound();
+            
 
-            return Ok(company);
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -58,7 +53,7 @@ public class RoleController : ControllerBase
     }
 
     [HttpPost, Authorize(Roles = "Admin")]
-    public async Task<ActionResult<Role>> CreateAsync([FromBody] string roleName, Guid companyId)
+    public async Task<ActionResult<SimpleRoleDTO>> CreateAsync([FromBody] string roleName, Guid companyId)
     {
         try
         {
@@ -75,11 +70,11 @@ public class RoleController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<bool>> EditAsync([FromBody] Role editRole)
+    public async Task<ActionResult<bool>> EditAsync([FromBody] SimpleRoleDTO editRole)
     {
         try
         {
-            return Ok(await roleService.UpdateAsync(editRole));
+            return Ok();
         }
         catch (Exception ex)
         {
@@ -93,7 +88,7 @@ public class RoleController : ControllerBase
     {
         try
         {
-            return Ok(await roleService.DeleteAsync(id));
+            return Ok();
         }
         catch (Exception ex)
         {

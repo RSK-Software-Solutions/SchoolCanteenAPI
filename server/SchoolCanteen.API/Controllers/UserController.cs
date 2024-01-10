@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
-using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.Logic.Services.User;
 
 namespace SchoolCanteen.API.Controllers
 {
@@ -37,7 +37,7 @@ namespace SchoolCanteen.API.Controllers
         }
 
         [HttpGet("GetByName")]
-        public async Task<ActionResult<User>> GetByNameAsync([FromQuery] string LoginName, Guid companyId)
+        public async Task<ActionResult<SimpleUserDTO>> GetByNameAsync([FromQuery] string LoginName, Guid companyId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace SchoolCanteen.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> CreateAsync([FromBody] CreateUserDTO newUser)
+        public async Task<ActionResult<SimpleUserDTO>> CreateAsync([FromBody] CreateUserDTO newUser)
         {
             try
             {
