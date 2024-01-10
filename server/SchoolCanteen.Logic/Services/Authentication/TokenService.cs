@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +20,7 @@ public class TokenService : ITokenService
     {
         _configuration = configuration;
     }
-    public string CreateToken(IdentityUser user, IEnumerable<string> roles)
+    public string CreateToken(ApplicationUser user, IEnumerable<string> roles)
     {
         var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
         var token = CreateJwtToken(
@@ -41,7 +42,7 @@ public class TokenService : ITokenService
         signingCredentials: credentials
     );
 
-    private List<Claim> CreateClaims(IdentityUser user, IEnumerable<string> roles)
+    private List<Claim> CreateClaims(ApplicationUser user, IEnumerable<string> roles)
     {
         try
         {

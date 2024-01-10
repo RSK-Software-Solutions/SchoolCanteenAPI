@@ -1,6 +1,6 @@
 ﻿using SchoolCanteen.Logic.DTOs.UserDTOs;
 
-namespace SchoolCanteen.Logic.Services.Interfaces;
+namespace SchoolCanteen.Logic.Services.User;
 
 public interface IUserService
 {
