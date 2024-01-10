@@ -1,6 +1,6 @@
 ﻿using SchoolCanteen.DATA.Models;
 
-namespace SchoolCanteen.DATA.Repositories.Interfaces;
+namespace SchoolCanteen.DATA.Repositories.CompanyRepo;
 
 public interface ICompanyRepository
 {

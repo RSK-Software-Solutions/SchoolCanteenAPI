@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.DATA.Repositories.Interfaces;
+using System.Data;
 
-namespace SchoolCanteen.DATA.Repositories;
+namespace SchoolCanteen.DATA.Repositories.CompanyRepo;
 
 public class CompanyRepository : ICompanyRepository
 {
@@ -48,7 +48,7 @@ public class CompanyRepository : ICompanyRepository
     }
     public async Task<bool> DeleteAsync(Company company)
     {
-        try 
+        try
         {
             ctx.Companies.Remove(company);
             await ctx.SaveChangesAsync();
@@ -65,8 +65,7 @@ public class CompanyRepository : ICompanyRepository
     {
         try
         {
-            return await ctx.Companies
-                .FirstOrDefaultAsync(c => c.Name == companyName);
+            return await ctx.Companies.FirstOrDefaultAsync(c => c.Name == companyName);
         }
         catch (Exception ex)
         {
@@ -79,8 +78,7 @@ public class CompanyRepository : ICompanyRepository
     {
         try
         {
-            return await ctx.Companies
-                .FirstOrDefaultAsync(c => c.CompanyId == id);
+            return await ctx.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
         }
         catch (Exception ex)
         {

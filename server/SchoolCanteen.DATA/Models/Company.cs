@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +8,6 @@ namespace SchoolCanteen.DATA.Models;
 public class Company
 {
     public Guid CompanyId { get; set; }
-
     [Required]
     public string Name { get; set;}
     public int Nip { get; set;}
@@ -24,7 +24,6 @@ public class Company
     [AllowNull]
     public string? Email { get; set; }
     [AllowNull]
-    public List<User> Users { get; } = new List<User> ();
-    [AllowNull]
-    public List<Role> Roles { get; set; } = new List<Role>();
+    public List<ApplicationUser> Users { get; } = new List<ApplicationUser> ();
+
 }

@@ -4,13 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolCanteen.DATA.DatabaseConnector;
-using SchoolCanteen.DATA.Repositories;
-using SchoolCanteen.DATA.Repositories.Interfaces;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
-using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.Authentication;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
-using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.Logic.Services.CompanyServices;
 using SchoolCanteen.Logic.Services.Roles;
 using System.Text;
 
@@ -43,11 +41,7 @@ public class Startup
         AddIdentity(services);
 
         services.AddScoped<ICompanyService, CompanyService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IRolesService, RolesService>();
-        services.AddScoped<IUserDetailsService, UserDetailsService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITokenService, TokenService>();
     }
@@ -64,8 +58,8 @@ public class Startup
 
         app.UseCors(o => o
             .SetIsOriginAllowed(origin => true)
-            .AllowCredentials()
-            //.AllowAnyOrigin()
+            //.AllowCredentials()
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 
@@ -117,7 +111,7 @@ public class Startup
     private void AddIdentity(IServiceCollection services)
     {
         services
-            .AddIdentityCore<IdentityUser>(options =>
+            .AddIdentityCore<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.User.RequireUniqueEmail = true;

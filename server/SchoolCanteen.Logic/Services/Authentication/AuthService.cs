@@ -1,24 +1,28 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Models.Auth;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
+using SchoolCanteen.Logic.Services.CompanyServices;
 
 namespace SchoolCanteen.Logic.Services.Authentication
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
+        private readonly ICompanyService _companyService;
         private readonly ILogger<AuthService> logger;
 
-        public AuthService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
-        ITokenService tokenService, ILogger<AuthService> logger)
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+        ITokenService tokenService, ICompanyService companyService, ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _tokenService = tokenService;
+            _companyService = companyService;
             this.logger = logger;
         }
 
@@ -38,17 +42,26 @@ namespace SchoolCanteen.Logic.Services.Authentication
             return new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
         }
 
-        public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role)
+        public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role, string companyName)
         {
-            var user = new IdentityUser { UserName = username, Email = email };
-            var result = await _userManager.CreateAsync(user, password);
+            var company = await _companyService.GetCompanyByNameAsync(companyName);
+            if (company == null)
+            {
+                company = await _companyService.CreateCompanyAsync(companyName);
+            }
+
+            var newUser = new ApplicationUser { UserName = username, Email = email, CompanyId = company.CompanyId };
+            var result = await _userManager.CreateAsync(newUser, password);
 
             if (!result.Succeeded) return FailedRegistration(result, email, username);
 
             var roleExists = await _roleManager.RoleExistsAsync(role);
             if (!roleExists) return FailedRoleNotExists(role);
 
-            await _userManager.AddToRoleAsync(user, role);
+            if (!await IsAdminUserInCompany(company.CompanyId))
+                await _userManager.AddToRoleAsync(newUser, "Admin");
+
+            await _userManager.AddToRoleAsync(newUser, role);
 
             return new AuthResult(true, email, username, "");
         }
@@ -79,6 +92,12 @@ namespace SchoolCanteen.Logic.Services.Authentication
             var result = new AuthResult(false, email, "", "");
             result.ErrorMessages.Add("Bad credentials", "Invalid password or email");
             return result;
+        }
+
+        private  async Task<bool> IsAdminUserInCompany(Guid companyId)
+        {
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Admin");
+            return usersInRole.Any(user => user.CompanyId == companyId);
         }
     }
 

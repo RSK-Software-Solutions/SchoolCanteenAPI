@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.Services;
-using SchoolCanteen.Logic.Services.Interfaces;
+using SchoolCanteen.Logic.Services.CompanyServices;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -25,7 +25,7 @@ public class CompanyController : ControllerBase
     }
 
     // GET: api/<CompanyController>
-    [HttpGet("GetAll"), Authorize]
+    [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<SimpleCompanyDTO>>> GetAllAsync()
     {
         try
@@ -39,40 +39,6 @@ public class CompanyController : ControllerBase
         {
             logger.LogError(ex.Message, ex);
             return BadRequest(ex.Message);
-        }
-    }
-
-    // GET api/<CompanyController>/5
-    [HttpGet("GetByName")]
-    public async Task<ActionResult<SimpleCompanyDTO>> GetByNameAsync([FromQuery] string name)
-    {
-        try
-        {
-            var company = await _companyService.GetCompanyByNameAsync(name);
-            if (company == null) return NotFound();
-
-            return Ok(company);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            return BadRequest($"Could not find {name}");
-        }
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<SimpleCompanyDTO>> CreateCompanyAsync([FromBody] CreateCompanyDTO createCompany)
-    {
-        try
-        {
-            var company = await _companyService.CreateCompanyAsync(createCompany);
-
-            return Ok (company); 
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            return BadRequest($"Could not create {createCompany.Name}");
         }
     }
 

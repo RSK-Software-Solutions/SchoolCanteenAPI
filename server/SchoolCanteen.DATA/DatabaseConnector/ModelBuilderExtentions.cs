@@ -12,64 +12,86 @@ public static class ModelBuilderExtentions
             .HasKey(c => c.CompanyId);
 
         modelBuilder.Entity<Company>()
-            .HasMany(c => c.Users)
-            .WithOne(u => u.Company)
-            .HasForeignKey(u => u.CompanyId)
+            .HasIndex(c => c.Name)
+            .IsUnique();
+
+        //modelBuilder.Entity<CompanyModel>()
+        //    .HasMany(c => c.Users)
+        //    .WithOne(u => u.Company)
+        //    .HasForeignKey(u => u.CompanyId)
+        //    .IsRequired();
+    }
+
+    public static void ConfigureUnit(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Unit>()
+            .HasKey(c => c.UnitId);
+    }
+
+    public static void ConfigureProduct(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>().HasKey(c => c.ProductId);
+
+        modelBuilder.Entity<Unit>()
+            .HasOne(e => e.Product)
+            .WithOne(e => e.Unit)
+            .HasForeignKey<Product>(d => d.UnitId)
             .IsRequired();
 
-        modelBuilder.Entity<Company>()
-            .HasMany(c => c.Roles)
-            .WithOne(r => r.Company)
-            .HasForeignKey(r => r.CompanyId);
+        //modelBuilder.Entity<Product>()
+        //    .HasMany(e => e.FinishedProducts)
+        //    .WithMany(e => e.Products);
+
+
+        modelBuilder.Entity<Product>()
+            .HasMany(e => e.FinishedProducts)
+            .WithMany(e => e.Products)
+            .UsingEntity(
+                "ProductFinishedProduct",
+                l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
+                r => r.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId").HasPrincipalKey(nameof(Product.ProductId)),
+                j => j.HasKey("ProductId", "FinishedProductId"));
     }
 
-    public static void ConfigureUser(this ModelBuilder modelBuilder)
+
+    public static void ConfigureFinishedProduct(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>().HasKey(c => c.UserId);
+        modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);
 
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.UserDetails)
-            .WithOne(d => d.User)
-            .HasForeignKey<UserDetails>(d => d.UserId)
-            .IsRequired();
-
-        //modelBuilder.Entity<User>()
-        //    .HasMany(u => u.Roles)
-        //    .WithMany(r => r.Users)
-        //    .UsingEntity(ur => ur.ToTable("UsersToRoles"));
-
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Roles)
-            .WithMany(r => r.Users)
-            .UsingEntity<UserRole>(
-                u => u.HasOne(ur => ur.Role)
-                .WithMany()
-                .HasForeignKey(ur => ur.RoleForeignId),
-
-                r => r.HasOne(ur => ur.User)
-                .WithMany()
-                .HasForeignKey(ur => ur.UserForeignId),
-
-                ur => ur.HasKey(x => new { x.RoleForeignId, x.UserForeignId })
-
-                );
     }
 
-    public static void ConfigureRole(this ModelBuilder modelBuilder) 
-    {
-        modelBuilder.Entity<Role>()
-            .HasKey(c => c.RoleId);
-    }
-
-    public static void ConfigureUserDetails(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<UserDetails>()
-            .HasKey(c => c.UserDetailsId);
-    }
-
-    //public static void ConfigureUserRole(this ModelBuilder modelBuilder)
-    //{
-    //    modelBuilder.Entity<UserRole>()
-    //        .HasKey(key => new { key.UserForeignId, key.RoleForeignId });
-    //}
 }
+
+//public static void ConfigureUserDetails(this ModelBuilder modelBuilder)
+//{
+//    modelBuilder.Entity<UserDetails>()
+//        .HasKey(c => c.UserDetailsId);
+//}
+
+//public static void ConfigureUserRole(this ModelBuilder modelBuilder)
+//{
+//    modelBuilder.Entity<UserRole>()
+//        .HasKey(key => new { key.UserForeignId, key.RoleForeignId });
+//}
+
+
+//modelBuilder.Entity<User>()
+//    .HasMany(u => u.Roles)
+//    .WithMany(r => r.Users)
+//    .UsingEntity(ur => ur.ToTable("UsersToRoles"));
+
+//modelBuilder.Entity<User>()
+//    .HasMany(u => u.Roles)
+//    .WithMany(r => r.Users)
+//    .UsingEntity<UserRole>(
+//        u => u.HasOne(ur => ur.Role)
+//        .WithMany()
+//        .HasForeignKey(ur => ur.RoleForeignId),
+
+//        r => r.HasOne(ur => ur.User)
+//        .WithMany()
+//        .HasForeignKey(ur => ur.UserForeignId),
+
+//        ur => ur.HasKey(x => new { x.RoleForeignId, x.UserForeignId })
+
+//        );

@@ -7,10 +7,10 @@ namespace SchoolCanteen.DATA.DatabaseConnector;
 public class DatabaseApiContext : DbContext
 {
     public DbSet<Company> Companies { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<UserRole> UsersRoles { get; set; }
-    public DbSet<UserDetails> UsersDetails { get; set; }
+    public DbSet<Unit> Units { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<FinishedProduct> FinishedProducts { get; set; }
+    //public DbSet<ProductFinishedProduct> UsersDetails { get; set; }
 
     public DatabaseApiContext(DbContextOptions<DatabaseApiContext> options) : base(options)
     {
@@ -21,8 +21,8 @@ public class DatabaseApiContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ConfigureCompany();
-        modelBuilder.ConfigureUser();
-        modelBuilder.ConfigureRole();
-        modelBuilder.ConfigureUserDetails();
+        modelBuilder.ConfigureProduct();
+        modelBuilder.ConfigureUnit();
+        modelBuilder.ConfigureFinishedProduct();
     }
 }
