@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.Logic.DTOs.UserDTOs;
@@ -9,6 +10,6 @@ public class EditUserDTO
     public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public List<Role> Roles { get; set; }
-    public UserDetails UserDetails { get; set; }    
+    public List<IdentityRole> Roles { get; set; }
+ 
 }
