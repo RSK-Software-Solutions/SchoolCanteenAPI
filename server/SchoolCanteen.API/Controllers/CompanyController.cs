@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
-using SchoolCanteen.Logic.Services;
 using SchoolCanteen.Logic.Services.CompanyServices;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SchoolCanteen.API.Controllers;
 
@@ -25,7 +27,7 @@ public class CompanyController : ControllerBase
     }
 
     // GET: api/<CompanyController>
-    [HttpGet("GetAll")]
+    [HttpGet("GetAll"), Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<SimpleCompanyDTO>>> GetAllAsync()
     {
         try
@@ -42,12 +44,14 @@ public class CompanyController : ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpPut, Authorize (Roles = "Admin")]
     public async Task<ActionResult<bool>> EditCompanyAsync([FromBody] EditCompanyDTO editCompany)
     {
         try
         {
-            var existingCompany = await _companyService.GetCompanyByNameAsync(editCompany.Name);
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+ 
+            var existingCompany = await _companyService.GetCompanyByIdAsync(editCompany.CompanyId);
             if (existingCompany == null) return NotFound();
 
             return Ok(await _companyService.UpdateCompanyAsync(editCompany));
@@ -59,7 +63,7 @@ public class CompanyController : ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete, Authorize(Roles = "Admin")]
     public async Task<ActionResult<bool>> DeleteCompanyAsync([FromQuery]Guid id)
     {
         try
