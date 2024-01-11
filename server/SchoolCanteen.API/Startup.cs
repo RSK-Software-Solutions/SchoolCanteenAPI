@@ -28,6 +28,8 @@ public class Startup
         services.AddControllers();
         services.AddCors();
         services.AddEndpointsApiExplorer();
+        services.AddHttpContextAccessor();
+
         AddSwagger(services);
         services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -163,6 +165,9 @@ public class Startup
 
         var tAdmin = CreateRole(roleManager, "Admin");
         tAdmin.Wait();
+
+        var tSuperAdmin = CreateRole(roleManager, "SuperAdmin");
+        tSuperAdmin.Wait();
 
         var tManager = CreateRole(roleManager, "Manager");
         tManager.Wait();
