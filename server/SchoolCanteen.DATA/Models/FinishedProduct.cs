@@ -4,6 +4,7 @@ namespace SchoolCanteen.DATA.Models;
 public class FinishedProduct
 {
     public int FinishedProductId { get; set; }
+    public Guid CompanyId { get; set; }
     public float Costs { get; set; }
     public float Profit { get; set; }
     public float Price { get; set; }

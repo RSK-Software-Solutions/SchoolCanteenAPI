@@ -5,7 +5,10 @@ using System.Data;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.Repositories.CompanyRepo;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.Services.User;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace SchoolCanteen.Logic.Services.CompanyServices;
 
@@ -15,14 +18,20 @@ public class CompanyService : ICompanyService
     private readonly ILogger _logger;
 
     private readonly ICompanyRepository _companyRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IHttpContextAccessor  _context;
 
     public CompanyService(DatabaseApiContext databaseApiContext,
         IMapper mapper,
-        ILogger<CompanyService> logger)
+        ILogger<CompanyService> logger,
+        UserManager<ApplicationUser> userManager,
+        IHttpContextAccessor context)
     {
         _mapper = mapper;
         _logger = logger;
         _companyRepository = new CompanyRepository(databaseApiContext, logger);
+        _userManager = userManager;
+        _context = context;
     }
 
     public async Task<Company> CreateCompanyAsync(string companyName)
@@ -54,9 +63,18 @@ public class CompanyService : ICompanyService
 
         return company;
     }
+    public async Task<Company> GetCompanyByIdAsync(Guid companyId)
+    {
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company == null) return null;
+
+        return company;
+    }
 
     public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDto)
     {
+        if (!await IsUserMachWithCompany(companyDto.CompanyId)) return false;
+
         var existingCompany = await _companyRepository.GetByIdAsync(companyDto.CompanyId);
         if (existingCompany == null) return false;
 
@@ -67,10 +85,26 @@ public class CompanyService : ICompanyService
 
     public async Task<bool> RemoveCompanyAsync(Guid Id)
     {
+        if (await IsUserMachWithCompany(Id)) return false;
+
         var company = await _companyRepository.GetByIdAsync(Id);
         if (company == null) return false;
 
         await _companyRepository.DeleteAsync(company);
+        return true;
+    }
+
+    private async Task<bool> IsUserMachWithCompany(Guid CompanyId)
+    {
+        var httpContext = _context.HttpContext ?? throw new InvalidOperationException("HttpContext not available");
+
+        var token = httpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jsonToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+        var userId = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user.CompanyId != CompanyId) return false;
         return true;
     }
 }
