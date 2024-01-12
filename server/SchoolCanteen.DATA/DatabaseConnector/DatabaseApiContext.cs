@@ -10,7 +10,8 @@ public class DatabaseApiContext : DbContext
     public DbSet<Unit> Units { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<FinishedProduct> FinishedProducts { get; set; }
-    //public DbSet<ProductFinishedProduct> UsersDetails { get; set; }
+    public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<RecipeDetail> RecipeDetails { get; set; }
 
     public DatabaseApiContext(DbContextOptions<DatabaseApiContext> options) : base(options)
     {
@@ -24,5 +25,7 @@ public class DatabaseApiContext : DbContext
         modelBuilder.ConfigureProduct();
         modelBuilder.ConfigureUnit();
         modelBuilder.ConfigureFinishedProduct();
+        modelBuilder.ConfigureRecipeDetail();
+        modelBuilder.ConfigureRecipe();
     }
 }

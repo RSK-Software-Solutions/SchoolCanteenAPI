@@ -15,11 +15,17 @@ public static class ModelBuilderExtentions
             .HasIndex(c => c.Name)
             .IsUnique();
 
-        //modelBuilder.Entity<CompanyModel>()
-        //    .HasMany(c => c.Users)
-        //    .WithOne(u => u.Company)
-        //    .HasForeignKey(u => u.CompanyId)
-        //    .IsRequired();
+        modelBuilder.Entity<Company>()
+            .HasMany(c => c.Users)
+            .WithOne(u => u.Company)
+            .HasForeignKey(u => u.CompanyId)
+            .IsRequired();
+
+        modelBuilder.Entity<Company>()
+            .HasMany(c => c.Recipes)
+            .WithOne(r => r.Company)
+            .HasForeignKey(r => r.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public static void ConfigureUnit(this ModelBuilder modelBuilder)
@@ -38,11 +44,6 @@ public static class ModelBuilderExtentions
             .HasForeignKey<Product>(d => d.UnitId)
             .IsRequired();
 
-        //modelBuilder.Entity<Product>()
-        //    .HasMany(e => e.FinishedProducts)
-        //    .WithMany(e => e.Products);
-
-
         modelBuilder.Entity<Product>()
             .HasMany(e => e.FinishedProducts)
             .WithMany(e => e.Products)
@@ -53,13 +54,33 @@ public static class ModelBuilderExtentions
                 j => j.HasKey("ProductId", "FinishedProductId"));
     }
 
-
     public static void ConfigureFinishedProduct(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);
 
     }
 
+    public static void ConfigureRecipe(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Recipe>().HasKey(c => c.RecipeId);
+
+        modelBuilder.Entity<Recipe>()
+            .HasMany(d => d.Details)
+            .WithOne(r => r.Recipe)
+            .HasForeignKey(d => d.RecipeId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    public static void ConfigureRecipeDetail(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<RecipeDetail>().HasKey(c => c.RecipeDetailId);
+
+        modelBuilder.Entity<RecipeDetail>()
+            .HasOne(p => p.Product)
+            .WithMany(d => d.RecipeDetails)
+            .HasForeignKey(p => p.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }
 
 //public static void ConfigureUserDetails(this ModelBuilder modelBuilder)
