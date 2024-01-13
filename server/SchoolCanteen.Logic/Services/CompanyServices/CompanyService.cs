@@ -63,12 +63,13 @@ public class CompanyService : ICompanyService
 
         return company;
     }
-    public async Task<Company> GetCompanyByIdAsync(Guid companyId)
+
+    public async Task<EditCompanyDTO> GetCompanyByIdAsync(Guid companyId)
     {
         var company = await _companyRepository.GetByIdAsync(companyId);
         if (company == null) return null;
 
-        return company;
+        return _mapper.Map<EditCompanyDTO>(company);
     }
 
     public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDto)

@@ -10,6 +10,6 @@ public interface ICompanyService
     Task<bool> UpdateCompanyAsync(EditCompanyDTO company);
     Task<bool> RemoveCompanyAsync(Guid Id);
     Task<Company> GetCompanyByNameAsync(string companyName);
-    Task<Company> GetCompanyByIdAsync(Guid companyId);
+    Task<EditCompanyDTO> GetCompanyByIdAsync(Guid companyId);
     Task<IEnumerable<SimpleCompanyDTO>> GetAllAsync();
 }
