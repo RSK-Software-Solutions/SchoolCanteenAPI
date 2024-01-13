@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SchoolCanteen.DATA.Migrations.User
+namespace SchoolCanteen.DATA.Migrations.Users
 {
     /// <inheritdoc />
-    public partial class InitialUsersTables : Migration
+    public partial class InitialUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,15 +35,50 @@ namespace SchoolCanteen.DATA.Migrations.User
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CompanyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    FirstName = table.Column<string>(type: "longtext", nullable: false)
+                    FirstName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "longtext", nullable: false)
+                    LastName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Street = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    State = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PostalCode = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    City = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Country = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -71,30 +106,11 @@ namespace SchoolCanteen.DATA.Migrations.User
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        name: "FK_AspNetUsers_Company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "CompanyId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -201,6 +217,7 @@ namespace SchoolCanteen.DATA.Migrations.User
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -233,10 +250,16 @@ namespace SchoolCanteen.DATA.Migrations.User
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CompanyId",
+                table: "AspNetUsers",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
         }
 
         /// <inheritdoc />
@@ -262,6 +285,7 @@ namespace SchoolCanteen.DATA.Migrations.User
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
         }
     }
 }

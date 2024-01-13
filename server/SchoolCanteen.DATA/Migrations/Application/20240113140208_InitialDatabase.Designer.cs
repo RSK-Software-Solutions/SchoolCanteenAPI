@@ -11,8 +11,8 @@ using SchoolCanteen.DATA.DatabaseConnector;
 namespace SchoolCanteen.DATA.Migrations.Application
 {
     [DbContext(typeof(DatabaseApiContext))]
-    [Migration("20240110184358_AddFinishedProductTables")]
-    partial class AddFinishedProductTables
+    [Migration("20240113140208_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,21 @@ namespace SchoolCanteen.DATA.Migrations.Application
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
@@ -59,11 +69,13 @@ namespace SchoolCanteen.DATA.Migrations.Application
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -86,8 +98,22 @@ namespace SchoolCanteen.DATA.Migrations.Application
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
@@ -109,29 +135,36 @@ namespace SchoolCanteen.DATA.Migrations.Application
                         .HasColumnType("char(36)");
 
                     b.Property<string>("City")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("Nip")
                         .HasColumnType("int");
 
                     b.Property<string>("Number")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
 
                     b.Property<string>("PostalCode")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Street")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("CompanyId");
 
@@ -147,6 +180,9 @@ namespace SchoolCanteen.DATA.Migrations.Application
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
                     b.Property<float>("Costs")
                         .HasColumnType("float");
 
@@ -161,6 +197,8 @@ namespace SchoolCanteen.DATA.Migrations.Application
 
                     b.HasKey("FinishedProductId");
 
+                    b.HasIndex("CompanyId");
+
                     b.ToTable("FinishedProducts");
                 });
 
@@ -169,6 +207,9 @@ namespace SchoolCanteen.DATA.Migrations.Application
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -188,10 +229,71 @@ namespace SchoolCanteen.DATA.Migrations.Application
 
                     b.HasKey("ProductId");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("UnitId")
                         .IsUnique();
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Recipe", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<float>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.RecipeDetail", b =>
+                {
+                    b.Property<int>("RecipeDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeDetailId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UnitId")
+                        .IsUnique();
+
+                    b.ToTable("RecipeDetails");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.Unit", b =>
@@ -200,11 +302,16 @@ namespace SchoolCanteen.DATA.Migrations.Application
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("UnitId");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Units");
                 });
@@ -226,31 +333,130 @@ namespace SchoolCanteen.DATA.Migrations.Application
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("SchoolCanteen.DATA.Models.Company", null)
+                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
                         .WithMany("Users")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.FinishedProduct", b =>
+                {
+                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
+                        .WithMany("FinishedProducts")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.Product", b =>
                 {
+                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
+                        .WithMany("Products")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SchoolCanteen.DATA.Models.Unit", "Unit")
                         .WithOne("Product")
                         .HasForeignKey("SchoolCanteen.DATA.Models.Product", "UnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Company");
+
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("SchoolCanteen.DATA.Models.Company", b =>
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Recipe", b =>
                 {
-                    b.Navigation("Users");
+                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
+                        .WithMany("Recipes")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolCanteen.DATA.Models.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.RecipeDetail", b =>
+                {
+                    b.HasOne("SchoolCanteen.DATA.Models.Product", "Product")
+                        .WithMany("Details")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolCanteen.DATA.Models.Recipe", "Recipe")
+                        .WithMany("Details")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SchoolCanteen.DATA.Models.Unit", "Unit")
+                        .WithOne("Details")
+                        .HasForeignKey("SchoolCanteen.DATA.Models.RecipeDetail", "UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("SchoolCanteen.DATA.Models.Unit", b =>
                 {
+                    b.HasOne("SchoolCanteen.DATA.Models.Company", "Company")
+                        .WithMany("Units")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Company", b =>
+                {
+                    b.Navigation("FinishedProducts");
+
+                    b.Navigation("Products");
+
+                    b.Navigation("Recipes");
+
+                    b.Navigation("Units");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Product", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Recipe", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("SchoolCanteen.DATA.Models.Unit", b =>
+                {
+                    b.Navigation("Details")
+                        .IsRequired();
+
                     b.Navigation("Product")
                         .IsRequired();
                 });

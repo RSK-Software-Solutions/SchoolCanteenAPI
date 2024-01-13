@@ -15,7 +15,11 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("Register")]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {

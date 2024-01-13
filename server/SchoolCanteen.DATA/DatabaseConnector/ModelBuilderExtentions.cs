@@ -26,23 +26,47 @@ public static class ModelBuilderExtentions
             .WithOne(r => r.Company)
             .HasForeignKey(r => r.CompanyId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Company>()
+            .HasMany(p => p.Products)
+            .WithOne(c => c.Company)
+            .HasForeignKey(p => p.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Company>()
+            .HasMany(p => p.FinishedProducts)
+            .WithOne(c => c.Company)
+            .HasForeignKey(p => p.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Company>()
+            .HasMany(u => u.Units)
+            .WithOne(c => c.Company)
+            .HasForeignKey(u => u.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public static void ConfigureUnit(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Unit>()
             .HasKey(c => c.UnitId);
-    }
-
-    public static void ConfigureProduct(this ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Product>().HasKey(c => c.ProductId);
 
         modelBuilder.Entity<Unit>()
             .HasOne(e => e.Product)
             .WithOne(e => e.Unit)
             .HasForeignKey<Product>(d => d.UnitId)
             .IsRequired();
+
+        modelBuilder.Entity<Unit>() 
+            .HasOne(e => e.Details)
+            .WithOne(e => e.Unit)
+            .HasForeignKey<RecipeDetail>(d => d.UnitId)
+            .IsRequired();
+    }
+
+    public static void ConfigureProduct(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>().HasKey(c => c.ProductId);
 
         modelBuilder.Entity<Product>()
             .HasMany(e => e.FinishedProducts)
@@ -77,7 +101,7 @@ public static class ModelBuilderExtentions
 
         modelBuilder.Entity<RecipeDetail>()
             .HasOne(p => p.Product)
-            .WithMany(d => d.RecipeDetails)
+            .WithMany(d => d.Details)
             .HasForeignKey(p => p.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
     }

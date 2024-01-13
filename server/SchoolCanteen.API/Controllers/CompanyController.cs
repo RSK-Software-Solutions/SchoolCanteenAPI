@@ -27,7 +27,7 @@ public class CompanyController : ControllerBase
     }
 
     // GET: api/<CompanyController>
-    [HttpGet("GetAll"), Authorize(Roles = "Admin")]
+    [HttpGet, Authorize (Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<SimpleCompanyDTO>>> GetAllAsync()
     {
         try

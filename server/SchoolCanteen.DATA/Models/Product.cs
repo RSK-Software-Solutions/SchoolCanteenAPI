@@ -5,6 +5,7 @@ public class Product
 {
     public int ProductId { get; set; }
     public Guid CompanyId { get; set; }
+    public Company Company { get; set; }
     public int UnitId { get; set; }
     public Unit Unit { get; set; }
     public string Name { get; set; }
@@ -12,5 +13,6 @@ public class Product
     public float Quantity { get; set; }
     public int ValidityPeriod { get; set; }
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }
-    public List<FinishedProduct> FinishedProducts { get; set; }
+    public List<FinishedProduct> FinishedProducts { get; set; } = new List<FinishedProduct>();
+    public List<RecipeDetail> Details { get; set; } = new List<RecipeDetail>();
 }

@@ -5,6 +5,7 @@ public class FinishedProduct
 {
     public int FinishedProductId { get; set; }
     public Guid CompanyId { get; set; }
+    public Company Company { get; set; }
     public float Costs { get; set; }
     public float Profit { get; set; }
     public float Price { get; set; }
