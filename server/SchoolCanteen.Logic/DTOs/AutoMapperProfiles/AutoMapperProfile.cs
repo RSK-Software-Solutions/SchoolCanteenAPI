@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
+using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 
@@ -19,6 +20,9 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Company, CreateCompanyDTO>();
         CreateMap<CreateCompanyDTO, Company>();
+
+        CreateMap<FinishedProduct, SimpleFinishedProductDto>();
+        CreateMap<SimpleFinishedProductDto, FinishedProduct>();
 
         CreateMap<ApplicationUser, CreateUserDTO>();
         CreateMap<CreateUserDTO, ApplicationUser>();

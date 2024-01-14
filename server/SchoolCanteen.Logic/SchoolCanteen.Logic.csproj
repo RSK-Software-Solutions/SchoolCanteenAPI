@@ -15,4 +15,8 @@
     <ProjectReference Include="..\SchoolCanteen.DATA\SchoolCanteen.DATA.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extentions\" />
+  </ItemGroup>
+
 </Project>
