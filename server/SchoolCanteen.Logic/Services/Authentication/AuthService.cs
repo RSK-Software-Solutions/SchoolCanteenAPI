@@ -16,8 +16,12 @@ namespace SchoolCanteen.Logic.Services.Authentication
         private readonly ICompanyService _companyService;
         private readonly ILogger<AuthService> logger;
 
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-        ITokenService tokenService, ICompanyService companyService, ILogger<AuthService> logger)
+        public AuthService(
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager,
+            ITokenService tokenService, 
+            ICompanyService companyService, 
+            ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -41,7 +45,6 @@ namespace SchoolCanteen.Logic.Services.Authentication
 
             return new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
         }
-
         public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role, string companyName)
         {
             var company = await _companyService.GetCompanyByNameAsync(companyName);
@@ -65,7 +68,6 @@ namespace SchoolCanteen.Logic.Services.Authentication
 
             return new AuthResult(true, email, username, "");
         }
-
         private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
         {
             var authResult = new AuthResult(false, email, username, "");
@@ -86,14 +88,12 @@ namespace SchoolCanteen.Logic.Services.Authentication
             result.ErrorMessages.Add("Bad credentials", "Invalid password or email");
             return result;
         }
-
         private static AuthResult InvalidEmail(string email)
         {
             var result = new AuthResult(false, email, "", "");
             result.ErrorMessages.Add("Bad credentials", "Invalid password or email");
             return result;
         }
-
         private  async Task<bool> IsAdminUserInCompany(Guid companyId)
         {
             var usersInRole = await _userManager.GetUsersInRoleAsync("Admin");
