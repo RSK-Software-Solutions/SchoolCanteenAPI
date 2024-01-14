@@ -1,29 +1,28 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.Services.CompanyServices;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace SchoolCanteen.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Produces("application/json")]
+[ProducesResponseType(typeof(SimpleCompanyDTO),StatusCodes.Status200OK)]
+[ProducesResponseType(typeof(SimpleCompanyDTO), StatusCodes.Status404NotFound)]
+[ProducesResponseType(StatusCodes.Status400BadRequest)]
+[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 public class CompanyController : ControllerBase
 {
     private readonly ILogger<CompanyController> logger;
     private readonly ICompanyService _companyService;
-
-    private readonly IMapper _mapper;
 
     public CompanyController(ICompanyService companyService, IMapper mapper, ILogger<CompanyController> logger)
     {
         this.logger = logger;
         _companyService = companyService;
 
-        _mapper = mapper;
     }
 
     /// <summary>
@@ -67,6 +66,7 @@ public class CompanyController : ControllerBase
         try
         {
             var company = await _companyService.GetCompanyByIdAsync(Id);
+            logger.LogInformation("Information");
 
             return Ok(company);
         }
@@ -92,8 +92,6 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
- 
             var existingCompany = await _companyService.GetCompanyByIdAsync(editCompany.CompanyId);
             if (existingCompany == null) return NotFound();
 
