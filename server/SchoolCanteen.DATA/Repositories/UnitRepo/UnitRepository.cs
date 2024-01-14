@@ -98,7 +98,7 @@ internal class UnitRepository : IUnitRepository
     {
         try
         {
-            return await ctx.Units.FirstOrDefaultAsync(e => e.UnitId == id)
+            return await ctx.Units.FirstOrDefaultAsync(e => e.UnitId == id);
         }
         catch (Exception ex)
         {
