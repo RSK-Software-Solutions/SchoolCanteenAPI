@@ -1,6 +1,5 @@
 ﻿using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
-using System.Net.Http.Headers;
 
 namespace SchoolCanteen.Logic.Services.CompanyServices;
 
