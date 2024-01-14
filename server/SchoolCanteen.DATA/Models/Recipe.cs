@@ -6,13 +6,13 @@ namespace SchoolCanteen.DATA.Models;
 public class Recipe
 {
     public int RecipeId { get; set; }
-    public Guid CompanyId { get; set; }
+    [Required] public Guid CompanyId { get; set; }
     public Company Company { get; set; }
-    public int UnitId { get; set; }
+    [Required] public int UnitId { get; set; }
     public Unit Unit { get; set; }
     [MaxLength(100)]
-    public string Name { get; set; }
-    public float Quantity { get; set; }
+    [Required] public string Name { get; set; }
+    public float Quantity { get; set; } = 0;
     public List<RecipeDetail> Details { get; set; }
 
 }
