@@ -64,6 +64,25 @@ public class FinishedProductController : ControllerBase
     }
 
     /// <summary>
+    /// Updates a Finished Product asynchronously for the authenticated user based on the specified identifier.
+    /// </summary>
+    /// <param name="createFinishedProductDto">The identifier of the Finished Product to update.</param>
+    /// <returns></returns>
+    [HttpPut("/api/finished"), Authorize(Roles = "User")]
+    public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] SimpleFinishedProductDto createFinishedProductDto)
+    {
+        try
+        {
+            var newFinishedProduct = await _finishedProductService.UpdateAsync(createFinishedProductDto);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+    /// <summary>
     /// Deletes a Finished Product asynchronously for the authenticated user based on the specified identifier.
     /// </summary>
     /// <param name="id">The identifier of the Finished Product to delete.</param>
