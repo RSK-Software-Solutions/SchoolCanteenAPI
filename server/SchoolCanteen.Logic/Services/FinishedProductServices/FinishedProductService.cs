@@ -5,8 +5,6 @@ using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
-using SchoolCanteen.Logic.Services.CompanyServices;
-using System.ComponentModel.Design;
 
 namespace SchoolCanteen.Logic.Services.FinishedProductServices;
 
@@ -51,6 +49,12 @@ public class FinishedProductService : IFinishedProductService
 
         return newFinishedProduct;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<IEnumerable<SimpleFinishedProductDto>> GetAllAsync()
     {
         try
@@ -66,6 +70,7 @@ public class FinishedProductService : IFinishedProductService
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Retrieves a collection of FinishedProducts associated with the specified company ID asynchronously.
     /// </summary>
@@ -135,13 +140,14 @@ public class FinishedProductService : IFinishedProductService
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Removes a FinishedProduct by its unique identifier asynchronously.
     /// </summary>
     /// <param name="Id">The unique identifier of the FinishedProduct to be removed.</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<bool> RemoveAsync(int Id)
+    public async Task<bool> DeleteAsync(int Id)
     {
         try
         {
@@ -159,6 +165,7 @@ public class FinishedProductService : IFinishedProductService
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Updates a FinishedProduct asynchronously using the information provided in the specified SimpleFinishedProductDto.
     /// </summary>

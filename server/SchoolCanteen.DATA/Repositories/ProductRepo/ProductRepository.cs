@@ -62,11 +62,12 @@ public class ProductRepository : IProductRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<IEnumerable<Product>> GetAllAsync(Guid companyId)
     {
         try
         {
             return await ctx.Products
+                .Where(e => e.CompanyId == companyId)
                 .OrderBy(e => e.ProductId)
                 .ToListAsync();
         }

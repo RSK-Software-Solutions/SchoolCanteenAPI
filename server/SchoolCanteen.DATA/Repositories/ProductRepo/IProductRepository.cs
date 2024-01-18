@@ -5,7 +5,7 @@ namespace SchoolCanteen.DATA.Repositories.ProductRepo;
 
 public interface IProductRepository
 {
-    Task<IEnumerable<Product>> GetAllAsync();
+    Task<IEnumerable<Product>> GetAllAsync(Guid companyId);
     Task<Product> GetByNameAsync(string productName);
     Task<Product> GetByIdAsync(int id);
     Task<bool> AddAsync(Product product);

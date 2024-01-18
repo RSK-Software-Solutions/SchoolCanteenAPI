@@ -97,7 +97,7 @@ public class FinishedProductController : ControllerBase
     {
         try
         {
-            var isDeleted = await _finishedProductService.RemoveAsync(id);
+            var isDeleted = await _finishedProductService.DeleteAsync(id);
             return Ok(isDeleted);
         }
         catch (Exception ex)

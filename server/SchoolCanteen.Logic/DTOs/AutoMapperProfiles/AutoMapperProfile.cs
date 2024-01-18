@@ -24,6 +24,9 @@ public class AutoMapperProfile : Profile
         CreateMap<FinishedProduct, SimpleFinishedProductDto>();
         CreateMap<SimpleFinishedProductDto, FinishedProduct>();
 
+        CreateMap<Product, SimpleProductDto>();
+        CreateMap<SimpleProductDto, Product>();
+
         CreateMap<ApplicationUser, CreateUserDTO>();
         CreateMap<CreateUserDTO, ApplicationUser>();
 
