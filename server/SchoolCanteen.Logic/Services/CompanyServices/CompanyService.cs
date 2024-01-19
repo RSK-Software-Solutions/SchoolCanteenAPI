@@ -63,17 +63,18 @@ public class CompanyService : ICompanyService
 
         return company;
     }
-    public async Task<Company> GetCompanyByIdAsync(Guid companyId)
+
+    public async Task<EditCompanyDTO> GetCompanyByIdAsync(Guid companyId)
     {
         var company = await _companyRepository.GetByIdAsync(companyId);
         if (company == null) return null;
 
-        return company;
+        return _mapper.Map<EditCompanyDTO>(company);
     }
 
     public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDto)
     {
-        if (!await IsUserMachWithCompany(companyDto.CompanyId)) return false;
+        if (!await IsUserMatchedWithCompany(companyDto.CompanyId)) return false;
 
         var existingCompany = await _companyRepository.GetByIdAsync(companyDto.CompanyId);
         if (existingCompany == null) return false;
@@ -85,7 +86,7 @@ public class CompanyService : ICompanyService
 
     public async Task<bool> RemoveCompanyAsync(Guid Id)
     {
-        if (await IsUserMachWithCompany(Id)) return false;
+        if (await IsUserMatchedWithCompany(Id)) return false;
 
         var company = await _companyRepository.GetByIdAsync(Id);
         if (company == null) return false;
@@ -94,7 +95,7 @@ public class CompanyService : ICompanyService
         return true;
     }
 
-    private async Task<bool> IsUserMachWithCompany(Guid CompanyId)
+    private async Task<bool> IsUserMatchedWithCompany(Guid CompanyId)
     {
         var httpContext = _context.HttpContext ?? throw new InvalidOperationException("HttpContext not available");
 

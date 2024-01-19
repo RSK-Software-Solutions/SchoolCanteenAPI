@@ -5,10 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
+using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services.Authentication;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.CompanyServices;
+using SchoolCanteen.Logic.Services.FinishedProductServices;
 using SchoolCanteen.Logic.Services.Roles;
 using System.Text;
 
@@ -42,7 +44,10 @@ public class Startup
         AddAuthentication(services);
         AddIdentity(services);
 
+        services.AddScoped<ITokenUtil, TokenUtil>();
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IFinishedProductService, FinishedProductService>();
+        services.AddScoped<IFinishedProductRepository, FinishedProductRepository>();
         services.AddScoped<IRolesService, RolesService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITokenService, TokenService>();
@@ -132,7 +137,11 @@ public class Startup
     {
         services.AddSwaggerGen(option =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "School Canteen API", Version = "v1" });
+            option.SwaggerDoc("v1", new OpenApiInfo { 
+                Title = "School Canteen API", 
+                Version = "v1" 
+            });
+
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -142,6 +151,7 @@ public class Startup
                 BearerFormat = "JWT",
                 Scheme = "Bearer"
             });
+
             option.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {

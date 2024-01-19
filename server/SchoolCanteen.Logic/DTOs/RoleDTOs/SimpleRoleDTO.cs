@@ -1,7 +1,4 @@
-﻿
-using SchoolCanteen.DATA.Models;
-
-namespace SchoolCanteen.Logic.DTOs.RoleDTOs;
+﻿namespace SchoolCanteen.Logic.DTOs.RoleDTOs;
 
 public class SimpleRoleDTO
 {
