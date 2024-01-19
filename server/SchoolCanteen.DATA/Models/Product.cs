@@ -19,5 +19,5 @@ public class Product
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }
     public List<FinishedProduct> FinishedProducts { get; set; } = new List<FinishedProduct>();
-    public List<RecipeDetail> Details { get; set; } = new List<RecipeDetail>();
+    public List<RecipeDetail> RecipeDetails { get; set; } = new List<RecipeDetail>();
 }

@@ -10,9 +10,9 @@ namespace SchoolCanteen.DATA.Repositories.CompanyRepo;
 public class CompanyRepository : ICompanyRepository
 {
     private readonly DatabaseApiContext ctx;
-    private readonly ILogger logger;
+    private readonly ILogger<CompanyRepository> logger;
 
-    public CompanyRepository(DatabaseApiContext ctx, ILogger logger)
+    public CompanyRepository(DatabaseApiContext ctx, ILogger<CompanyRepository> logger)
     {
         this.ctx = ctx;
         this.logger = logger;

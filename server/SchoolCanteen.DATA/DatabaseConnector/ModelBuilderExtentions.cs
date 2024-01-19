@@ -51,16 +51,17 @@ public static class ModelBuilderExtentions
         modelBuilder.Entity<Unit>()
             .HasKey(c => c.UnitId);
 
+
         modelBuilder.Entity<Unit>()
-            .HasOne(e => e.Product)
-            .WithOne(e => e.Unit)
-            .HasForeignKey<Product>(d => d.UnitId)
+            .HasMany(u => u.Products)
+            .WithOne(p => p.Unit)
+            .HasForeignKey(p => p.UnitId)
             .IsRequired();
 
-        modelBuilder.Entity<Unit>() 
-            .HasOne(e => e.Details)
-            .WithOne(e => e.Unit)
-            .HasForeignKey<RecipeDetail>(d => d.UnitId)
+        modelBuilder.Entity<Unit>()
+            .HasMany(u => u.RecipeDetails)
+            .WithOne(r => r.Unit)
+            .HasForeignKey(r => r.RecipeDetailId)
             .IsRequired();
     }
 
@@ -101,7 +102,7 @@ public static class ModelBuilderExtentions
 
         modelBuilder.Entity<RecipeDetail>()
             .HasOne(p => p.Product)
-            .WithMany(d => d.Details)
+            .WithMany(d => d.RecipeDetails)
             .HasForeignKey(p => p.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
     }
