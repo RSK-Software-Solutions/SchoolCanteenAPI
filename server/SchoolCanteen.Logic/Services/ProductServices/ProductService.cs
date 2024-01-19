@@ -166,14 +166,22 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<bool> UpdateAsync(SimpleProductDto product)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="productDto"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<bool> UpdateAsync(SimpleProductDto productDto)
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(product.ProductId);
+            var existProduct = await repository.GetByIdAsync(productDto.ProductId);
             if (existProduct == null) return false;
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return false;
+            if (tokenUtil.GetIdentityCompany() != productDto.CompanyId) return false;
+
+            mapper.Map(productDto, existProduct);
 
             await repository.UpdateAsync(existProduct);
             return true;

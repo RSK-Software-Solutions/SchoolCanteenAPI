@@ -25,11 +25,12 @@ public class CompanyService : ICompanyService
         IMapper mapper,
         ILogger<CompanyService> logger,
         UserManager<ApplicationUser> userManager,
-        IHttpContextAccessor context)
+        IHttpContextAccessor context,
+        ICompanyRepository companyRepository)
     {
         _mapper = mapper;
         _logger = logger;
-        _companyRepository = new CompanyRepository(databaseApiContext, logger);
+        _companyRepository = companyRepository;
         _userManager = userManager;
         _context = context;
     }

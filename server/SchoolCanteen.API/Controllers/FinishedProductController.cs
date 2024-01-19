@@ -66,14 +66,14 @@ public class FinishedProductController : ControllerBase
     /// <summary>
     /// Updates a Finished Product asynchronously for the authenticated user based on the specified identifier.
     /// </summary>
-    /// <param name="createFinishedProductDto">The identifier of the Finished Product to update.</param>
+    /// <param name="finishedProductDto">The identifier of the Finished Product to update.</param>
     /// <returns></returns>
     [HttpPut("/api/finished"), Authorize(Roles = "User")]
-    public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] SimpleFinishedProductDto createFinishedProductDto)
+    public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] SimpleFinishedProductDto finishedProductDto)
     {
         try
         {
-            var newFinishedProduct = await _finishedProductService.UpdateAsync(createFinishedProductDto);
+            var newFinishedProduct = await _finishedProductService.UpdateAsync(finishedProductDto);
             return Ok();
         }
         catch (Exception ex)

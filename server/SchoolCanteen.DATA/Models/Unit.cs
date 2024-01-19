@@ -10,6 +10,7 @@ public class Unit
     public Company Company { get; set; }
     [MaxLength(10)]
     [Required] public string Name { get; set; }
-    public Product Product { get; set; }
-    public RecipeDetail Details { get; set; }
+    public List<Product> Products { get; set;}
+    public List<RecipeDetail> RecipeDetails { get; set;}
+
 }
