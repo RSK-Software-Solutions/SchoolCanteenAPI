@@ -8,6 +8,7 @@ using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.CompanyRepo;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.DATA.Repositories.ProductRepo;
+using SchoolCanteen.DATA.Repositories.UnitRepo;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services.Authentication;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
@@ -15,6 +16,7 @@ using SchoolCanteen.Logic.Services.CompanyServices;
 using SchoolCanteen.Logic.Services.FinishedProductServices;
 using SchoolCanteen.Logic.Services.ProductServices;
 using SchoolCanteen.Logic.Services.Roles;
+using SchoolCanteen.Logic.Services.UnitServices;
 using System.Text;
 
 namespace SchoolCanteen.API;
@@ -47,6 +49,9 @@ public class Startup
         AddAuthentication(services);
         AddIdentity(services);
 
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITokenUtil, TokenUtil>();
+
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         
@@ -55,13 +60,15 @@ public class Startup
         
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductRepository, ProductRepository>();
-        
+
+        services.AddScoped<IUnitBaseService, UnitBaseService>();
+        services.AddScoped<IUnitService, UnitService>();
+        services.AddScoped<IUnitRepository, UnitRepository>();
+
         services.AddScoped<IRolesService, RolesService>();
         
         services.AddScoped<IAuthService, AuthService>();
 
-        services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<ITokenUtil, TokenUtil>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -4,6 +4,7 @@ using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.DTOs.RoleDTOs;
+using SchoolCanteen.Logic.DTOs.UnitDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 
 namespace SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
@@ -26,6 +27,9 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Product, SimpleProductDto>();
         CreateMap<SimpleProductDto, Product>();
+
+        CreateMap<Unit, SimpleUnitDto>();
+        CreateMap<SimpleUnitDto, Unit>();
 
         CreateMap<ApplicationUser, CreateUserDTO>();
         CreateMap<CreateUserDTO, ApplicationUser>();
