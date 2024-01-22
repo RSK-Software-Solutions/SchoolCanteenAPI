@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services.User;
@@ -19,12 +20,12 @@ namespace SchoolCanteen.API.Controllers
         }
 
 
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllAsync([FromQuery] Guid companyId)
+        [HttpGet("api/users"), Authorize (Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllAsync()
         {
             try
             {
-                var users = await userService.GetAllAsync(companyId);
+                var users = await userService.GetAllAsync();
                 if (users.Count() == 0) return NotFound($"No users found.");
 
                 return Ok(users);
@@ -36,24 +37,24 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpGet("GetByName")]
-        public async Task<ActionResult<SimpleUserDTO>> GetByNameAsync([FromQuery] string LoginName, Guid companyId)
+        [HttpGet("api/users:loginName"), Authorize (Roles = "Admin")]
+        public async Task<ActionResult<SimpleUserDTO>> GetByNameAsync([FromQuery] string UserName)
         {
             try
             {
-                var user = await userService.GetByNameAsync(LoginName, companyId);
-                if (user == null) return NotFound($"Not found {LoginName}.");
+                var user = await userService.GetByNameAsync(UserName);
+                if (user == null) return NotFound($"Not found {UserName}.");
 
                 return Ok(user);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, ex);
-                return BadRequest($"Could not find {LoginName}");
+                return BadRequest($"Could not find {UserName}");
             }
         }
 
-        [HttpPost]
+        [HttpPost("api/users"), Authorize(Roles ="Admin")]
         public async Task<ActionResult<SimpleUserDTO>> CreateAsync([FromBody] CreateUserDTO newUser)
         {
             try
@@ -65,11 +66,11 @@ namespace SchoolCanteen.API.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, ex);
-                return BadRequest($"Could not create new user - {newUser.Login}");
+                return BadRequest($"Could not create new user - {newUser.Email}");
             }
         }
 
-        [HttpPut]
+        [HttpPut("api/users"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> EditAsync([FromBody] EditUserDTO editUser)
         {
             try
@@ -83,7 +84,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("api/users"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> DeleteAsync([FromQuery] Guid id)
         {
             try

@@ -101,11 +101,11 @@ public class ProductRepository : IProductRepository
     /// <param name="productName">The name of the Product to retrieve.</param>
     /// <returns></returns>
     /// <exception cref="Exception">Throws an exception with details if there is an issue during the retrieval process.</exception>
-    public async Task<Product> GetByNameAsync(string productName)
+    public async Task<Product> GetByNameAsync(string productName, Guid companyId)
     {
         try
         {
-            return await ctx.Products.FirstOrDefaultAsync(e => e.Name == productName);
+            return await ctx.Products.FirstOrDefaultAsync(e => e.Name == productName && e.CompanyId == companyId);
         }
         catch (Exception ex)
         {

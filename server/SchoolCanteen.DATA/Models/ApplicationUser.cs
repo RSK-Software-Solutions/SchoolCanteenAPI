@@ -21,13 +21,13 @@ public class ApplicationUser : IdentityUser
     public string Street { get; set; } = string.Empty;
     [AllowNull]
     [MaxLength(100)]
+    public string City { get; set; } = string.Empty;
+    [AllowNull]
+    [MaxLength(100)]
     public string State { get; set; } = string.Empty;
     [AllowNull]
     [MaxLength(10)]
     public string? PostalCode { get; set; }
-    [AllowNull]
-    [MaxLength(100)]
-    public string City { get; set; } = string.Empty;
     [AllowNull]
     [MaxLength(100)]
     public string Country { get; set; } = string.Empty;

@@ -2,11 +2,11 @@
 
 public class SimpleRoleDTO
 {
-    public Guid RoleId { get; set; }
+    public Guid Id { get; set; }
     public string RoleName { get; set; }
-    public SimpleRoleDTO(Guid roleId, string roleName)
+    public SimpleRoleDTO(Guid Id, string roleName)
     {
-        RoleId = roleId;
+        this.Id = Id;
         RoleName = roleName;
     }
 }

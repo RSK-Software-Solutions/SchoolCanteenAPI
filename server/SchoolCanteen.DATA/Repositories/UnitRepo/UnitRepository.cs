@@ -6,7 +6,7 @@ using SchoolCanteen.DATA.Models;
 
 namespace SchoolCanteen.DATA.Repositories.UnitRepo;
 
-internal class UnitRepository : IUnitRepository
+public class UnitRepository : IUnitRepository
 {
     private readonly DatabaseApiContext ctx;
     private readonly ILogger<UnitRepository> logger;
@@ -70,7 +70,7 @@ internal class UnitRepository : IUnitRepository
     /// - An IEnumerable<Unit> containing all Unit objects, ordered by their names.
     /// - Throws an exception with details if there is an issue retrieving the Units.
     /// </returns>
-    public async Task<IEnumerable<Unit>> GetAllAsync()
+    public async Task<IEnumerable<Unit>> GetAllAsync(Guid companyId)
     {
         try
         {
@@ -107,4 +107,16 @@ internal class UnitRepository : IUnitRepository
         }
     }
 
+    public async Task<Unit> GetByNameAsync(string name, Guid companyId)
+    {
+        try
+        {
+            return await ctx.Units.FirstOrDefaultAsync(e => e.Name == name && e.CompanyId == companyId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
 }

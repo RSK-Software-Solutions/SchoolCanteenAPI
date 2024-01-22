@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using SchoolCanteen.Logic.Services.UnitServices;
 
 namespace SchoolCanteen.Logic.Services.CompanyServices;
 
@@ -18,6 +19,7 @@ public class CompanyService : ICompanyService
     private readonly ILogger _logger;
 
     private readonly ICompanyRepository _companyRepository;
+    private readonly IUnitBaseService _unitService;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IHttpContextAccessor  _context;
 
@@ -26,11 +28,13 @@ public class CompanyService : ICompanyService
         ILogger<CompanyService> logger,
         UserManager<ApplicationUser> userManager,
         IHttpContextAccessor context,
-        ICompanyRepository companyRepository)
+        ICompanyRepository companyRepository,
+        IUnitBaseService unitService)
     {
         _mapper = mapper;
         _logger = logger;
         _companyRepository = companyRepository;
+        _unitService = unitService;
         _userManager = userManager;
         _context = context;
     }
@@ -46,6 +50,8 @@ public class CompanyService : ICompanyService
 
         var company = new Company { Name = companyName };
         await _companyRepository.AddAsync(company);
+
+        await _unitService.CreateBaseUnitsForCompany(company.CompanyId);
 
         return company;
     }
