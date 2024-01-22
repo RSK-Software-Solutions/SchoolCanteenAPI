@@ -37,7 +37,7 @@ public class ProductService : IProductService
     {
         if (tokenUtil.GetIdentityCompany() != dto.CompanyId) return null;
 
-        var existProduct = await repository.GetByNameAsync(dto.Name);
+        var existProduct = await repository.GetByNameAsync(dto.Name, dto.CompanyId);
         if (existProduct != null)
         {
             logger.LogInformation($"Product {existProduct} already exists.");
@@ -152,10 +152,7 @@ public class ProductService : IProductService
     {
         try
         {
-            var existProduct = await repository.GetByNameAsync(name);
-            if (existProduct == null) return null;
-
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return null;
+            var existProduct = await repository.GetByNameAsync(name, tokenUtil.GetIdentityCompany());
 
             return existProduct;
         }

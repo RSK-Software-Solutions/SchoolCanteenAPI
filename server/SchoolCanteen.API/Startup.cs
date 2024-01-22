@@ -17,6 +17,8 @@ using SchoolCanteen.Logic.Services.FinishedProductServices;
 using SchoolCanteen.Logic.Services.ProductServices;
 using SchoolCanteen.Logic.Services.Roles;
 using SchoolCanteen.Logic.Services.UnitServices;
+using SchoolCanteen.Logic.Services.User;
+using SchoolCanteen.Logic.Services.UserServices;
 using System.Text;
 
 namespace SchoolCanteen.API;
@@ -60,6 +62,8 @@ public class Startup
         
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductRepository, ProductRepository>();
+
+        services.AddScoped<IUserService, UserService>();
 
         services.AddScoped<IUnitBaseService, UnitBaseService>();
         services.AddScoped<IUnitService, UnitService>();

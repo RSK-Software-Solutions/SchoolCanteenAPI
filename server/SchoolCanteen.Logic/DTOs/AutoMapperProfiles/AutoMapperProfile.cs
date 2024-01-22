@@ -34,6 +34,9 @@ public class AutoMapperProfile : Profile
         CreateMap<ApplicationUser, CreateUserDTO>();
         CreateMap<CreateUserDTO, ApplicationUser>();
 
+        CreateMap<ApplicationUser, EditUserDTO>();
+        CreateMap<EditUserDTO, ApplicationUser>();
+
         CreateMap<ApplicationUser, SimpleUserDTO>();
         CreateMap<SimpleUserDTO, ApplicationUser>();
 
