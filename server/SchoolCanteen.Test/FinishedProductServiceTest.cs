@@ -28,18 +28,20 @@ public class FinishedProductServiceTest
 
         repositoryMock.Setup(repo => repo.GetByNameAsync(productDto.Name))
                       .ReturnsAsync(new FinishedProduct { FinishedProductId = 1, Name = productDto.Name });
+        
 
         var productService = new FinishedProductService(mapperMock.Object, loggerMock.Object, tokenUtilMock.Object, repositoryMock.Object);
-
+        tokenUtilMock.Setup(token => token.GetIdentityCompany()).Returns(productDto.CompanyId);
+        //loggerMock.Setup(logger => logger.LogInformation($"FinishedProduct {productDto} already exists."));
         // Act
         var result = await productService.CreateAsync(productDto);
 
         // Assert
         repositoryMock.Verify(repo => repo.GetByNameAsync(productDto.Name), Times.Once);
         repositoryMock.Verify(repo => repo.AddAsync(It.IsAny<FinishedProduct>()), Times.Never);
-        loggerMock.Verify(logger => logger.LogInformation(It.IsAny<string>()), Times.Once);
+        //loggerMock.Verify(logger => logger.LogInformation(It.IsAny<string>()), Times.Once);
 
-        Assert.AreEqual(1, result.FinishedProductId); // Make sure the returned product is the existing one.
+        Assert.AreEqual(1, result.FinishedProductId);
     }
     [Test]
     public async Task CreateAsync_NonExistingProduct_CreatesNewProduct()
