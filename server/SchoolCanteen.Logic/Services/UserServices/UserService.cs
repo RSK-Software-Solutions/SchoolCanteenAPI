@@ -9,6 +9,7 @@ using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.User;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -88,13 +89,18 @@ public class UserService : IUserService
         {
             var companyId = tokenUtil.GetIdentityCompany();
 
-            var users = await userManager.Users
-                .Where(e => e.CompanyId == companyId)
-                .ToListAsync();
+            var users = await GetAllUsersFromCompanyAsync(companyId);
 
-            if (users.Count == 0) return new List<SimpleUserDTO>();
+            if (users.Count() == 0) return new List<SimpleUserDTO>();
 
-            return users.Select(user => mapper.Map<SimpleUserDTO>(user).Roles.Add(user);
+            var result =  users.Select(async user => {
+                var roles = await userManager.GetRolesAsync(user);
+                var simpleUserDto = mapper.Map<SimpleUserDTO>(user);
+                simpleUserDto.Roles.AddRange(roles);
+                return simpleUserDto;
+                }).Select(task => task.Result);
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -115,10 +121,7 @@ public class UserService : IUserService
 
             var result = mapper.Map<SimpleUserDTO>(user);
  
-            foreach (var role in await userManager.GetRolesAsync(user))
-            {
-                result.Roles.Add(role);
-            }
+            result.Roles.AddRange(await userManager.GetRolesAsync(user));
 
             return result;
         }
@@ -145,7 +148,7 @@ public class UserService : IUserService
 
             mapper.Map(userDto, user);
             var result = await userManager.UpdateAsync(user);
-            await userManager.AddToRolesAsync(user, userDto.Roles);
+            //await userManager.AddToRolesAsync(user, userDto.Roles);
 
             return result ;
         }
@@ -166,4 +169,10 @@ public class UserService : IUserService
         return true;
     }
 
+    private async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
+    {
+        return await userManager.Users
+                .Where(e => e.CompanyId == companyId)
+                .ToListAsync();
+    }
 }
