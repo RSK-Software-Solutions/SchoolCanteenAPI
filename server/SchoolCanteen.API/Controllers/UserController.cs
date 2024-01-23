@@ -20,7 +20,7 @@ namespace SchoolCanteen.API.Controllers
         }
 
 
-        [HttpGet("api/users"), Authorize (Roles = "Admin")]
+        [HttpGet("/api/users"), Authorize (Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllAsync()
         {
             try
@@ -37,7 +37,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpGet("api/users:loginName"), Authorize (Roles = "Admin")]
+        [HttpGet("/api/users:loginName"), Authorize (Roles = "Admin")]
         public async Task<ActionResult<SimpleUserDTO>> GetByNameAsync([FromQuery] string UserName)
         {
             try
@@ -54,7 +54,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpPost("api/users"), Authorize(Roles ="Admin")]
+        [HttpPost("/api/users"), Authorize(Roles ="Admin")]
         public async Task<ActionResult<SimpleUserDTO>> CreateAsync([FromBody] CreateUserDTO newUser)
         {
             try
@@ -70,7 +70,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpPut("api/users"), Authorize(Roles = "Admin")]
+        [HttpPut("/api/users"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> EditAsync([FromBody] EditUserDTO editUser)
         {
             try
@@ -84,7 +84,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpDelete("api/users"), Authorize(Roles = "Admin")]
+        [HttpDelete("/api/users"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> DeleteAsync([FromQuery] Guid id)
         {
             try
