@@ -12,5 +12,6 @@ public interface IUserService
     Task<SimpleUserDTO> GetByNameAsync(string userLogin);
     Task<IEnumerable<SimpleUserDTO>> GetAllAsync();
     Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId);
+    Task<bool> IsRolesExists(IEnumerable<string> roles);
 
 }
