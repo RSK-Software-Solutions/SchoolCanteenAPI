@@ -10,7 +10,7 @@ using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.User;
 using SchoolCanteen.Logic.Services.UserServices;
 using NUnit.Framework;
-using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;  // Use NUnit for [SetUp] and [Test] attributes
+using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 
 namespace SchoolCanteen.Test
 {
@@ -21,8 +21,10 @@ namespace SchoolCanteen.Test
         private Mock<ILogger<UserService>> logger;
         private Mock<UserService> userService;
         private Mock<ITokenUtil> tokenUtil;
-        private Mock<UserManager<ApplicationUser>> manager;
+        private Mock<UserManager<ApplicationUser>> userManager;
         private Mock<RoleManager<IdentityRole>> roleManager;
+        private IMapper mapper;
+        private Mock<IUserService> userServiceMock;
 
         [SetUp]
         public void Setup()
@@ -33,7 +35,7 @@ namespace SchoolCanteen.Test
             tokenUtil = new Mock<ITokenUtil>();
 
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
-            manager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
+            userManager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
 
             var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
@@ -41,9 +43,9 @@ namespace SchoolCanteen.Test
 
 
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
-            IMapper mapper = new Mapper(config);
-
-            userService = new Mock<UserService>(logger.Object, mapper, tokenUtil.Object, manager.Object, roleManager.Object);
+            mapper = new Mapper(config);
+            userServiceMock = new Mock<IUserService>();
+            userService = new Mock<UserService>(logger.Object, mapper, tokenUtil.Object, userManager.Object, roleManager.Object);
         }
 
 
@@ -52,8 +54,8 @@ namespace SchoolCanteen.Test
         {
             CreateUserDTO userToCreate = new CreateUserDTO { CompanyId = Guid.NewGuid(), Email = "email@mail.com", Password = "password", RoleName = "User", UserName = "userName" };
 
-            manager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
-            manager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+            userManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
+            userManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
        .ReturnsAsync(IdentityResult.Success);
 
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(userToCreate.CompanyId);
@@ -69,8 +71,8 @@ namespace SchoolCanteen.Test
         {
             CreateUserDTO userToCreate = new CreateUserDTO { CompanyId = Guid.NewGuid(), Email = "email@mail.com", Password = "password", RoleName = "fakeRole", UserName = "userName" };
 
-            manager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
-            manager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            userManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
+            userManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(userToCreate.CompanyId);
             roleManager.Setup(x => x.RoleExistsAsync(userToCreate.RoleName)).ReturnsAsync(false);
@@ -86,9 +88,9 @@ namespace SchoolCanteen.Test
             Guid userId = Guid.NewGuid();
             ApplicationUser existingUser = new ApplicationUser { Id = userId.ToString(), CompanyId = Guid.NewGuid() };
 
-            manager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            userManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(existingUser.CompanyId);
-            manager.Setup(x => x.DeleteAsync(existingUser)).ReturnsAsync(IdentityResult.Success);
+            userManager.Setup(x => x.DeleteAsync(existingUser)).ReturnsAsync(IdentityResult.Success);
 
 
             var result = await userService.Object.DeleteAsync(userId);
@@ -102,7 +104,7 @@ namespace SchoolCanteen.Test
         {
             Guid userId = Guid.NewGuid();
 
-            manager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser)null);
+            userManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync((ApplicationUser)null);
 
 
             var result = await userService.Object.DeleteAsync(userId);
@@ -117,7 +119,7 @@ namespace SchoolCanteen.Test
             Guid userId = Guid.NewGuid();
             ApplicationUser existingUser = new ApplicationUser { Id = userId.ToString(), CompanyId = Guid.NewGuid() };
 
-            manager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            userManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(Guid.NewGuid());
 
 
@@ -134,15 +136,71 @@ namespace SchoolCanteen.Test
             Guid userId = Guid.NewGuid();
             ApplicationUser existingUser = new ApplicationUser { Id = userId.ToString(), CompanyId = Guid.NewGuid() };
 
-            manager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
+            userManager.Setup(x => x.FindByIdAsync(userId.ToString())).ReturnsAsync(existingUser);
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(existingUser.CompanyId);
-            manager.Setup(x => x.DeleteAsync(existingUser)).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Delete failed" }));
+            userManager.Setup(x => x.DeleteAsync(existingUser)).ReturnsAsync(IdentityResult.Failed(new IdentityError { Description = "Delete failed" }));
 
 
             var result = await userService.Object.DeleteAsync(userId);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.Succeeded);
+        }
+
+        [Test]
+        public async Task GetAllUsersFromCompany_ReturnsAllUsers()
+        {
+            var companyId = Guid.NewGuid();
+            var user1 = new ApplicationUser { Id = Guid.NewGuid().ToString(), CompanyId = companyId };
+            var user2 = new ApplicationUser { Id = Guid.NewGuid().ToString(), CompanyId = companyId };
+            var user3 = new ApplicationUser { Id = Guid.NewGuid().ToString(), CompanyId = companyId };
+            List<ApplicationUser> users = new List<ApplicationUser> { user1, user2, user3 };
+
+            var roles1 = new List<string> { "Role1", "Role2" };
+            var roles2 = new List<string> { "Role3" };
+            var roles3 = new List<string> { "Role4", "Role5" };
+
+            var simpleUserDto1 = new SimpleUserDTO { Id = Guid.NewGuid(), UserName = user1.UserName, Roles = roles1 };
+            var simpleUserDto2 = new SimpleUserDTO { Id = Guid.NewGuid(), UserName = user2.UserName, Roles = roles2 };
+            var simpleUserDto3 = new SimpleUserDTO { Id = Guid.NewGuid(), UserName = user3.UserName, Roles = roles3 };
+
+            var expectedResults = new List<SimpleUserDTO> { simpleUserDto1, simpleUserDto2, simpleUserDto3 };
+
+            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(companyId);
+            userService.Setup(x => x.GetAllUsersFromCompanyAsync(companyId)).ReturnsAsync(users);
+            userManager.Setup(x => x.GetRolesAsync(user1)).ReturnsAsync(roles1);
+            userManager.Setup(x => x.GetRolesAsync(user2)).ReturnsAsync(roles2);
+            userManager.Setup(x => x.GetRolesAsync(user3)).ReturnsAsync(roles3);
+
+            var result = await userService.Object.GetAllAsync();
+
+            Assert.AreEqual(expectedResults.Count, result.Count());
+
+            foreach(var expectedResult in expectedResults)
+            {
+                Assert.IsTrue(result.Any());
+            }
+        }
+
+        [Test]
+        public async Task GetByName_ReturnsUser()
+        {
+            var companyId = Guid.NewGuid();
+            var user1 = new ApplicationUser { Id = Guid.NewGuid().ToString(), Email = "test@mail.com", CompanyId = companyId};
+            var user2 = new ApplicationUser { Id = Guid.NewGuid().ToString(), Email = "test@mail.com", CompanyId = companyId};
+            userManager.Setup(x => x.FindByNameAsync(It.IsAny<String>())).ReturnsAsync(user1);
+            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(companyId);
+            var roles1 = new List<string> { "Role1", "Role2" };
+            var userDto = new SimpleUserDTO { Id = Guid.NewGuid(), Email = user1.Email, Roles = roles1 };
+            userManager.Setup(x => x.GetRolesAsync(user1)).ReturnsAsync(roles1);
+
+            var result = userService.Object.GetByNameAsync(user1.Email);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Result.Email, userDto.Email);
+            Assert.AreEqual(result.Result.Roles, userDto.Roles);
+
+
         }
 
     }

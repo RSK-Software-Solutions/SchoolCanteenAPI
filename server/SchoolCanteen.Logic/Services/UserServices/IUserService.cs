@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 
 namespace SchoolCanteen.Logic.Services.User;
@@ -10,4 +11,6 @@ public interface IUserService
     Task<IdentityResult> DeleteAsync(Guid Id);
     Task<SimpleUserDTO> GetByNameAsync(string userLogin);
     Task<IEnumerable<SimpleUserDTO>> GetAllAsync();
+    Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId);
+
 }

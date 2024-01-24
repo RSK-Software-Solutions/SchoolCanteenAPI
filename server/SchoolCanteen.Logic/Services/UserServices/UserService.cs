@@ -4,14 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.User;
-using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace SchoolCanteen.Logic.Services.UserServices;
 
@@ -42,11 +39,11 @@ public class UserService : IUserService
 
             var companyId = tokenUtil.GetIdentityCompany();
             if (userDto.CompanyId != companyId) return null;
-            
+
             var roleExists = await roleManager.RoleExistsAsync(userDto.RoleName);
             if (roleExists)
             {
-                var newUser = new ApplicationUser { UserName = userDto.UserName,  Email = userDto.Email, CompanyId = userDto.CompanyId };
+                var newUser = new ApplicationUser { UserName = userDto.UserName, Email = userDto.Email, CompanyId = userDto.CompanyId };
                 var result = await userManager.CreateAsync(newUser, userDto.Password);
 
                 if (!result.Succeeded) return null;
@@ -76,7 +73,7 @@ public class UserService : IUserService
 
             return await userManager.DeleteAsync(user);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             logger.LogError(ex.Message, ex);
             throw new Exception(ex.ToString());
@@ -93,12 +90,13 @@ public class UserService : IUserService
 
             if (users.Count() == 0) return new List<SimpleUserDTO>();
 
-            var result =  users.Select(async user => {
+            var result = users.Select(async user =>
+            {
                 var roles = await userManager.GetRolesAsync(user);
                 var simpleUserDto = mapper.Map<SimpleUserDTO>(user);
                 simpleUserDto.Roles.AddRange(roles);
                 return simpleUserDto;
-                }).Select(task => task.Result);
+            }).Select(task => task.Result);
 
             return result;
         }
@@ -115,12 +113,12 @@ public class UserService : IUserService
         {
             var user = await userManager.FindByNameAsync(userLogin);
             if (user == null) return null;
-            
+
             var companyId = tokenUtil.GetIdentityCompany();
             if (user.CompanyId != companyId) return null;
 
             var result = mapper.Map<SimpleUserDTO>(user);
- 
+
             result.Roles.AddRange(await userManager.GetRolesAsync(user));
 
             return result;
@@ -142,7 +140,7 @@ public class UserService : IUserService
 
             if (!await IsRolesExists(userDto.Roles)) return new IdentityResult();
 
-            List<string> roleToRemove = new List<string> { "User", "Manager"};
+            List<string> roleToRemove = new List<string> { "User", "Manager" };
             userManager.RemoveFromRolesAsync(user, roleToRemove).Wait();
 
 
@@ -150,7 +148,7 @@ public class UserService : IUserService
             var result = await userManager.UpdateAsync(user);
             //await userManager.AddToRolesAsync(user, userDto.Roles);
 
-            return result ;
+            return result;
         }
         catch (Exception ex)
         {
@@ -163,16 +161,27 @@ public class UserService : IUserService
     {
         foreach (var role in roles)
         {
-            var existRole  = await roleManager.FindByNameAsync(role);
+            var existRole = await roleManager.FindByNameAsync(role);
             if (existRole == null) return false;
         }
         return true;
     }
 
-    private async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
+    public virtual async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
     {
-        return await userManager.Users
+        try
+        {
+            var users = await userManager.Users
                 .Where(e => e.CompanyId == companyId)
                 .ToListAsync();
+
+            return users;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
     }
+
 }
