@@ -43,6 +43,23 @@ public class FinishedProductController : ControllerBase
         }
     }
 
+    [HttpGet("/api/finished:id"), Authorize(Roles = "User")]
+    public async Task<ActionResult<IEnumerable<SimpleFinishedProductDto>>> GetByIdAsync(int id)
+    {
+        try
+        {
+            var product = await _finishedProductService.GetByIdAsync(id);
+            if (product == null) return NotFound($"No Finished Product found.");
+
+            return Ok(product);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
     /// <summary>
     /// Creates a new Finished Product asynchronously for the authenticated user.
     /// </summary>
