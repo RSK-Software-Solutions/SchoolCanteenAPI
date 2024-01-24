@@ -100,7 +100,7 @@ public class FinishedProductService : IFinishedProductService
     /// <param name="Id">The unique identifier of the FinishedProduct to be retrieved.</param>
     /// <returns></returns>
     /// <exception cref="Exception">Throws an exception if an error occurs during the retrieval process. The exception is logged with detailed information.</exception>
-    public async Task<FinishedProduct> GetByIdAsync(int Id)
+    public async Task<SimpleFinishedProductDto> GetByIdAsync(int Id)
     {
         try
         {
@@ -109,7 +109,7 @@ public class FinishedProductService : IFinishedProductService
 
             if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return null;
 
-            return existProduct;
+            return mapper.Map<SimpleFinishedProductDto>(existProduct);
         }
         catch (Exception ex)
         {

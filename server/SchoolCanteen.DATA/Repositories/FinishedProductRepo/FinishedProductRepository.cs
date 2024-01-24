@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
@@ -87,7 +88,7 @@ public class FinishedProductRepository : IFinishedProductRepository
     {
         try
         {
-            return await ctx.FinishedProducts.FirstOrDefaultAsync(e => e.FinishedProductId == id);
+            return await ctx.FinishedProducts.Include(x => x.Products).FirstOrDefaultAsync(e => e.FinishedProductId == id);
         }
         catch (Exception ex)
         {
@@ -105,7 +106,7 @@ public class FinishedProductRepository : IFinishedProductRepository
     {
         try
         {
-            return await ctx.FinishedProducts.FirstOrDefaultAsync(e => e.Name == finishedProductName);
+            return await ctx.FinishedProducts.Include(x => x.Products).FirstOrDefaultAsync(e => e.Name == finishedProductName);
         }
         catch (Exception ex)
         {

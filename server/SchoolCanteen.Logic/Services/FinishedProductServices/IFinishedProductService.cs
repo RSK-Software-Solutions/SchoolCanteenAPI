@@ -10,7 +10,7 @@ public interface IFinishedProductService
     Task<bool> UpdateAsync(SimpleFinishedProductDto finshedProduct);
     Task<bool> DeleteAsync(int Id);
     Task<FinishedProduct> GetByNameAsync(string finshedProduct);
-    Task<FinishedProduct> GetByIdAsync(int Id);
+    Task<SimpleFinishedProductDto> GetByIdAsync(int Id);
     Task<IEnumerable<SimpleFinishedProductDto>> GetByCompanyIdAsync(Guid companyId);
     Task<IEnumerable<SimpleFinishedProductDto>> GetAllAsync();
 }
