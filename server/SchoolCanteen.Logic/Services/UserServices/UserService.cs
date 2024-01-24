@@ -134,19 +134,19 @@ public class UserService : IUserService
     {
         try
         {
-            //dodać walidację czy user z tokena jest Admin lub czy user z tokena to user z Dto (czyli zmienia sam siebie)
             var user = await userManager.FindByIdAsync(userDto.Id.ToString());
-            if (user == null) return new IdentityResult();
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
 
-            if (!await IsRolesExists(userDto.Roles)) return new IdentityResult();
+            if (!await IsRolesExists(userDto.Roles))
+                return IdentityResult.Failed(new IdentityError { Description = "Roles do not exist." });
 
-            List<string> roleToRemove = new List<string> { "User", "Manager" };
-            userManager.RemoveFromRolesAsync(user, roleToRemove).Wait();
+            // Dodać walidację, czy użytkownik z tokena jest administratorem lub czy użytkownik z tokena to użytkownik z DTO (czyli zmienia sam siebie)
 
-
+            // W przypadku braku walidacji, mapujemy dane z DTO na obiekt użytkownika
             mapper.Map(userDto, user);
+
             var result = await userManager.UpdateAsync(user);
-            //await userManager.AddToRolesAsync(user, userDto.Roles);
 
             return result;
         }
@@ -157,7 +157,7 @@ public class UserService : IUserService
         }
     }
 
-    private async Task<bool> IsRolesExists(IEnumerable<string> roles)
+    public virtual async Task<bool> IsRolesExists(IEnumerable<string> roles)
     {
         foreach (var role in roles)
         {
