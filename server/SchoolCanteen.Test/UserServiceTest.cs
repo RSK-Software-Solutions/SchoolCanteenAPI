@@ -202,6 +202,32 @@ namespace SchoolCanteen.Test
 
 
         }
+        [Test]
+        public async Task UpdateAsync_SuccessfulEdit()
+        {
+            var companyId = Guid.NewGuid();
+            var roles = new List<string> { "role1", "role2" };
+            var editUser = new EditUserDTO { Id = Guid.NewGuid(), Password = "password", Email = "test@mail.com", Roles = roles, UserName = "userName" };
+            var user = new ApplicationUser { Id = editUser.Id.ToString(), Email = "email@email.com", CompanyId = companyId };
+
+
+            userManager.Setup(x => x.FindByIdAsync(editUser.Id.ToString())).ReturnsAsync(user);
+            userManager.Setup(x => x.UpdateAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(IdentityResult.Success);
+
+            userService.Setup(x => x.IsRolesExists(editUser.Roles)).ReturnsAsync(true);
+
+            var result = await userService.Object.UpdateAsync(editUser);
+
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Succeeded);
+
+            userManager.Verify(x => x.FindByIdAsync(editUser.Id.ToString()), Times.Once);
+            userService.Verify(x => x.IsRolesExists(editUser.Roles), Times.Once);
+
+            Assert.AreEqual(user.Email, editUser.Email);
+            Assert.AreEqual(user.UserName, editUser.UserName);
+        }
 
     }
+
 }

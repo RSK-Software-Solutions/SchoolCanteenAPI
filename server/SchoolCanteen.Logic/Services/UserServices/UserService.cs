@@ -157,7 +157,7 @@ public class UserService : IUserService
         }
     }
 
-    private async Task<bool> IsRolesExists(IEnumerable<string> roles)
+    public virtual async Task<bool> IsRolesExists(IEnumerable<string> roles)
     {
         foreach (var role in roles)
         {
