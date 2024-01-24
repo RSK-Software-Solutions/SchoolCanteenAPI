@@ -12,12 +12,14 @@ public class SimpleFinishedProductDto
     [Required] public string Name { get; set; }
     [Range(0, 1000)]
     public int Quantity { get; set; } 
+    public IEnumerable<SimpleProductDto> Products { get; set; }
 
-    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity)
+    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity, IEnumerable<SimpleProductDto> products)
     {
         FinishedProductId = finishedProductId;
         CompanyId = companyId;
         Name = name;
         Quantity = quantity;
+        Products = products;
     }
 }
