@@ -7,6 +7,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -17,59 +19,67 @@ using SchoolCanteen.Logic.DTOs.UserDTOs;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.IdentityModel.Tokens;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
+using SchoolCanteen.Logic.Services.User;
+using Moq;
 
 namespace SchoolCanteen.Test
 {
-    [TestFixture]
-    public class UserControllerIntegrationTests
-    {
-        private WebApplicationFactory<Startup> _factory;
+[TestFixture]
+public class UserControllerIntegrationTests
+{
+    private WebApplicationFactory<Startup> _factory;
         private IConfiguration Configuration { get; set; }
 
-        [SetUp]
-        public void Setup()
-        {
-            _factory = new WebApplicationFactory<Startup>();
+    [SetUp]
+    public void Setup()
+    {
+        _factory = new WebApplicationFactory<Startup>();
             var configurationBuilder = new ConfigurationBuilder()
                 .AddUserSecrets<Startup>();
 
             Configuration = configurationBuilder.Build();
-        }
+    }
 
-        [Test]
-        public async Task GetAllAsync_AdminRole_ReturnsOk()
+    [Test]
+    public async Task GetAllAsync_AdminRole_ReturnsOk()
+    {
+        // Arrange
+        var client = _factory.WithWebHostBuilder(builder =>
         {
-            // Arrange
-            var client = _factory.WithWebHostBuilder(builder =>
+            builder.ConfigureTestServices(services =>
             {
-                builder.ConfigureTestServices(services =>
+                services.AddSingleton<ITokenUtil>(provider =>
                 {
-                    services.AddSingleton<ITokenUtil>(provider =>
-                    {
-                        services.RemoveAll<ITokenUtil>();
-                        var mock = new Mock<ITokenUtil>();
+                    services.RemoveAll<ITokenUtil>();
+                    var mock = new Mock<ITokenUtil>();
 
-                        mock.Setup(util => util.GetIdentityCompany()).Returns(Guid.Parse("08dc18c7-54cd-4746-8647-a6c19d7c127c"));
 
-                        return mock.Object;
-                    });
+                    mock.Setup(util => util.GetIdentityCompany()).Returns(Guid.Parse("08dc18c7-54cd-4746-8647-a6c19d7c127c"));
+
+                    return mock.Object;
                 });
-            }).CreateClient();
 
-            var token = GenerateJwtTokenWithAdminRole();
+            });
+        }).CreateClient();
 
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        var token = GenerateJwtTokenWithAdminRole();
 
-            var response = await client.GetAsync("/api/users");
 
-            response.EnsureSuccessStatusCode(); // Status Code 200-299
 
-            var users = await response.Content.ReadFromJsonAsync<IEnumerable<SimpleUserDTO>>();
-            Assert.NotNull(users);
-        }
+        client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
 
-        private string GenerateJwtTokenWithAdminRole()
-        {
+
+        var response = await client.GetAsync("/api/users");
+
+
+        response.EnsureSuccessStatusCode(); // Status Code 200-299
+
+        var users = await response.Content.ReadFromJsonAsync<IEnumerable<SimpleUserDTO>>();
+        Assert.NotNull(users);
+    }
+
+    private string GenerateJwtTokenWithAdminRole()
+    {
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
@@ -78,31 +88,31 @@ namespace SchoolCanteen.Test
             var claimNameSub = config["Authentication:ClaimNameSub"];
             var issuerSigningKey = Configuration["Authentication:IssuerSigningKey"];
 
-            var claims = new List<Claim>
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, claimNameSub),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, claimNameSub),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
                 new Claim(ClaimTypes.Role, "Admin"),
-            };
+        };
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = validIssuer,
-                Audience = validAudience,
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(30), // Set expiration time
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
-                    SecurityAlgorithms.HmacSha256
-                ),
-            };
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Issuer = validIssuer,
+            Audience = validAudience,
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(30), // Set expiration time
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey)),
+                SecurityAlgorithms.HmacSha256
+            ),
+        };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
-        }
+        return tokenHandler.WriteToken(token);
+    }
 
         [TearDown]
         public void TearDown()
