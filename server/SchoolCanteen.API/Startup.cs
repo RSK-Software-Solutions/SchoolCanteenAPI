@@ -202,7 +202,10 @@ public class Startup
         tSuperAdmin.Wait();
 
         var tManager = CreateRole(roleManager, "Manager");
-        tManager.Wait();
+        tManager.Wait(); 
+        
+        var tParent = CreateRole(roleManager, "Parent");
+        tParent.Wait();
 
         var tUser = CreateRole(roleManager, "User");
         tUser.Wait();

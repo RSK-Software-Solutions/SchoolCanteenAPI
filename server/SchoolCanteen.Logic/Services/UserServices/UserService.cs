@@ -41,12 +41,11 @@ public class UserService : IUserService
             if (user != null) return null;
 
             var companyId = tokenUtil.GetIdentityCompany();
-            if (userDto.CompanyId != companyId) return null;
             
             var roleExists = await roleManager.RoleExistsAsync(userDto.RoleName);
             if (roleExists)
             {
-                var newUser = new ApplicationUser { UserName = userDto.UserName,  Email = userDto.Email, CompanyId = userDto.CompanyId };
+                var newUser = new ApplicationUser { UserName = userDto.UserName,  Email = userDto.Email, CompanyId = companyId };
                 var result = await userManager.CreateAsync(newUser, userDto.Password);
 
                 if (!result.Succeeded) return null;
