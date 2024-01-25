@@ -33,7 +33,8 @@ public class Company
     [AllowNull]
     public List<ApplicationUser> Users { get; } = new List<ApplicationUser> ();
     public List<Recipe> Recipes { get; } = new List<Recipe> ();
-    public List<Product> Products { get; } = new List<Product> ();
+    public List<Product> Products { get; } = new List<Product>();
+    public List<ProductStorage> ProductsStorage { get; } = new List<ProductStorage>();
     public List<FinishedProduct> FinishedProducts { get; } = new List<FinishedProduct> ();
     public List<Unit> Units { get; } = new List<Unit>();
 

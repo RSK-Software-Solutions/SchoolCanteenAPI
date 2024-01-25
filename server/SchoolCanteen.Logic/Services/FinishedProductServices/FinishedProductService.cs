@@ -16,6 +16,7 @@ public class FinishedProductService : IFinishedProductService
     private readonly ITokenUtil tokenUtil;
     private readonly IFinishedProductRepository repository;
     private readonly IProductRepository productRepository;
+    private readonly IProductStorageRepository productStorageRepository;
     private readonly IProductFinishedProductRepository productFnishedProductRepository;
 
     public FinishedProductService(
@@ -24,6 +25,7 @@ public class FinishedProductService : IFinishedProductService
         ITokenUtil tokenUtil,
         IFinishedProductRepository repository,
         IProductRepository productRepo,
+        IProductStorageRepository productStorageRepository,
         IProductFinishedProductRepository productFnishedProductRepository)
     {
         this.mapper = mapper;
@@ -31,6 +33,7 @@ public class FinishedProductService : IFinishedProductService
         this.tokenUtil = tokenUtil;
         this.repository = repository;
         this.productRepository = productRepo;
+        this.productStorageRepository = productStorageRepository;
         this.productFnishedProductRepository = productFnishedProductRepository;
     }
 
@@ -213,10 +216,10 @@ public class FinishedProductService : IFinishedProductService
             var existFinishedProduct = await repository.GetByIdAsync(dto.FinishedProductId, companyId);
             if (existFinishedProduct == null) return new AppMessage(false, "No Finnished Product in database.");
 
-            var existProduct = await productRepository.GetByIdAsync(dto.ProductId);
+            var existProduct = await productStorageRepository.GetByIdAsync(companyId, dto.ProductId);
             if (existProduct == null) return new AppMessage(false, "No Product in database.");
 
-            existFinishedProduct.Products.Add(existProduct);
+            existFinishedProduct.ProductStorages.Add(existProduct);
 
             await repository.UpdateAsync(existFinishedProduct);
 

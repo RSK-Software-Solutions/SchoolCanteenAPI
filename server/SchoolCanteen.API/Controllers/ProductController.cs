@@ -48,7 +48,7 @@ public class ProductController :ControllerBase
     /// <param name="productDto"></param>
     /// <returns></returns>
     [HttpPost("/api/product"), Authorize(Roles = "User")]
-    public async Task<ActionResult<bool>> CreateNewAsync([FromBody] SimpleProductDto productDto)
+    public async Task<ActionResult<bool>> CreateNewAsync([FromBody] CreateProductDto productDto)
     {
         try
         {
@@ -69,7 +69,7 @@ public class ProductController :ControllerBase
     /// <param name="productDto"></param>
     /// <returns></returns>
     [HttpPut("/api/product"), Authorize(Roles = "User")]
-    public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] SimpleProductDto productDto)
+    public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] EditProductDto productDto)
     {
         try
         {

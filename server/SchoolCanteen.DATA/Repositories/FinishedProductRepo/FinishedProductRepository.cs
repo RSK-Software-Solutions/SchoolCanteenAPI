@@ -69,7 +69,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         {
             return await ctx.FinishedProducts
                 .Where(e => e.CompanyId == companyId)
-                .Include(x => x.Products)
+                .Include(x => x.ProductStorages)
                 .OrderBy(e => e.Name)
                 .ToListAsync();
         }
@@ -90,7 +90,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         try
         {
             return await ctx.FinishedProducts
-                .Include(x => x.Products)
+                .Include(x => x.ProductStorages)
                 .Where(x => x.CompanyId == companyId)
                 .FirstOrDefaultAsync(e => e.FinishedProductId == id);
         }
@@ -111,7 +111,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         try
         {
             return await ctx.FinishedProducts
-                .Include(x => x.Products)
+                .Include(x => x.ProductStorages)
                 .Where(x => x.CompanyId == companyId)
                 .FirstOrDefaultAsync(e => e.Name == finishedProductName);
         }
