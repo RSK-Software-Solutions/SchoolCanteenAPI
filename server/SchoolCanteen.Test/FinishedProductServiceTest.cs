@@ -44,13 +44,13 @@ public class FinishedProductServiceTest
 
         tokenUtilMock.Setup(token => token.GetIdentityCompany()).Returns(companyId);
         //loggerMock.Setup(logger => logger.LogInformation($"FinishedProduct {productDto} already exists."));
+
         // Act
         var result = await productService.CreateAsync(createproductDto);
 
         // Assert
         repositoryMock.Verify(repo => repo.GetByNameAsync(productDto.Name, companyId), Times.Once);
         repositoryMock.Verify(repo => repo.AddAsync(It.IsAny<FinishedProduct>()), Times.Never);
-        //loggerMock.Verify(logger => logger.LogInformation(It.IsAny<string>()), Times.Once);
 
         Assert.AreEqual(1, result.FinishedProductId);
     }

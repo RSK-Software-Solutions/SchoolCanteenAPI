@@ -4,14 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.Models;
-using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.User;
-using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace SchoolCanteen.Logic.Services.UserServices;
 
@@ -46,6 +43,7 @@ public class UserService : IUserService
             if (roleExists)
             {
                 var newUser = new ApplicationUser { UserName = userDto.UserName,  Email = userDto.Email, CompanyId = companyId };
+
                 var result = await userManager.CreateAsync(newUser, userDto.Password);
 
                 if (!result.Succeeded) return null;
@@ -75,7 +73,7 @@ public class UserService : IUserService
 
             return await userManager.DeleteAsync(user);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             logger.LogError(ex.Message, ex);
             throw new Exception(ex.ToString());
@@ -92,12 +90,13 @@ public class UserService : IUserService
 
             if (users.Count() == 0) return new List<SimpleUserDTO>();
 
-            var result =  users.Select(async user => {
+            var result = users.Select(async user =>
+            {
                 var roles = await userManager.GetRolesAsync(user);
                 var simpleUserDto = mapper.Map<SimpleUserDTO>(user);
                 simpleUserDto.Roles.AddRange(roles);
                 return simpleUserDto;
-                }).Select(task => task.Result);
+            }).Select(task => task.Result);
 
             return result;
         }
@@ -114,12 +113,12 @@ public class UserService : IUserService
         {
             var user = await userManager.FindByNameAsync(userLogin);
             if (user == null) return null;
-            
+
             var companyId = tokenUtil.GetIdentityCompany();
             if (user.CompanyId != companyId) return null;
 
             var result = mapper.Map<SimpleUserDTO>(user);
- 
+
             result.Roles.AddRange(await userManager.GetRolesAsync(user));
 
             return result;
@@ -135,21 +134,22 @@ public class UserService : IUserService
     {
         try
         {
-            //dodać walidację czy user z tokena jest Admin lub czy user z tokena to user z Dto (czyli zmienia sam siebie)
             var user = await userManager.FindByIdAsync(userDto.Id.ToString());
-            if (user == null) return new IdentityResult();
+            if (user == null)
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
 
-            if (!await IsRolesExists(userDto.Roles)) return new IdentityResult();
+            if (!await IsRolesExists(userDto.Roles))
+                return IdentityResult.Failed(new IdentityError { Description = "Roles do not exist." });
 
-            List<string> roleToRemove = new List<string> { "User", "Manager"};
-            userManager.RemoveFromRolesAsync(user, roleToRemove).Wait();
+            // Dodać walidację, czy użytkownik z tokena jest administratorem lub czy użytkownik z tokena to użytkownik z DTO (czyli zmienia sam siebie)
 
-
+            // W przypadku braku walidacji, mapujemy dane z DTO na obiekt użytkownika
             mapper.Map(userDto, user);
+
             var result = await userManager.UpdateAsync(user);
             await userManager.AddToRolesAsync(user, userDto.Roles);
 
-            return result ;
+            return result;
         }
         catch (Exception ex)
         {
@@ -158,20 +158,31 @@ public class UserService : IUserService
         }
     }
 
-    private async Task<bool> IsRolesExists(IEnumerable<string> roles)
+    public virtual async Task<bool> IsRolesExists(IEnumerable<string> roles)
     {
         foreach (var role in roles)
         {
-            var existRole  = await roleManager.FindByNameAsync(role);
+            var existRole = await roleManager.FindByNameAsync(role);
             if (existRole == null) return false;
         }
         return true;
     }
 
-    private async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
+    public virtual async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
     {
-        return await userManager.Users
+        try
+        {
+            var users = await userManager.Users
                 .Where(e => e.CompanyId == companyId)
                 .ToListAsync();
+
+            return users;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
     }
+
 }
