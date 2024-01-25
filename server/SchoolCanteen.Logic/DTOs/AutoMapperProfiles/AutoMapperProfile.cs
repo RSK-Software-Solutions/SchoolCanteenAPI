@@ -25,6 +25,15 @@ public class AutoMapperProfile : Profile
         CreateMap<FinishedProduct, SimpleFinishedProductDto>();
         CreateMap<SimpleFinishedProductDto, FinishedProduct>();
 
+        CreateMap<FinishedProduct, SimpleFinishedProductDto>();
+        CreateMap<SimpleFinishedProductDto, FinishedProduct>();
+
+        CreateMap<SimpleProductFinishedProductDto, ProductFinishedProduct>();
+        CreateMap<ProductFinishedProduct, SimpleProductFinishedProductDto>();
+
+        CreateMap<Product, ProductForListDto>();
+        CreateMap<ProductForListDto, Product>();
+
         CreateMap<Product, SimpleProductDto>();
         CreateMap<SimpleProductDto, Product>();
 

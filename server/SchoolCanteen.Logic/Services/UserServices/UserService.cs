@@ -147,7 +147,7 @@ public class UserService : IUserService
 
             mapper.Map(userDto, user);
             var result = await userManager.UpdateAsync(user);
-            //await userManager.AddToRolesAsync(user, userDto.Roles);
+            await userManager.AddToRolesAsync(user, userDto.Roles);
 
             return result ;
         }

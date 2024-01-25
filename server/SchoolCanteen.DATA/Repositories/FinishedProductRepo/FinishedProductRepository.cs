@@ -69,6 +69,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         {
             return await ctx.FinishedProducts
                 .Where(e => e.CompanyId == companyId)
+                .Include(x => x.Products)
                 .OrderBy(e => e.Name)
                 .ToListAsync();
         }
@@ -84,11 +85,14 @@ public class FinishedProductRepository : IFinishedProductRepository
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<FinishedProduct> GetByIdAsync(int id)
+    public async Task<FinishedProduct> GetByIdAsync(int id, Guid companyId)
     {
         try
         {
-            return await ctx.FinishedProducts.Include(x => x.Products).FirstOrDefaultAsync(e => e.FinishedProductId == id);
+            return await ctx.FinishedProducts
+                .Include(x => x.Products)
+                .Where(x => x.CompanyId == companyId)
+                .FirstOrDefaultAsync(e => e.FinishedProductId == id);
         }
         catch (Exception ex)
         {
@@ -102,11 +106,14 @@ public class FinishedProductRepository : IFinishedProductRepository
     /// <param name="finishedProductName"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<FinishedProduct> GetByNameAsync(string finishedProductName)
+    public async Task<FinishedProduct> GetByNameAsync(string finishedProductName, Guid companyId)
     {
         try
         {
-            return await ctx.FinishedProducts.Include(x => x.Products).FirstOrDefaultAsync(e => e.Name == finishedProductName);
+            return await ctx.FinishedProducts
+                .Include(x => x.Products)
+                .Where(x => x.CompanyId == companyId)
+                .FirstOrDefaultAsync(e => e.Name == finishedProductName);
         }
         catch (Exception ex)
         {

@@ -21,14 +21,6 @@ public class RolesService : IRolesService
         this.mapper = mapper;
     }
 
-    public async Task<IdentityResult> CreateRoleAsync(string roleName)
-    {
-        var roleExists = await _roleManager.RoleExistsAsync(roleName);
-        if (roleExists) return IdentityResult.Failed(new IdentityError { Description = $"Role {roleName} already exists"} );
-
-        return await _roleManager.CreateAsync(new IdentityRole(roleName));
-    }
-
     public async Task<IEnumerable<SimpleRoleDTO>> GetRolesAsync()
     {
         var roles = await _roleManager.Roles

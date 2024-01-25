@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
+using SchoolCanteen.DATA.Repositories.ProductRepo;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 
@@ -14,17 +15,23 @@ public class FinishedProductService : IFinishedProductService
     private readonly ILogger logger;
     private readonly ITokenUtil tokenUtil;
     private readonly IFinishedProductRepository repository;
+    private readonly IProductRepository productRepository;
+    private readonly IProductFinishedProductRepository productFnishedProductRepository;
 
     public FinishedProductService(
         IMapper mapper, 
         ILogger<FinishedProductService> logger,
         ITokenUtil tokenUtil,
-        IFinishedProductRepository repository)
+        IFinishedProductRepository repository,
+        IProductRepository productRepo,
+        IProductFinishedProductRepository productFnishedProductRepository)
     {
         this.mapper = mapper;
         this.logger = logger;
         this.tokenUtil = tokenUtil;
         this.repository = repository;
+        this.productRepository = productRepo;
+        this.productFnishedProductRepository = productFnishedProductRepository;
     }
 
     /// <summary>
@@ -33,11 +40,11 @@ public class FinishedProductService : IFinishedProductService
     /// </summary>
     /// <param name="name">The name of the FinishedProduct to be created.</param>
     /// <returns></returns>
-    public async Task<FinishedProduct> CreateAsync(SimpleFinishedProductDto dto)
+    public async Task<FinishedProduct> CreateAsync(CreateFinishedProductDto dto)
     {
-        if (tokenUtil.GetIdentityCompany() != dto.CompanyId) return null;
+        var companyId = tokenUtil.GetIdentityCompany();
 
-        var existFinishedProduct = await repository.GetByNameAsync(dto.Name);
+        var existFinishedProduct = await repository.GetByNameAsync(dto.Name, companyId);
         if (existFinishedProduct != null)
         {
             logger.LogInformation($"FinishedProduct {existFinishedProduct} already exists.");
@@ -45,6 +52,8 @@ public class FinishedProductService : IFinishedProductService
         }
 
         var newFinishedProduct = mapper.Map<FinishedProduct>(dto);
+        newFinishedProduct.CompanyId = companyId;
+
         await repository.AddAsync(newFinishedProduct);
 
         return newFinishedProduct;
@@ -94,6 +103,7 @@ public class FinishedProductService : IFinishedProductService
             throw new Exception(ex.ToString() );
         }
     }
+
     /// <summary>
     /// Retrieves a FinishedProduct by its unique identifier asynchronously.
     /// </summary>
@@ -104,10 +114,9 @@ public class FinishedProductService : IFinishedProductService
     {
         try
         {
-            var existProduct =  await repository.GetByIdAsync(Id);
-            if (existProduct == null) return null;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return null;
+            var existProduct =  await repository.GetByIdAsync(Id, companyId);
 
             return mapper.Map<SimpleFinishedProductDto>(existProduct);
         }
@@ -117,6 +126,7 @@ public class FinishedProductService : IFinishedProductService
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Retrieves a FinishedProduct by its name asynchronously.
     /// </summary>
@@ -127,10 +137,9 @@ public class FinishedProductService : IFinishedProductService
     {
         try
         {
-            var existProduct = await repository.GetByNameAsync(finshedProduct);
-            if (existProduct == null) return null;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return null;
+            var existProduct = await repository.GetByNameAsync(finshedProduct, companyId);
 
             return existProduct;
         }
@@ -151,10 +160,10 @@ public class FinishedProductService : IFinishedProductService
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(Id);
-            if (existProduct == null) return false;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return false;
+            var existProduct = await repository.GetByIdAsync(Id, companyId);
+            if (existProduct == null) return false;
 
             await repository.DeleteAsync(existProduct);
             return true;
@@ -180,10 +189,10 @@ public class FinishedProductService : IFinishedProductService
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(finshedProduct.FinishedProductId);
-            if (existProduct == null) return false;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return false;
+            var existProduct = await repository.GetByIdAsync(finshedProduct.FinishedProductId, companyId);
+            if (existProduct == null) return false;
 
             await repository.UpdateAsync(existProduct);
             return true;
@@ -193,5 +202,35 @@ public class FinishedProductService : IFinishedProductService
             logger.LogError(ex.Message, ex);
             throw new Exception(ex.ToString());
         }
+    }
+
+    public async Task<AppMessage> AddProductToFinishedProduct(SimpleProductFinishedProductDto dto)
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existFinishedProduct = await repository.GetByIdAsync(dto.FinishedProductId, companyId);
+            if (existFinishedProduct == null) return new AppMessage(false, "No Finnished Product in database.");
+
+            var existProduct = await productRepository.GetByIdAsync(dto.ProductId);
+            if (existProduct == null) return new AppMessage(false, "No Product in database.");
+
+            existFinishedProduct.Products.Add(existProduct);
+
+            await repository.UpdateAsync(existFinishedProduct);
+
+            return new AppMessage(true, "Product hass been added to Finished Product");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
+    public async Task<AppMessage> RemoveProductFromFinishedProduct(SimpleProductFinishedProductDto dto)
+    {
+        throw new NotImplementedException();
     }
 }

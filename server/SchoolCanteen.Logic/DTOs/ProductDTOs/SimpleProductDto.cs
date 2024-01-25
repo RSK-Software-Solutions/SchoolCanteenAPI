@@ -1,6 +1,4 @@
-﻿
-using SchoolCanteen.DATA.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SchoolCanteen.Logic.DTOs.ProductDTOs;
 

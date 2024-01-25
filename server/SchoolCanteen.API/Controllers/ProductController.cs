@@ -54,7 +54,7 @@ public class ProductController :ControllerBase
         {
             var isCreated = await _productService.CreateAsync(productDto);
             if (isCreated == null) return NotFound("Product not added. You have no rights.");
-            return Ok();
+            return Ok(isCreated);
         }
         catch (Exception ex)
         {
