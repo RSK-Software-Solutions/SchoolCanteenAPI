@@ -9,9 +9,6 @@ namespace SchoolCanteen.Logic.DTOs.UserDTOs;
 public class EditUserDTO
 {
     public Guid Id { get; set; }
-    public string UserName { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
     [AllowNull]
     [MaxLength(100)]
     public string FirstName { get; set; }

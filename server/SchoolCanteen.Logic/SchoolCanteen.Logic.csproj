@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Extentions\" />
+    <Folder Include="Services\ProcesServices\" />
   </ItemGroup>
 
 </Project>

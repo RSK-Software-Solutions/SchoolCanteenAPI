@@ -43,18 +43,50 @@ public class FinishedProductController : ControllerBase
         }
     }
 
+    [HttpGet("/api/finished/{id}"), Authorize(Roles = "User")]
+    public async Task<ActionResult<IEnumerable<SimpleFinishedProductDto>>> GetByIdAsync(int id)
+    {
+        try
+        {
+            var product = await _finishedProductService.GetByIdAsync(id);
+            if (product == null) return NotFound($"No Finished Product found.");
+
+            return Ok(product);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
     /// <summary>
     /// Creates a new Finished Product asynchronously for the authenticated user.
     /// </summary>
     /// <param name="createFinishedProductDto">The data to create the new Finished Product.</param>
     /// <returns></returns>
     [HttpPost("/api/finished"), Authorize (Roles = "User")]
-    public async Task<ActionResult<bool>> CreateNewAsync([FromBody] SimpleFinishedProductDto createFinishedProductDto)
+    public async Task<ActionResult<bool>> CreateNewAsync([FromBody] CreateFinishedProductDto createFinishedProductDto)
     {
         try
         {
             var newFinishedProduct = await _finishedProductService.CreateAsync(createFinishedProductDto);
-            return Ok();
+            return Ok(newFinishedProduct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("/api/finished/product"), Authorize(Roles = "User")]
+    public async Task<ActionResult<bool>> AddProductToFinishedProductAsync([FromBody] SimpleProductFinishedProductDto dto)
+    {
+        try
+        {
+            var newProductFinishedProduct = await _finishedProductService.AddProductToFinishedProduct(dto);
+            return Ok(newProductFinishedProduct);
         }
         catch (Exception ex)
         {

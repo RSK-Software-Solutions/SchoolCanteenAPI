@@ -59,7 +59,8 @@ public class Startup
         
         services.AddScoped<IFinishedProductService, FinishedProductService>();
         services.AddScoped<IFinishedProductRepository, FinishedProductRepository>();
-        
+        services.AddScoped<IProductFinishedProductRepository, ProductFinishedProductRepository>(); 
+
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductRepository, ProductRepository>();
 
@@ -202,7 +203,10 @@ public class Startup
         tSuperAdmin.Wait();
 
         var tManager = CreateRole(roleManager, "Manager");
-        tManager.Wait();
+        tManager.Wait(); 
+        
+        var tParent = CreateRole(roleManager, "Parent");
+        tParent.Wait();
 
         var tUser = CreateRole(roleManager, "User");
         tUser.Wait();

@@ -7,17 +7,19 @@ namespace SchoolCanteen.Logic.DTOs.ProductDTOs;
 public class SimpleFinishedProductDto
 {
     public int FinishedProductId { get; set; }
-    [Required] public Guid CompanyId { get; set; }
+    //[Required] public Guid CompanyId { get; set; }
     [MaxLength(100)]
     [Required] public string Name { get; set; }
     [Range(0, 1000)]
     public int Quantity { get; set; } 
+    public IEnumerable<ProductForListDto> Products { get; set; }
 
-    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity)
+    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity, IEnumerable<ProductForListDto> products)
     {
         FinishedProductId = finishedProductId;
-        CompanyId = companyId;
+        //CompanyId = companyId;
         Name = name;
         Quantity = quantity;
+        Products = products;
     }
 }
