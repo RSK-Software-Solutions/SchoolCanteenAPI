@@ -9,6 +9,7 @@ public class DatabaseApiContext : DbContext
     public DbSet<Company> Companies { get; set; }
     public DbSet<Unit> Units { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ProductStorage> ProductStorages { get; set; }
     public DbSet<FinishedProduct> FinishedProducts { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<RecipeDetail> RecipeDetails { get; set; }

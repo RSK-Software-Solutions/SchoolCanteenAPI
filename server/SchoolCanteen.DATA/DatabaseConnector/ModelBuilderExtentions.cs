@@ -34,6 +34,12 @@ public static class ModelBuilderExtentions
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Company>()
+            .HasMany(p => p.ProductsStorage)
+            .WithOne(c => c.Company)
+            .HasForeignKey(p => p.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Company>()
             .HasMany(p => p.FinishedProducts)
             .WithOne(c => c.Company)
             .HasForeignKey(p => p.CompanyId)
@@ -69,16 +75,31 @@ public static class ModelBuilderExtentions
     {
         modelBuilder.Entity<Product>().HasKey(c => c.ProductId);
 
-        modelBuilder.Entity<Product>()
-            .HasMany(e => e.FinishedProducts)
-            .WithMany(e => e.Products)
-            .UsingEntity(
-                "ProductFinishedProduct",
-                l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
-                r => r.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId").HasPrincipalKey(nameof(Product.ProductId)),
-                j => j.HasKey("ProductId", "FinishedProductId"));
+        //modelBuilder.Entity<Product>()
+        //    .HasMany(e => e.FinishedProducts)
+        //    .WithMany(e => e.Product)
+        //    .UsingEntity(
+        //        "ProductFinishedProduct",
+        //        l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
+        //        r => r.HasOne(typeof(Product)).WithMany().HasForeignKey("ProductId").HasPrincipalKey(nameof(Product.ProductId)),
+        //        j => j.HasKey("ProductId", "FinishedProductId"));
+
     }
 
+    public static void ConfigureProductStorage(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<ProductStorage>().HasKey(c => c.ProductId);
+
+        modelBuilder.Entity<ProductStorage>()
+            .HasMany(e => e.FinishedProducts)
+            .WithMany(e => e.ProductStorages)
+            .UsingEntity(
+                "ProductStorageFinishedProduct",
+                l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
+                r => r.HasOne(typeof(ProductStorage)).WithMany().HasForeignKey("ProductStorageId").HasPrincipalKey(nameof(ProductStorage.ProductStorageId)),
+                j => j.HasKey("ProductStorageId", "FinishedProductId"));
+
+    }
     public static void ConfigureFinishedProduct(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);

@@ -37,6 +37,9 @@ public class AutoMapperProfile : Profile
         CreateMap<Product, SimpleProductDto>();
         CreateMap<SimpleProductDto, Product>();
 
+        CreateMap<CreateProductDto, Product>();
+        CreateMap<EditProductDto, Product>();
+
         CreateMap<Unit, SimpleUnitDto>();
         CreateMap<SimpleUnitDto, Unit>();
 

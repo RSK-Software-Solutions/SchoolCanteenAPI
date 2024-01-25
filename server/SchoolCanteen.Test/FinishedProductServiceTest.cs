@@ -23,6 +23,7 @@ public class FinishedProductServiceTest
         var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1);
         var repositoryMock = new Mock<IFinishedProductRepository>();
         var repositoryProductMock = new Mock<IProductRepository>();
+        var repositoryProductStorageMock = new Mock<IProductStorageRepository>();
         var repositoryProdFinishProdMock = new Mock<IProductFinishedProductRepository>();
         var tokenUtilMock = new Mock<ITokenUtil>();
         var loggerMock = new Mock<ILogger<FinishedProductService>>();
@@ -40,6 +41,7 @@ public class FinishedProductServiceTest
             tokenUtilMock.Object, 
             repositoryMock.Object,
             repositoryProductMock.Object,
+            repositoryProductStorageMock.Object,
             repositoryProdFinishProdMock.Object);
 
         tokenUtilMock.Setup(token => token.GetIdentityCompany()).Returns(companyId);
@@ -64,6 +66,7 @@ public class FinishedProductServiceTest
         var repositoryMock = new Mock<IFinishedProductRepository>();
         var tokenUtilMock = new Mock<ITokenUtil>();
         var repositoryProductMock = new Mock<IProductRepository>();
+        var repositoryProductStorageMock = new Mock<IProductStorageRepository>();
         var repositoryProdFinishProdMock = new Mock<IProductFinishedProductRepository>();
         var loggerMock = new Mock<ILogger<FinishedProductService>>();
         var mapperMock = new Mock<IMapper>();
@@ -83,6 +86,7 @@ public class FinishedProductServiceTest
             tokenUtilMock.Object,
             repositoryMock.Object,
             repositoryProductMock.Object,
+            repositoryProductStorageMock.Object,
             repositoryProdFinishProdMock.Object);
 
         // Act

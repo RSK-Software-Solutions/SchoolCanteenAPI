@@ -83,11 +83,11 @@ public class ProductRepository : IProductRepository
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<Product> GetByIdAsync(int id)
+    public async Task<Product> GetByIdAsync(int id, Guid companyId)
     {
         try
         {
-            return await ctx.Products.FirstOrDefaultAsync(e => e.ProductId == id);
+            return await ctx.Products.FirstOrDefaultAsync(e => e.ProductId == id && e.CompanyId == companyId);
         }
         catch (Exception ex)
         {

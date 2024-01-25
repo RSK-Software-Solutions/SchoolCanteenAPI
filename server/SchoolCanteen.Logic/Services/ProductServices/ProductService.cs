@@ -33,11 +33,11 @@ public class ProductService : IProductService
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
-    public async Task<Product> CreateAsync(SimpleProductDto dto)
+    public async Task<Product> CreateAsync(CreateProductDto dto)
     {
-        if (tokenUtil.GetIdentityCompany() != dto.CompanyId) return null;
+        var companyId = tokenUtil.GetIdentityCompany();
 
-        var existProduct = await repository.GetByNameAsync(dto.Name, dto.CompanyId);
+        var existProduct = await repository.GetByNameAsync(dto.Name, companyId);
         if (existProduct != null)
         {
             logger.LogInformation($"Product {existProduct} already exists.");
@@ -45,6 +45,7 @@ public class ProductService : IProductService
         }
 
         var newProduct = mapper.Map<Product>(dto);
+        newProduct.CompanyId = companyId;
         await repository.AddAsync(newProduct);
 
         return newProduct;
@@ -60,10 +61,11 @@ public class ProductService : IProductService
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(id);
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existProduct = await repository.GetByIdAsync(id, companyId);
             if (existProduct == null) return false;
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return false;
 
             await repository.DeleteAsync(existProduct);
             return true;
@@ -99,28 +101,6 @@ public class ProductService : IProductService
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="companyId"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public async Task<IEnumerable<SimpleProductDto>> GetByCompanyIdAsync(Guid companyId)
-    {
-        try
-        {
-            if (tokenUtil.GetIdentityCompany() != companyId) return null;
-            var products = await repository.GetAllAsync(companyId);
-
-            return products.Select(product => mapper.Map<SimpleProductDto>(product));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            throw new Exception(ex.ToString());
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
@@ -128,10 +108,10 @@ public class ProductService : IProductService
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(id);
-            if (existProduct == null) return null;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != existProduct.CompanyId) return null;
+            var existProduct = await repository.GetByIdAsync(id, companyId);
+            if (existProduct == null) return null;
 
             return existProduct;
         }
@@ -169,14 +149,14 @@ public class ProductService : IProductService
     /// <param name="productDto"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<bool> UpdateAsync(SimpleProductDto productDto)
+    public async Task<bool> UpdateAsync(EditProductDto productDto)
     {
         try
         {
-            var existProduct = await repository.GetByIdAsync(productDto.ProductId);
-            if (existProduct == null) return false;
+            var companyId = tokenUtil.GetIdentityCompany();
 
-            if (tokenUtil.GetIdentityCompany() != productDto.CompanyId) return false;
+            var existProduct = await repository.GetByIdAsync(productDto.ProductId, companyId);
+            if (existProduct == null) return false;
 
             mapper.Map(productDto, existProduct);
 

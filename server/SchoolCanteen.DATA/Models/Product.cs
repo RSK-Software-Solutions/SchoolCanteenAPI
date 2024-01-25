@@ -14,10 +14,10 @@ public class Product
     [Required] public string Name { get; set; }
     public float Price { get; set; } = 0;
     public float Quantity { get; set; } = 0;
-    public int ValidityPeriod { get; set; } = 0;
     public bool Active { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }
     public List<FinishedProduct> FinishedProducts { get; set; } = new List<FinishedProduct>();
     public List<RecipeDetail> RecipeDetails { get; set; } = new List<RecipeDetail>();
+    public List<ProductStorage> ProductStorages { get; set; } = new List<ProductStorage>();
 }

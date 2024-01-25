@@ -15,5 +15,7 @@ public class FinishedProduct
     public float Price { get; set; } = 0;
     public int Quantity { get; set; } = 0;
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }
-    public List<Product> Products { get; set;} = new List<Product>();
+    //public List<Product> Products { get; set;} = new List<Product>();
+    public List<ProductStorage> ProductStorages { get; set; } = new List<ProductStorage>();
+
 }
