@@ -34,6 +34,8 @@ namespace SchoolCanteen.Test
             logger = new Mock<ILogger<UserService>>();
             tokenUtil = new Mock<ITokenUtil>();
 
+            
+
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             userManager = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
@@ -52,13 +54,14 @@ namespace SchoolCanteen.Test
         [Test]
         public async Task CreateUser_SuccessfulCreate()
         {
-            CreateUserDTO userToCreate = new CreateUserDTO { CompanyId = Guid.NewGuid(), Email = "email@mail.com", Password = "password", RoleName = "User", UserName = "userName" };
+            var companyId = Guid.NewGuid();
+            CreateUserDTO userToCreate = new CreateUserDTO { Email = "email@mail.com", Password = "password", RoleName = "User", UserName = "userName" };
 
             userManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
             userManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
        .ReturnsAsync(IdentityResult.Success);
 
-            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(userToCreate.CompanyId);
+            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(companyId);
             roleManager.Setup(x => x.RoleExistsAsync(userToCreate.RoleName)).ReturnsAsync(true);
 
             var result = await userService.Object.CreateAsync(userToCreate);
@@ -69,12 +72,13 @@ namespace SchoolCanteen.Test
         [Test]
         public async Task CreateUser_RoleNotExist_ReturnsNewIdentityResult()
         {
-            CreateUserDTO userToCreate = new CreateUserDTO { CompanyId = Guid.NewGuid(), Email = "email@mail.com", Password = "password", RoleName = "fakeRole", UserName = "userName" };
+            var companyId = Guid.NewGuid();
+            CreateUserDTO userToCreate = new CreateUserDTO { Email = "email@mail.com", Password = "password", RoleName = "fakeRole", UserName = "userName" };
 
             userManager.Setup(x => x.FindByEmailAsync(userToCreate.Email)).ReturnsAsync((ApplicationUser)null);
             userManager.Setup(x => x.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
-            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(userToCreate.CompanyId);
+            tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(companyId);
             roleManager.Setup(x => x.RoleExistsAsync(userToCreate.RoleName)).ReturnsAsync(false);
 
             var result = await userService.Object.CreateAsync(userToCreate);
@@ -205,7 +209,7 @@ namespace SchoolCanteen.Test
         {
             var companyId = Guid.NewGuid();
             var roles = new List<string> { "role1", "role2" };
-            var editUser = new EditUserDTO { Id = Guid.NewGuid(), Password = "password", Email = "test@mail.com", Roles = roles, UserName = "userName" };
+            var editUser = new EditUserDTO { Id = Guid.NewGuid(), Roles = roles, FirstName = "firstName", LastName = "lastName" };
             var user = new ApplicationUser { Id = editUser.Id.ToString(), Email = "email@email.com", CompanyId = companyId };
 
 
@@ -222,8 +226,8 @@ namespace SchoolCanteen.Test
             userManager.Verify(x => x.FindByIdAsync(editUser.Id.ToString()), Times.Once);
             userService.Verify(x => x.IsRolesExists(editUser.Roles), Times.Once);
 
-            Assert.AreEqual(user.Email, editUser.Email);
-            Assert.AreEqual(user.UserName, editUser.UserName);
+            Assert.AreEqual(user.Email, editUser.FirstName);
+            Assert.AreEqual(user.UserName, editUser.LastName);
         }
 
     }
