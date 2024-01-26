@@ -100,6 +100,7 @@ public static class ModelBuilderExtentions
                 j => j.HasKey("ProductStorageId", "FinishedProductId"));
 
     }
+
     public static void ConfigureFinishedProduct(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);
@@ -119,7 +120,12 @@ public static class ModelBuilderExtentions
 
     public static void ConfigureRecipeDetail(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<RecipeDetail>().HasKey(c => c.RecipeDetailId);
+        modelBuilder.Entity<RecipeDetail>()
+            .Property(c => c.RecipeDetailId)
+            .UseMySqlIdentityColumn();
+
+        modelBuilder.Entity<RecipeDetail>()
+            .HasKey(c => c.RecipeDetailId);
 
         modelBuilder.Entity<RecipeDetail>()
             .HasOne(p => p.Product)

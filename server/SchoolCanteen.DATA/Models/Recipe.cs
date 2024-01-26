@@ -13,6 +13,6 @@ public class Recipe
     [MaxLength(100)]
     [Required] public string Name { get; set; }
     public float Quantity { get; set; } = 0;
-    public List<RecipeDetail> Details { get; set; }
+    public List<RecipeDetail> Details { get; set; } = new List<RecipeDetail>();
 
 }
