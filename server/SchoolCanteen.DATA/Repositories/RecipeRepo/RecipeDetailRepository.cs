@@ -86,35 +86,13 @@ public class RecipeDetailRepository : IRecipeDetailRepository
     {
         try
         {
-            return await ctx.RecipeDetails.FirstOrDefaultAsync(e => e.RecipeDetailId == id);
+            return await ctx.RecipeDetails
+                .FirstOrDefaultAsync(e => e.RecipeDetailId == id);
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message, ex);
             throw new Exception(ex.ToString());
-        }
-    }
-    /// <summary>
-    /// Asynchronously updates a RecipeDetail in the database.
-    /// </summary>
-    /// <param name="detail">The RecipeDetail object to be updated.</param>
-    /// <returns>
-    /// A Task representing the asynchronous operation. The Task result is a boolean value:
-    /// - True if the RecipeDetail is successfully updated in the database.
-    /// - False if there is an issue updating the RecipeDetail, and the exception is logged.
-    /// </returns>
-    public async Task<bool> UpdateAsync(RecipeDetail detail)
-    {
-        try
-        {
-            ctx.RecipeDetails.Update(detail);
-            await ctx.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            return false;
         }
     }
 }
