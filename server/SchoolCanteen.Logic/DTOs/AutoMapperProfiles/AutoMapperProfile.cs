@@ -35,11 +35,13 @@ public class AutoMapperProfile : Profile
         /********************************************** RecipeDetails  **/
         CreateMap<RecipeDetail, SimpleRecipeDetailsDto>();
 
+        CreateMap<SimpleRecipeDetailsDto, RecipeDetail>();
         CreateMap<CreateRecipeDetailsDto, RecipeDetail>();
 
         /********************************************** Recipe  **/
         CreateMap<Recipe, SimpleRecipeDto>();
 
+        CreateMap<SimpleRecipeDto, Recipe>();
         CreateMap<CreateRecipeDto, Recipe>();
         CreateMap<EditRecipeDto, Recipe>();
 
@@ -53,6 +55,7 @@ public class AutoMapperProfile : Profile
 
         /********************************************** Unit  **/
         CreateMap<SimpleUnitDto, Unit>();
+        CreateMap<Unit, SimpleUnitDto>();
 
         /********************************************** ApplicationUser  **/
         CreateMap<CreateUserDTO, ApplicationUser>();

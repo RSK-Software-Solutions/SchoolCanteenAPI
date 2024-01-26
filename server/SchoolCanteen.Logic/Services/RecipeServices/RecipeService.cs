@@ -40,7 +40,7 @@ public class RecipeService : IRecipeService
 
         //await detailRepository.AddAsync(newRecipeDetails);
         existRecipe.Details.Add(newRecipeDetails);
-        repository.UpdateAsync(existRecipe);
+        await repository.UpdateAsync(existRecipe);
 
         return mapper.Map<SimpleRecipeDto>(existRecipe);
     }
@@ -89,7 +89,22 @@ public class RecipeService : IRecipeService
             var companyId = tokenUtil.GetIdentityCompany();
             var recipes = await repository.GetAllAsync(companyId);
 
-            return recipes.Select(recipe => mapper.Map<SimpleRecipeDto>(recipe));
+            var result = recipes.Select(recipe =>
+            {
+                var simpleRecipeDto = mapper.Map<SimpleRecipeDto>(recipe);
+
+                return simpleRecipeDto;
+            });
+
+                //var simpleRecipeDto = mapper.Map<SimpleRecipeDto>(recipe);
+                //var simpleDetailsDto = recipe.Details.Select(detail => mapper.Map<SimpleRecipeDetailsDto>(detail)).ToList();
+                //simpleRecipeDto.Details = simpleDetailsDto;
+                //simpleRecipeDtos.Add(simpleRecipeDto);
+
+
+
+            return result;
+            //return recipes.Select(recipe => mapper.Map<SimpleRecipeDto>(recipe));
         }
         catch (Exception ex)
         {

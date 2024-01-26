@@ -74,7 +74,7 @@ public class RecipeRepository : IRecipeRepository
                 .Where(e => e.CompanyId ==  companyId)
                 .Include(e => e.Details)
                     .ThenInclude(d => d.Product)
-                    .ThenInclude(d => d.Unit)
+                        .ThenInclude(p => p.Unit)
                 .OrderBy(e => e.Name)
                 .ToListAsync();
         }
