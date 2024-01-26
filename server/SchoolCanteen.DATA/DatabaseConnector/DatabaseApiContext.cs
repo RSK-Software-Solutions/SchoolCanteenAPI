@@ -26,7 +26,7 @@ public class DatabaseApiContext : DbContext
         modelBuilder.ConfigureProduct();
         modelBuilder.ConfigureUnit();
         modelBuilder.ConfigureFinishedProduct();
-        modelBuilder.ConfigureRecipeDetail();
         modelBuilder.ConfigureRecipe();
+        modelBuilder.ConfigureRecipeDetail();
     }
 }

@@ -41,7 +41,8 @@ public class RecipeRepositoryTest
     public async Task GetByIdAsync_WithExistingId_ReturnsRecipe()
     {
         // Act
-        var result = await recipeRepository.GetByIdAsync(2);
+        var companyId = Guid.NewGuid();
+        var result = await recipeRepository.GetByIdAsync(2, companyId);
 
         // Assert
         Assert.NotNull(result);

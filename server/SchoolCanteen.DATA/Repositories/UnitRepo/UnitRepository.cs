@@ -75,6 +75,7 @@ public class UnitRepository : IUnitRepository
         try
         {
             return await ctx.Units
+                .Where(e => e.CompanyId == companyId)
                 .OrderBy(e => e.Name)
                 .ToListAsync();
         }

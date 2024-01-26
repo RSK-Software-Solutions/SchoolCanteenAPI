@@ -1,18 +1,16 @@
 ﻿
+using SchoolCanteen.DATA.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SchoolCanteen.DATA.Models;
+namespace SchoolCanteen.Logic.DTOs.RecipeDTOs;
 
-public class Recipe
+public class EditRecipeDto
 {
     public int RecipeId { get; set; }
-    [Required] public Guid CompanyId { get; set; }
-    public Company Company { get; set; }
     [Required] public int UnitId { get; set; }
     public Unit Unit { get; set; }
     [MaxLength(100)]
     [Required] public string Name { get; set; }
     public float Quantity { get; set; } = 0;
-    public List<RecipeDetail> Details { get; set; } = new List<RecipeDetail>();
-
+    public List<RecipeDetail> Details { get; set; }
 }

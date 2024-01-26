@@ -8,6 +8,7 @@ using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.CompanyRepo;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.DATA.Repositories.ProductRepo;
+using SchoolCanteen.DATA.Repositories.RecipeRepo;
 using SchoolCanteen.DATA.Repositories.UnitRepo;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;
 using SchoolCanteen.Logic.Services.Authentication;
@@ -15,6 +16,7 @@ using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.CompanyServices;
 using SchoolCanteen.Logic.Services.FinishedProductServices;
 using SchoolCanteen.Logic.Services.ProductServices;
+using SchoolCanteen.Logic.Services.RecipeServices;
 using SchoolCanteen.Logic.Services.Roles;
 using SchoolCanteen.Logic.Services.UnitServices;
 using SchoolCanteen.Logic.Services.User;
@@ -64,6 +66,12 @@ public class Startup
 
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IProductRepository, ProductRepository>();
+
+        services.AddScoped<IRecipeService, RecipeService>();
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+
+        services.AddScoped<IRecipeDetailsService, RecipeDetailsService>();
+        services.AddScoped<IRecipeDetailRepository, RecipeDetailRepository>();
 
         services.AddScoped<IUserService, UserService>();
 

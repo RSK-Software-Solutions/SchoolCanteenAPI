@@ -11,6 +11,5 @@ public interface IUnitService
     Task<bool> DeleteAsync(int id);
     Task<Unit> GetByIdAsync(int id);
     Task<Unit> GetByNameAsync(string name);
-    Task<IEnumerable<SimpleUnitDto>> GetByCompanyIdAsync(Guid companyId);
     Task<IEnumerable<SimpleUnitDto>> GetAllAsync();
 }

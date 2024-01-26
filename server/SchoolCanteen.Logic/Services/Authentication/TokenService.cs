@@ -13,7 +13,7 @@ namespace SchoolCanteen.Logic.Services.Authentication;
 
 public class TokenService : ITokenService
 {
-    private const int ExpirationMinutes = 30;
+    private const int ExpirationMinutes = 120;
     private readonly IConfiguration _configuration;
 
     public TokenService(IConfiguration configuration)

@@ -31,9 +31,9 @@ public class UnitService : IUnitService
 
     public async Task<Unit> CreateAsync(SimpleUnitDto unitDto)
     {
-        if (tokenUtil.GetIdentityCompany() != unitDto.CompanyId) return null;
+        var companyId = tokenUtil.GetIdentityCompany();
 
-        var existUnit = await repository.GetByNameAsync(unitDto.Name, unitDto.CompanyId);
+        var existUnit = await repository.GetByNameAsync(unitDto.Name, companyId);
         if (existUnit != null)
         {
             logger.LogInformation($"Unit {existUnit} already exists.");
@@ -70,22 +70,6 @@ public class UnitService : IUnitService
         try
         {
             var companyId = tokenUtil.GetIdentityCompany();
-            var units = await repository.GetAllAsync(companyId);
-
-            return units.Select(unit => mapper.Map<SimpleUnitDto>(unit));
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            throw new Exception(ex.ToString());
-        }
-    }
-
-    public async Task<IEnumerable<SimpleUnitDto>> GetByCompanyIdAsync(Guid companyId)
-    {
-        try
-        {
-            if (tokenUtil.GetIdentityCompany() != companyId) return null;
             var units = await repository.GetAllAsync(companyId);
 
             return units.Select(unit => mapper.Map<SimpleUnitDto>(unit));

@@ -18,7 +18,7 @@ public class ProductService : IProductService
 
     public ProductService(
         IMapper mapper,
-        ILogger<FinishedProductService> logger,
+        ILogger<ProductService> logger,
         ITokenUtil tokenUtil,
         IProductRepository repository)
     {
@@ -65,7 +65,6 @@ public class ProductService : IProductService
 
             var existProduct = await repository.GetByIdAsync(id, companyId);
             if (existProduct == null) return false;
-
 
             await repository.DeleteAsync(existProduct);
             return true;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.Logic.DTOs.CompanyDTOs;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
+using SchoolCanteen.Logic.DTOs.RecipeDTOs;
 using SchoolCanteen.Logic.DTOs.RoleDTOs;
 using SchoolCanteen.Logic.DTOs.UnitDTOs;
 using SchoolCanteen.Logic.DTOs.UserDTOs;
@@ -31,19 +32,32 @@ public class AutoMapperProfile : Profile
         CreateMap<SimpleProductFinishedProductDto, ProductFinishedProduct>();
         CreateMap<ProductFinishedProduct, SimpleProductFinishedProductDto>();
 
+        /********************************************** RecipeDetails  **/
+        CreateMap<RecipeDetail, SimpleRecipeDetailsDto>();
+
+        CreateMap<SimpleRecipeDetailsDto, RecipeDetail>();
+        CreateMap<CreateRecipeDetailsDto, RecipeDetail>();
+
+        /********************************************** Recipe  **/
+        CreateMap<Recipe, SimpleRecipeDto>();
+
+        CreateMap<SimpleRecipeDto, Recipe>();
+        CreateMap<CreateRecipeDto, Recipe>();
+        CreateMap<EditRecipeDto, Recipe>();
+
+        /********************************************** Product  **/
         CreateMap<Product, ProductForListDto>();
-        CreateMap<ProductForListDto, Product>();
-
         CreateMap<Product, SimpleProductDto>();
-        CreateMap<SimpleProductDto, Product>();
 
+        CreateMap<SimpleProductDto, Product>();
         CreateMap<CreateProductDto, Product>();
         CreateMap<EditProductDto, Product>();
 
-        CreateMap<Unit, SimpleUnitDto>();
+        /********************************************** Unit  **/
         CreateMap<SimpleUnitDto, Unit>();
+        CreateMap<Unit, SimpleUnitDto>();
 
-        CreateMap<ApplicationUser, CreateUserDTO>();
+        /********************************************** ApplicationUser  **/
         CreateMap<CreateUserDTO, ApplicationUser>();
 
         CreateMap<ApplicationUser, EditUserDTO>();
