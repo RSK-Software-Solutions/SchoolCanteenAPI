@@ -89,22 +89,7 @@ public class RecipeService : IRecipeService
             var companyId = tokenUtil.GetIdentityCompany();
             var recipes = await repository.GetAllAsync(companyId);
 
-            var result = recipes.Select(recipe =>
-            {
-                var simpleRecipeDto = mapper.Map<SimpleRecipeDto>(recipe);
-
-                return simpleRecipeDto;
-            });
-
-                //var simpleRecipeDto = mapper.Map<SimpleRecipeDto>(recipe);
-                //var simpleDetailsDto = recipe.Details.Select(detail => mapper.Map<SimpleRecipeDetailsDto>(detail)).ToList();
-                //simpleRecipeDto.Details = simpleDetailsDto;
-                //simpleRecipeDtos.Add(simpleRecipeDto);
-
-
-
-            return result;
-            //return recipes.Select(recipe => mapper.Map<SimpleRecipeDto>(recipe));
+            return recipes.Select(recipe => mapper.Map<SimpleRecipeDto>(recipe));
         }
         catch (Exception ex)
         {

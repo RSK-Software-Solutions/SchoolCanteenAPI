@@ -132,6 +132,12 @@ public static class ModelBuilderExtentions
             .WithMany(d => d.RecipeDetails)
             .HasForeignKey(p => p.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RecipeDetail>()
+            .HasOne(u => u.Unit)
+            .WithMany(d => d.RecipeDetails)
+            .HasForeignKey(u => u.UnitId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 
