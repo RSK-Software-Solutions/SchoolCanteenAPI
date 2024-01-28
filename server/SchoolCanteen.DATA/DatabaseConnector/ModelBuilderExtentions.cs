@@ -96,7 +96,7 @@ public static class ModelBuilderExtentions
             .UsingEntity(
                 "ProductStorageFinishedProduct",
                 l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
-                r => r.HasOne(typeof(ProductStorage)).WithMany().HasForeignKey("ProductStorageId").HasPrincipalKey(nameof(ProductStorage.ProductStorageId)),
+                r => r.HasOne(typeof(ProductStorage)).WithMany().HasForeignKey("ProductStorageId").HasPrincipalKey(nameof(ProductStorage.ProductStorageId)).OnDelete(DeleteBehavior.Cascade),
                 j => j.HasKey("ProductStorageId", "FinishedProductId"));
 
     }
@@ -105,7 +105,7 @@ public static class ModelBuilderExtentions
     {
         modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);
 
-    }
+    }     
 
     public static void ConfigureRecipe(this ModelBuilder modelBuilder)
     {
@@ -141,36 +141,3 @@ public static class ModelBuilderExtentions
     }
 }
 
-//public static void ConfigureUserDetails(this ModelBuilder modelBuilder)
-//{
-//    modelBuilder.Entity<UserDetails>()
-//        .HasKey(c => c.UserDetailsId);
-//}
-
-//public static void ConfigureUserRole(this ModelBuilder modelBuilder)
-//{
-//    modelBuilder.Entity<UserRole>()
-//        .HasKey(key => new { key.UserForeignId, key.RoleForeignId });
-//}
-
-
-//modelBuilder.Entity<User>()
-//    .HasMany(u => u.Roles)
-//    .WithMany(r => r.Users)
-//    .UsingEntity(ur => ur.ToTable("UsersToRoles"));
-
-//modelBuilder.Entity<User>()
-//    .HasMany(u => u.Roles)
-//    .WithMany(r => r.Users)
-//    .UsingEntity<UserRole>(
-//        u => u.HasOne(ur => ur.Role)
-//        .WithMany()
-//        .HasForeignKey(ur => ur.RoleForeignId),
-
-//        r => r.HasOne(ur => ur.User)
-//        .WithMany()
-//        .HasForeignKey(ur => ur.UserForeignId),
-
-//        ur => ur.HasKey(x => new { x.RoleForeignId, x.UserForeignId })
-
-//        );

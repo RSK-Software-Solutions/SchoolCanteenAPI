@@ -38,6 +38,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -58,6 +59,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -70,6 +72,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             return await ctx.FinishedProducts
                 .Where(e => e.CompanyId == companyId)
                 .Include(x => x.ProductStorages)
+                    .ThenInclude(p => p.Product)
                 .OrderBy(e => e.Name)
                 .ToListAsync();
         }
@@ -79,6 +82,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -91,6 +95,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         {
             return await ctx.FinishedProducts
                 .Include(x => x.ProductStorages)
+                    .ThenInclude(p => p.Product)
                 .Where(x => x.CompanyId == companyId)
                 .FirstOrDefaultAsync(e => e.FinishedProductId == id);
         }
@@ -100,6 +105,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously retrieves a   from the database based on its name.
     /// </summary>
@@ -112,6 +118,7 @@ public class FinishedProductRepository : IFinishedProductRepository
         {
             return await ctx.FinishedProducts
                 .Include(x => x.ProductStorages)
+                    .ThenInclude(p => p.Product)
                 .Where(x => x.CompanyId == companyId)
                 .FirstOrDefaultAsync(e => e.Name == finishedProductName);
         }
@@ -121,6 +128,7 @@ public class FinishedProductRepository : IFinishedProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// 
     /// </summary>

@@ -8,6 +8,7 @@ using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.CompanyRepo;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.DATA.Repositories.ProductRepo;
+using SchoolCanteen.DATA.Repositories.ProductStorageRepo;
 using SchoolCanteen.DATA.Repositories.RecipeRepo;
 using SchoolCanteen.DATA.Repositories.UnitRepo;
 using SchoolCanteen.Logic.DTOs.AutoMapperProfiles;

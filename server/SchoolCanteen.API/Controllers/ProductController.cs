@@ -25,7 +25,7 @@ public class ProductController :ControllerBase
     /// If there are no Products found, returns a NotFound result.
     /// If an error occurs during the operation, returns a BadRequest result with the error message.
     /// </returns>
-    [HttpGet("/api/product"), Authorize(Roles = "User")]
+    [HttpGet("/api/products"), Authorize(Roles = "User")]
     public async Task<ActionResult<IEnumerable<SimpleProductDto>>> GetAllAsync()
     {
         try
@@ -34,6 +34,28 @@ public class ProductController :ControllerBase
             if (products.Count() == 0) return NotFound($"No Product found.");
 
             return Ok(products);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("/api/product"), Authorize(Roles = "User")]
+    public async Task<ActionResult<IEnumerable<SimpleProductDto>>> GetByIdAsync([FromQuery] int id)
+    {
+        try
+        {
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null) return NotFound($"No Product found.");
+
+            return Ok(product);
         }
         catch (Exception ex)
         {

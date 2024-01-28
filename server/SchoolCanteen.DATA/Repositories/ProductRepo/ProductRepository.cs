@@ -17,6 +17,7 @@ public class ProductRepository : IProductRepository
         this.ctx = ctx;
         this.logger = logger;
     }
+
     /// <summary>
     /// Asynchronously adds a new Product to the database.
     /// </summary>
@@ -37,6 +38,7 @@ public class ProductRepository : IProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously deletes a Product from the database.
     /// </summary>
@@ -57,6 +59,7 @@ public class ProductRepository : IProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously retrieves all Products objects from the database.
     /// </summary>
@@ -68,6 +71,7 @@ public class ProductRepository : IProductRepository
         {
             return await ctx.Products
                 .Where(e => e.CompanyId == companyId)
+                .Include(u => u.Unit)
                 .OrderBy(e => e.ProductId)
                 .ToListAsync();
         }
@@ -77,6 +81,7 @@ public class ProductRepository : IProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously retrieves a Product object from the database based on its identifier.
     /// </summary>
@@ -87,7 +92,9 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            return await ctx.Products.FirstOrDefaultAsync(e => e.ProductId == id && e.CompanyId == companyId);
+            return await ctx.Products
+                .Include(u => u.Unit)
+                .FirstOrDefaultAsync(e => e.ProductId == id && e.CompanyId == companyId);
         }
         catch (Exception ex)
         {
@@ -95,6 +102,7 @@ public class ProductRepository : IProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously retrieves a Product from the database based on its name.
     /// </summary>
@@ -113,6 +121,7 @@ public class ProductRepository : IProductRepository
             throw new Exception(ex.ToString());
         }
     }
+
     /// <summary>
     /// Asynchronously updates a Product in the database.
     /// </summary>

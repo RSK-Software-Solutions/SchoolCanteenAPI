@@ -5,6 +5,8 @@ using NUnit.Framework.Internal;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
 using SchoolCanteen.DATA.Repositories.ProductRepo;
+using SchoolCanteen.DATA.Repositories.ProductStorageRepo;
+using SchoolCanteen.DATA.Repositories.RecipeRepo;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.FinishedProductServices;
@@ -20,11 +22,11 @@ public class FinishedProductServiceTest
         // Arrange
         var companyId = Guid.NewGuid();
         var productDto = new SimpleFinishedProductDto(0, companyId, "NewProduct", 1, new List<ProductForListDto>());
-        var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1);
+        var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1, 10);
         var repositoryMock = new Mock<IFinishedProductRepository>();
-        var repositoryProductMock = new Mock<IProductRepository>();
+        var repositoryRecipeMock = new Mock<IRecipeRepository>();
         var repositoryProductStorageMock = new Mock<IProductStorageRepository>();
-        var repositoryProdFinishProdMock = new Mock<IProductFinishedProductRepository>();
+        var repositoryProductMock = new Mock<IProductRepository>();
         var tokenUtilMock = new Mock<ITokenUtil>();
         var loggerMock = new Mock<ILogger<FinishedProductService>>();
         var mapperMock = new Mock<IMapper>();
@@ -40,9 +42,8 @@ public class FinishedProductServiceTest
             loggerMock.Object, 
             tokenUtilMock.Object, 
             repositoryMock.Object,
-            repositoryProductMock.Object,
-            repositoryProductStorageMock.Object,
-            repositoryProdFinishProdMock.Object);
+            repositoryRecipeMock.Object,
+            repositoryProductStorageMock.Object);
 
         tokenUtilMock.Setup(token => token.GetIdentityCompany()).Returns(companyId);
         //loggerMock.Setup(logger => logger.LogInformation($"FinishedProduct {productDto} already exists."));
@@ -62,12 +63,12 @@ public class FinishedProductServiceTest
         // Arrange
         var companyId = Guid.NewGuid();
         var productDto = new SimpleFinishedProductDto(0, Guid.NewGuid(), "NewProduct", 1, new List<ProductForListDto>());
-        var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1);
+        var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1, 10);
         var repositoryMock = new Mock<IFinishedProductRepository>();
         var tokenUtilMock = new Mock<ITokenUtil>();
-        var repositoryProductMock = new Mock<IProductRepository>();
+        var repositoryRecipeMock = new Mock<IRecipeRepository>();
         var repositoryProductStorageMock = new Mock<IProductStorageRepository>();
-        var repositoryProdFinishProdMock = new Mock<IProductFinishedProductRepository>();
+        var repositoryProductMock = new Mock<IProductRepository>();
         var loggerMock = new Mock<ILogger<FinishedProductService>>();
         var mapperMock = new Mock<IMapper>();
 
@@ -85,9 +86,8 @@ public class FinishedProductServiceTest
             loggerMock.Object,
             tokenUtilMock.Object,
             repositoryMock.Object,
-            repositoryProductMock.Object,
-            repositoryProductStorageMock.Object,
-            repositoryProdFinishProdMock.Object);
+            repositoryRecipeMock.Object,
+            repositoryProductStorageMock.Object);
 
         // Act
         var result = await productService.CreateAsync(createproductDto);

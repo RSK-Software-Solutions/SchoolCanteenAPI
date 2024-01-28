@@ -84,21 +84,31 @@ public class UserService : IUserService
     {
         try
         {
-            var companyId = tokenUtil.GetIdentityCompany();
-
-            var users = await GetAllUsersFromCompanyAsync(companyId);
+            var users = await userManager.Users
+                .ToListAsync();
 
             if (users.Count() == 0) return new List<SimpleUserDTO>();
 
-            var result = users.Select(async user =>
-            {
-                var roles = await userManager.GetRolesAsync(user);
-                var simpleUserDto = mapper.Map<SimpleUserDTO>(user);
-                simpleUserDto.Roles.AddRange(roles);
-                return simpleUserDto;
-            }).Select(task => task.Result);
+            return ConvertUserToDto(users);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
 
-            return result;
+    public async Task<IEnumerable<SimpleUserDTO>> GetAllByCompanyAsync()
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+            var users = await userManager.Users
+                .Where(e => e.CompanyId == companyId)
+                .ToListAsync();
+            if (users.Count() == 0) return new List<SimpleUserDTO>();
+
+            return ConvertUserToDto(users);
         }
         catch (Exception ex)
         {
@@ -168,21 +178,17 @@ public class UserService : IUserService
         return true;
     }
 
-    public virtual async Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId)
+    private IEnumerable<SimpleUserDTO> ConvertUserToDto(IEnumerable<ApplicationUser> users)
     {
-        try
+        var result = users.Select(async user =>
         {
-            var users = await userManager.Users
-                .Where(e => e.CompanyId == companyId)
-                .ToListAsync();
+            var roles = await userManager.GetRolesAsync(user);
+            var simpleUserDto = mapper.Map<SimpleUserDTO>(user);
+            simpleUserDto.Roles.AddRange(roles);
+            return simpleUserDto;
+        }).Select(task => task.Result);
 
-            return users;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            throw new Exception(ex.ToString());
-        }
+        return result;
     }
 
 }

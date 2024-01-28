@@ -26,7 +26,7 @@ public class FinishedProductController : ControllerBase
     /// If there are no Finished Products found, returns a NotFound result.
     /// If an error occurs during the operation, returns a BadRequest result with the error message.
     /// </returns>
-    [HttpGet("/api/finished"), Authorize(Roles = "User")]
+    [HttpGet("/api/articles"), Authorize(Roles = "User")]
     public async Task<ActionResult<IEnumerable<SimpleFinishedProductDto>>> GetAllAsync()
     {
         try
@@ -43,7 +43,7 @@ public class FinishedProductController : ControllerBase
         }
     }
 
-    [HttpGet("/api/finished/{id}"), Authorize(Roles = "User")]
+    [HttpGet("/api/article"), Authorize(Roles = "User")]
     public async Task<ActionResult<IEnumerable<SimpleFinishedProductDto>>> GetByIdAsync(int id)
     {
         try
@@ -65,8 +65,8 @@ public class FinishedProductController : ControllerBase
     /// </summary>
     /// <param name="createFinishedProductDto">The data to create the new Finished Product.</param>
     /// <returns></returns>
-    [HttpPost("/api/finished"), Authorize (Roles = "User")]
-    public async Task<ActionResult<bool>> CreateNewAsync([FromBody] CreateFinishedProductDto createFinishedProductDto)
+    [HttpPost("/api/article"), Authorize (Roles = "User")]
+    public async Task<ActionResult<SimpleFinishedProductDto>> CreateNewAsync([FromBody] CreateFinishedProductDto createFinishedProductDto)
     {
         try
         {
@@ -80,27 +80,12 @@ public class FinishedProductController : ControllerBase
         }
     }
 
-    [HttpPost("/api/finished/product"), Authorize(Roles = "User")]
-    public async Task<ActionResult<bool>> AddProductToFinishedProductAsync([FromBody] SimpleProductFinishedProductDto dto)
-    {
-        try
-        {
-            var newProductFinishedProduct = await _finishedProductService.AddProductToFinishedProduct(dto);
-            return Ok(newProductFinishedProduct);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            return BadRequest(ex.Message);
-        }
-    }
-
     /// <summary>
     /// Updates a Finished Product asynchronously for the authenticated user based on the specified identifier.
     /// </summary>
     /// <param name="finishedProductDto">The identifier of the Finished Product to update.</param>
     /// <returns></returns>
-    [HttpPut("/api/finished"), Authorize(Roles = "User")]
+    [HttpPut("/api/article"), Authorize(Roles = "User")]
     public async Task<ActionResult<bool>> UpdateNewAsync([FromBody] SimpleFinishedProductDto finishedProductDto)
     {
         try
@@ -114,6 +99,7 @@ public class FinishedProductController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
     /// <summary>
     /// Deletes a Finished Product asynchronously for the authenticated user based on the specified identifier.
     /// </summary>
@@ -124,7 +110,7 @@ public class FinishedProductController : ControllerBase
     /// If the specified Finished Product is not found, returns a NotFound result.
     /// If an error occurs during the deletion, returns a BadRequest result with the error message.
     /// </returns>
-    [HttpDelete("/api/finished"), Authorize(Roles = "User")]
+    [HttpDelete("/api/article"), Authorize(Roles = "User")]
     public async Task<ActionResult<bool>> DeleteAsync([FromQuery] int id)
     {
         try

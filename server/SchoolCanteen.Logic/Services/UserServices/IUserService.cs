@@ -11,7 +11,7 @@ public interface IUserService
     Task<IdentityResult> DeleteAsync(Guid Id);
     Task<SimpleUserDTO> GetByNameAsync(string userLogin);
     Task<IEnumerable<SimpleUserDTO>> GetAllAsync();
-    Task<IEnumerable<ApplicationUser>> GetAllUsersFromCompanyAsync(Guid companyId);
+    Task<IEnumerable<SimpleUserDTO>> GetAllByCompanyAsync();
     Task<bool> IsRolesExists(IEnumerable<string> roles);
 
 }

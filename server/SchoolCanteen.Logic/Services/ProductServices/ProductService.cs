@@ -103,7 +103,7 @@ public class ProductService : IProductService
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<Product> GetByIdAsync(int id)
+    public async Task<SimpleProductDto> GetByIdAsync(int id)
     {
         try
         {
@@ -112,7 +112,9 @@ public class ProductService : IProductService
             var existProduct = await repository.GetByIdAsync(id, companyId);
             if (existProduct == null) return null;
 
-            return existProduct;
+
+
+            return mapper.Map<SimpleProductDto>(existProduct);
         }
         catch (Exception ex)
         {
@@ -127,13 +129,13 @@ public class ProductService : IProductService
     /// <param name="name"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<Product> GetByNameAsync(string name)
+    public async Task<SimpleProductDto> GetByNameAsync(string name)
     {
         try
         {
             var existProduct = await repository.GetByNameAsync(name, tokenUtil.GetIdentityCompany());
 
-            return existProduct;
+            return mapper.Map< SimpleProductDto>(existProduct);
         }
         catch (Exception ex)
         {

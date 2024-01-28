@@ -9,7 +9,7 @@ public interface IProductService
     Task<Product> CreateAsync(CreateProductDto product);
     Task<bool> UpdateAsync(EditProductDto product);
     Task<bool> DeleteAsync(int id);
-    Task<Product> GetByIdAsync(int id);
-    Task<Product> GetByNameAsync(string name);
+    Task<SimpleProductDto> GetByIdAsync(int id);
+    Task<SimpleProductDto> GetByNameAsync(string name);
     Task<IEnumerable<SimpleProductDto>> GetAllAsync();
 }
