@@ -38,7 +38,6 @@ public class RecipeService : IRecipeService
 
         var newRecipeDetails = mapper.Map<RecipeDetail>(dto);
 
-        //await detailRepository.AddAsync(newRecipeDetails);
         existRecipe.Details.Add(newRecipeDetails);
         await repository.UpdateAsync(existRecipe);
 
@@ -69,13 +68,39 @@ public class RecipeService : IRecipeService
         {
             var companyId = tokenUtil.GetIdentityCompany();
 
-            var existProduct = await repository.GetByIdAsync(Id, companyId);
-            if (existProduct == null) return false;
+            var existRecipe = await repository.GetByIdAsync(Id, companyId);
+            if (existRecipe == null) return false;
 
-            await repository.DeleteAsync(existProduct);
+            await repository.DeleteAsync(existRecipe);
             return true;
         }
         catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
+    public async Task<bool> DeleteProductFromRecipe(DeleteRecipeDetailsDto dto)
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existRecipe = await repository.GetByIdAsync(dto.RecipeId, companyId);
+            if (existRecipe == null) return false;
+
+            var existRecipeDetails = await detailRepository.GetByIdAsync(dto.DetailsId);
+
+            var isRecipeContainsDetails =  existRecipe.Details.Contains(existRecipeDetails);
+            if (!isRecipeContainsDetails) return false;
+
+            existRecipe.Details.Remove(existRecipeDetails);
+            await repository.UpdateAsync(existRecipe);
+
+            return true;
+        }
+        catch (Exception ex )
         {
             logger.LogError(ex.Message, ex);
             throw new Exception(ex.ToString());
@@ -98,12 +123,12 @@ public class RecipeService : IRecipeService
         }
     }
 
-    public async Task<SimpleRecipeDto> GetByNameAsync(string name)
+    public async Task<SimpleRecipeDto> GetByIdAsync(int id)
     {
         try
         {
             var companyId = tokenUtil.GetIdentityCompany();
-            var existRecipe = await repository.GetByNameAsync(name, companyId);
+            var existRecipe = await repository.GetByIdAsync(id, companyId);
 
             return mapper.Map<SimpleRecipeDto>(existRecipe);
         }

@@ -171,7 +171,7 @@ namespace SchoolCanteen.Test
             var expectedResults = new List<SimpleUserDTO> { simpleUserDto1, simpleUserDto2, simpleUserDto3 };
 
             tokenUtil.Setup(x => x.GetIdentityCompany()).Returns(companyId);
-            userService.Setup(x => x.GetAllUsersFromCompanyAsync(companyId)).ReturnsAsync(users);
+            //RJP userService.Setup(x => x.GetAllByCompanyAsync()).ReturnsAsync(users);
             userManager.Setup(x => x.GetRolesAsync(user1)).ReturnsAsync(roles1);
             userManager.Setup(x => x.GetRolesAsync(user2)).ReturnsAsync(roles2);
             userManager.Setup(x => x.GetRolesAsync(user3)).ReturnsAsync(roles3);

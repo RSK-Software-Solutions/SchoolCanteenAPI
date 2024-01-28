@@ -19,7 +19,7 @@ public class RoleController : ControllerBase
         this.rolesService = rolesService;
     }
 
-    [HttpGet("/api/roles")]
+    [HttpGet("/api/roles"), Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<SimpleRoleDTO>>> GetAllAsync()
     {
         try

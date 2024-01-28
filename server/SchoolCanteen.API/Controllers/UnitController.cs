@@ -20,7 +20,7 @@ public class UnitController : ControllerBase
         this.logger = logger;
     }
 
-    [HttpGet("/api/unit"), Authorize(Roles = "User")]
+    [HttpGet("/api/units"), Authorize(Roles = "User")]
     public async Task<ActionResult<IEnumerable<SimpleUnitDto>>> GetAllAsync()
     {
         try
