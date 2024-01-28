@@ -23,11 +23,10 @@ public class AutoMapperProfile : Profile
         CreateMap<Company, CreateCompanyDTO>();
         CreateMap<CreateCompanyDTO, Company>();
 
+        /********************************************** FinishedProduct  **/
         CreateMap<FinishedProduct, SimpleFinishedProductDto>();
         CreateMap<SimpleFinishedProductDto, FinishedProduct>();
-
-        CreateMap<FinishedProduct, SimpleFinishedProductDto>();
-        CreateMap<SimpleFinishedProductDto, FinishedProduct>();
+        CreateMap<CreateFinishedProductDto, FinishedProduct>();
 
         CreateMap<SimpleProductFinishedProductDto, ProductFinishedProduct>();
         CreateMap<ProductFinishedProduct, SimpleProductFinishedProductDto>();

@@ -62,11 +62,12 @@ public class RecipeDetailRepository : IRecipeDetailRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<IEnumerable<RecipeDetail>> GetAllAsync()
+    public async Task<IEnumerable<RecipeDetail>> GetAllAsync(int id)
     {
         try
         {
             return await ctx.RecipeDetails
+                .Where(e => e.RecipeId == id)
                 .OrderBy(e => e.ProductId)
                 .ToListAsync();
         }

@@ -97,6 +97,8 @@ public class RecipeRepository : IRecipeRepository
         {
             return await ctx.Recipes
                 .Include(e => e.Details)
+                    .ThenInclude(d => d.Product)
+                        .ThenInclude(p => p.Unit)
                 .FirstOrDefaultAsync(e => e.RecipeId == id &&  e.CompanyId == companyId);
         }
         catch (Exception ex)
