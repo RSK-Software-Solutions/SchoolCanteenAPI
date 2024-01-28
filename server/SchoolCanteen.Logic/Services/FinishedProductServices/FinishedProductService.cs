@@ -3,7 +3,8 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.FinishedProductRepo;
-using SchoolCanteen.DATA.Repositories.ProductRepo;
+using SchoolCanteen.DATA.Repositories.ProductStorageRepo;
+using SchoolCanteen.DATA.Repositories.RecipeRepo;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 
@@ -15,26 +16,23 @@ public class FinishedProductService : IFinishedProductService
     private readonly ILogger logger;
     private readonly ITokenUtil tokenUtil;
     private readonly IFinishedProductRepository repository;
-    private readonly IProductRepository productRepository;
+    private readonly IRecipeRepository recipeRepository;
     private readonly IProductStorageRepository productStorageRepository;
-    private readonly IProductFinishedProductRepository productFnishedProductRepository;
 
     public FinishedProductService(
         IMapper mapper, 
         ILogger<FinishedProductService> logger,
         ITokenUtil tokenUtil,
         IFinishedProductRepository repository,
-        IProductRepository productRepo,
-        IProductStorageRepository productStorageRepository,
-        IProductFinishedProductRepository productFnishedProductRepository)
+        IRecipeRepository recipeRepository,
+        IProductStorageRepository productStorageRepository)
     {
         this.mapper = mapper;
         this.logger = logger;
         this.tokenUtil = tokenUtil;
         this.repository = repository;
-        this.productRepository = productRepo;
+        this.recipeRepository = recipeRepository;
         this.productStorageRepository = productStorageRepository;
-        this.productFnishedProductRepository = productFnishedProductRepository;
     }
 
     /// <summary>
@@ -43,23 +41,37 @@ public class FinishedProductService : IFinishedProductService
     /// </summary>
     /// <param name="name">The name of the FinishedProduct to be created.</param>
     /// <returns></returns>
-    public async Task<FinishedProduct> CreateAsync(CreateFinishedProductDto dto)
+    public async Task<SimpleFinishedProductDto> CreateAsync(CreateFinishedProductDto dto)
     {
         var companyId = tokenUtil.GetIdentityCompany();
-
-        var existFinishedProduct = await repository.GetByNameAsync(dto.Name, companyId);
-        if (existFinishedProduct != null)
-        {
-            logger.LogInformation($"FinishedProduct {existFinishedProduct} already exists.");
-            return existFinishedProduct;
-        }
 
         var newFinishedProduct = mapper.Map<FinishedProduct>(dto);
         newFinishedProduct.CompanyId = companyId;
 
-        await repository.AddAsync(newFinishedProduct);
+        var recipe = await recipeRepository.GetByIdAsync(dto.RecipeId, companyId);
 
-        return newFinishedProduct;
+        foreach (var details in recipe.Details)
+        {
+            var productStorage = new ProductStorage { 
+                CompanyId = companyId,
+                ProductId = details.ProductId,
+                Price = details.Product.Price,
+                Quantity = details.Quantity
+            };
+
+            details.Product.Quantity -= productStorage.Quantity;
+
+            newFinishedProduct.ProductStorages.Add(productStorage);
+        }
+
+        newFinishedProduct.Costs = (float)Math.Round(newFinishedProduct.ProductStorages.Average(x => x.Price), 2);
+        newFinishedProduct.Profit = dto.Profit;
+        newFinishedProduct.Price = (float)Math.Round(newFinishedProduct.Costs + newFinishedProduct.Costs * newFinishedProduct.Profit / 100, 2);
+
+        var isCreated = await repository.AddAsync(newFinishedProduct);
+        if (!isCreated) return null;
+
+        return mapper.Map<SimpleFinishedProductDto>(newFinishedProduct);
     }
 
     /// <summary>
@@ -165,10 +177,22 @@ public class FinishedProductService : IFinishedProductService
         {
             var companyId = tokenUtil.GetIdentityCompany();
 
-            var existProduct = await repository.GetByIdAsync(Id, companyId);
-            if (existProduct == null) return false;
+            var existFinishProduct = await repository.GetByIdAsync(Id, companyId);
+            if (existFinishProduct == null) return false;
 
-            await repository.DeleteAsync(existProduct);
+            List<ProductStorage> listToRemove = new List<ProductStorage>();
+            
+            foreach (var product in existFinishProduct.ProductStorages)
+            {
+                product.Product.Quantity += product.Quantity;
+                listToRemove.Add(product);
+            }
+            existFinishProduct.ProductStorages.RemoveAll(item => listToRemove.Contains(item));
+
+            foreach (var item in listToRemove) 
+                await productStorageRepository.DeleteAsync(item); 
+
+            await repository.DeleteAsync(existFinishProduct);
             return true;
         }
         catch (Exception ex)
@@ -207,33 +231,4 @@ public class FinishedProductService : IFinishedProductService
         }
     }
 
-    public async Task<AppMessage> AddProductToFinishedProduct(SimpleProductFinishedProductDto dto)
-    {
-        try
-        {
-            var companyId = tokenUtil.GetIdentityCompany();
-
-            var existFinishedProduct = await repository.GetByIdAsync(dto.FinishedProductId, companyId);
-            if (existFinishedProduct == null) return new AppMessage(false, "No Finnished Product in database.");
-
-            var existProduct = await productStorageRepository.GetByIdAsync(companyId, dto.ProductId);
-            if (existProduct == null) return new AppMessage(false, "No Product in database.");
-
-            existFinishedProduct.ProductStorages.Add(existProduct);
-
-            await repository.UpdateAsync(existFinishedProduct);
-
-            return new AppMessage(true, "Product hass been added to Finished Product");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            throw new Exception(ex.ToString());
-        }
-    }
-
-    public async Task<AppMessage> RemoveProductFromFinishedProduct(SimpleProductFinishedProductDto dto)
-    {
-        throw new NotImplementedException();
-    }
 }

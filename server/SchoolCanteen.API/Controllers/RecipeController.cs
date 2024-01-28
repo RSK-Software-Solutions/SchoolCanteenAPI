@@ -22,7 +22,7 @@ public class RecipeController : ControllerBase
     /// 
     /// </summary>
     /// <returns></returns>
-    [HttpGet("/api/recipe"), Authorize(Roles = "User")]
+    [HttpGet("/api/recipes"), Authorize(Roles = "User")]
     public async Task<ActionResult<IEnumerable<SimpleRecipeDto>>> GetAllAsync()
     {
         try
@@ -31,6 +31,28 @@ public class RecipeController : ControllerBase
             if (recipes.Count() == 0) return NotFound($"No Recipe found.");
 
             return Ok(recipes);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("/api/recipe"), Authorize(Roles = "User")]
+    public async Task<ActionResult<IEnumerable<SimpleRecipeDto>>> GetByIdAsync([FromQuery] int id)
+    {
+        try
+        {
+            var recipe = await recipeService.GetByIdAsync(id);
+            if (recipe == null) return NotFound($"No Recipe found.");
+
+            return Ok(recipe);
         }
         catch (Exception ex)
         {
@@ -60,6 +82,11 @@ public class RecipeController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="detailsDto"></param>
+    /// <returns></returns>
     [HttpPost("/api/recipe/product"), Authorize(Roles = "User")]
     public async Task<ActionResult<SimpleRecipeDto>> AddProductAsync([FromBody] CreateRecipeDetailsDto detailsDto)
     {
@@ -98,14 +125,40 @@ public class RecipeController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete("/api/recipe"), Authorize(Roles = "User")]
     public async Task<ActionResult<bool>> DeleteAsync([FromQuery] int id)
     {
         try
         {
             var isDeleted = await recipeService.DeleteAsync(id);
-            if (isDeleted == false) return NotFound("Product not found.");
+            if (!isDeleted) return NotFound("Product not found.");
 
+            return Ok(isDeleted);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete("/api/recipe/product"), Authorize(Roles = "User")]
+    public async Task<ActionResult<SimpleRecipeDto>> DeleteProductAsync([FromQuery] DeleteRecipeDetailsDto recipeDto)
+    {
+        try
+        {
+            var isDeleted = await recipeService.DeleteProductFromRecipe(recipeDto);
+            if (!isDeleted) return NotFound("RecipeDetails not removed from Recipe. Something goes wrong. Check Ids to remove.");
             return Ok(isDeleted);
         }
         catch (Exception ex)
