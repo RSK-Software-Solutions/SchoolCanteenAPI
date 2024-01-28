@@ -8,6 +8,8 @@ public class FinishedProduct
     [Required] public int FinishedProductId { get; set; }
     [Required] public Guid CompanyId { get; set; }
     public Company Company { get; set; }
+    [Required] public int RecipeId { get; set; }
+    public Recipe Recipe { get; set; }
     [MaxLength (100)]
     [Required] public string Name { get; set; }
     public float Costs { get; set; } = 0;
