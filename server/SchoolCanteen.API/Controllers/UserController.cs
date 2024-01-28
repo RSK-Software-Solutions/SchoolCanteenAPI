@@ -19,13 +19,12 @@ namespace SchoolCanteen.API.Controllers
             this.userService = userService;
         }
 
-
-        [HttpGet("/api/users"), Authorize (Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllAsync()
+        [HttpGet("/api/users"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<SimpleUserDTO>>> GetAllByCompanyAsync()
         {
             try
             {
-                var users = await userService.GetAllAsync();
+                var users = await userService.GetAllByCompanyAsync();
                 if (users.Count() == 0) return NotFound($"No users found.");
 
                 return Ok(users);
@@ -37,7 +36,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpGet("/api/users:userName"), Authorize (Roles = "Admin")]
+        [HttpGet("/api/user"), Authorize (Roles = "Admin")]
         public async Task<ActionResult<SimpleUserDTO>> GetByNameAsync([FromQuery] string UserName)
         {
             try
@@ -54,7 +53,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpPost("/api/users"), Authorize(Roles ="Admin")]
+        [HttpPost("/api/user"), Authorize(Roles ="Admin")]
         public async Task<ActionResult<SimpleUserDTO>> CreateAsync([FromBody] CreateUserDTO newUser)
         {
             try
@@ -70,7 +69,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpPut("/api/users"), Authorize(Roles = "Admin")]
+        [HttpPut("/api/user"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> EditAsync([FromBody] EditUserDTO editUser)
         {
             try
@@ -84,7 +83,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpDelete("/api/users:id"), Authorize(Roles = "Admin")]
+        [HttpDelete("/api/user"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<bool>> DeleteAsync([FromQuery] Guid id)
         {
             try
