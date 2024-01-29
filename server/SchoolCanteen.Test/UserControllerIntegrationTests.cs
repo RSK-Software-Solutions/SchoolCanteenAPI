@@ -88,7 +88,7 @@ namespace SchoolCanteen.Test
             var users = await response.Content.ReadFromJsonAsync<IEnumerable<SimpleUserDTO>>();
             Assert.NotNull(users);
         }
-        [Test]
+/*        [Test]
         public async Task CreateAsync_AdminRole_CreatesUser()
         {
             var token = tokenGenerator.GenerateJwtTokenWithAdminRole();
@@ -119,7 +119,9 @@ namespace SchoolCanteen.Test
                 var userInDatabase = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
                 Assert.NotNull(userInDatabase);
             }
-        }
+        }*/
+        // IT WORKS BUT CREATE NEW USER TO REAL DATABASE
+        //AT THE MOMENT I DON'T KNOW HOW TO CREATE MEMORY DATABASE FOR THIS
 
 
 
