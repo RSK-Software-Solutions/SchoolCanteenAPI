@@ -14,6 +14,6 @@ public class ProductStorage
     public float Price { get; set; } = 0;
     public float Quantity { get; set; } = 0;
     public int ValidityPeriod { get; set; } = 0;
-
-    public List<FinishedProduct> FinishedProducts { get; set; } = new List<FinishedProduct>();
+    public int FinishedProductId { get; set; }
+    public FinishedProduct FinishedProduct { get; set; }
 }
