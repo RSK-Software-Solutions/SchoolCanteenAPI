@@ -1,31 +1,30 @@
-﻿
-using SchoolCanteen.DATA.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using SchoolCanteen.Logic.DTOs.ProductStorageDTOs;
 
 namespace SchoolCanteen.Logic.DTOs.ProductDTOs;
 
 public class SimpleFinishedProductDto
 {
     public int FinishedProductId { get; set; }
-
-    [MaxLength(100)]
-    [Required] public string Name { get; set; }
-    [Range(0, 1000)]
+    public string Name { get; set; }
     public int Quantity { get; set; }
     public float Costs { get; set; } 
     public float Profit { get; set; } 
     public float Price { get; set; }
-    public IEnumerable<ProductForListDto> Products { get; set; }
+    public float TotalCosts { get; set; } = 0;
+    public float ProfitAmount { get; set; } = 0;
+    public float TotalPrice { get; set; } = 0;
+    public DateTime CreatedAt { get; set; }
+    public List<SimpleProductSotageDto> ProductStorages { get; set; } 
 
     public SimpleFinishedProductDto()
     {
     }
-    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity, IEnumerable<ProductForListDto> products)
+    public SimpleFinishedProductDto(int finishedProductId, Guid companyId, string name, int quantity, List<SimpleProductSotageDto> products)
     {
         FinishedProductId = finishedProductId;
         //CompanyId = companyId;
         Name = name;
         Quantity = quantity;
-        Products = products;
+        ProductStorages = products;
     }
 }

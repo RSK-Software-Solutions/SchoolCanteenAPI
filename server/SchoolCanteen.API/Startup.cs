@@ -62,7 +62,6 @@ public class Startup
         
         services.AddScoped<IFinishedProductService, FinishedProductService>();
         services.AddScoped<IFinishedProductRepository, FinishedProductRepository>();
-        services.AddScoped<IProductFinishedProductRepository, ProductFinishedProductRepository>();
         services.AddScoped<IProductStorageRepository, ProductStorageRepository>();
 
         services.AddScoped<IProductService, ProductService>();

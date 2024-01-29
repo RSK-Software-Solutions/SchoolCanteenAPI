@@ -28,6 +28,50 @@ public class ProductService : IProductService
         this.repository = repository;
     }
 
+    public async Task<SimpleProductDto> IncreaseQuantityAsync(int productId, float quantity)
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existProduct = await repository.GetByIdAsync(productId, companyId);
+            if (existProduct == null) return null;
+
+            existProduct.Quantity += quantity;
+            repository.UpdateAsync(existProduct);
+
+            return mapper.Map<SimpleProductDto>(existProduct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
+    public async Task<SimpleProductDto> DecreaseQuantityAsync(int productId, float quantity)
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existProduct = await repository.GetByIdAsync(productId, companyId);
+            if (existProduct == null) return null;
+
+            if (existProduct.Quantity < quantity) return null;
+
+            existProduct.Quantity -= quantity;
+            repository.UpdateAsync(existProduct);
+
+            return mapper.Map<SimpleProductDto>(existProduct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -170,4 +214,5 @@ public class ProductService : IProductService
             throw new Exception(ex.ToString());
         }
     }
+
 }

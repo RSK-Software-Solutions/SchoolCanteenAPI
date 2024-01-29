@@ -90,20 +90,26 @@ public static class ModelBuilderExtentions
     {
         modelBuilder.Entity<ProductStorage>().HasKey(c => c.ProductId);
 
-        modelBuilder.Entity<ProductStorage>()
-            .HasMany(e => e.FinishedProducts)
-            .WithMany(e => e.ProductStorages)
-            .UsingEntity(
-                "ProductStorageFinishedProduct",
-                l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
-                r => r.HasOne(typeof(ProductStorage)).WithMany().HasForeignKey("ProductStorageId").HasPrincipalKey(nameof(ProductStorage.ProductStorageId)).OnDelete(DeleteBehavior.Cascade),
-                j => j.HasKey("ProductStorageId", "FinishedProductId"));
+        //modelBuilder.Entity<ProductStorage>()
+        //    .HasMany(e => e.FinishedProducts)
+        //    .WithMany(e => e.ProductStorages)
+        //    .UsingEntity(
+        //        "ProductStorageFinishedProduct",
+        //        l => l.HasOne(typeof(FinishedProduct)).WithMany().HasForeignKey("FinishedProductId").HasPrincipalKey(nameof(FinishedProduct.FinishedProductId)),
+        //        r => r.HasOne(typeof(ProductStorage)).WithMany().HasForeignKey("ProductStorageId").HasPrincipalKey(nameof(ProductStorage.ProductStorageId)).OnDelete(DeleteBehavior.Cascade),
+        //        j => j.HasKey("ProductStorageId", "FinishedProductId"));
 
     }
 
     public static void ConfigureFinishedProduct(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FinishedProduct>().HasKey(c => c.FinishedProductId);
+
+        modelBuilder.Entity<FinishedProduct>()
+            .HasMany(d => d.ProductStorages)
+            .WithOne(e => e.FinishedProduct)
+            .HasForeignKey(d => d.FinishedProductId)
+            .OnDelete(DeleteBehavior.Cascade);
 
     }     
 

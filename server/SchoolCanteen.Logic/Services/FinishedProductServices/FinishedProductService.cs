@@ -56,17 +56,21 @@ public class FinishedProductService : IFinishedProductService
                 CompanyId = companyId,
                 ProductId = details.ProductId,
                 Price = details.Product.Price,
-                Quantity = details.Quantity
+                Quantity = details.Quantity * dto.Quantity
             };
 
-            details.Product.Quantity -= productStorage.Quantity;
+            if (details.Product.Quantity < productStorage.Quantity) return null;
+            details.Product.Quantity -= productStorage.Quantity ;
 
             newFinishedProduct.ProductStorages.Add(productStorage);
         }
 
         newFinishedProduct.Costs = (float)Math.Round(newFinishedProduct.ProductStorages.Average(x => x.Price), 2);
+        newFinishedProduct.TotalCosts = (float)Math.Round(newFinishedProduct.Costs * dto.Quantity, 2);
         newFinishedProduct.Profit = dto.Profit;
         newFinishedProduct.Price = (float)Math.Round(newFinishedProduct.Costs + newFinishedProduct.Costs * newFinishedProduct.Profit / 100, 2);
+        newFinishedProduct.TotalPrice = (float)Math.Round(newFinishedProduct.Price * dto.Quantity, 2);
+        newFinishedProduct.ProfitAmount = newFinishedProduct.TotalPrice - newFinishedProduct.TotalCosts;
 
         var isCreated = await repository.AddAsync(newFinishedProduct);
         if (!isCreated) return null;
@@ -187,10 +191,10 @@ public class FinishedProductService : IFinishedProductService
                 product.Product.Quantity += product.Quantity;
                 listToRemove.Add(product);
             }
-            existFinishProduct.ProductStorages.RemoveAll(item => listToRemove.Contains(item));
+            //existFinishProduct.ProductStorages.RemoveAll(item => listToRemove.Contains(item));
 
-            foreach (var item in listToRemove) 
-                await productStorageRepository.DeleteAsync(item); 
+            //foreach (var item in listToRemove) 
+            //    await productStorageRepository.DeleteAsync(item); 
 
             await repository.DeleteAsync(existFinishProduct);
             return true;
