@@ -71,6 +71,8 @@ public class FinishedProductController : ControllerBase
         try
         {
             var newFinishedProduct = await _finishedProductService.CreateAsync(createFinishedProductDto);
+            if (newFinishedProduct == null) return BadRequest("Not enough products to realise this recipe.");
+
             return Ok(newFinishedProduct);
         }
         catch (Exception ex)

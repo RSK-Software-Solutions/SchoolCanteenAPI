@@ -13,6 +13,7 @@ public class Recipe
     [MaxLength(100)]
     [Required] public string Name { get; set; }
     public float Quantity { get; set; } = 0;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
     public List<RecipeDetail> Details { get; set; } = new List<RecipeDetail>();
 
 }

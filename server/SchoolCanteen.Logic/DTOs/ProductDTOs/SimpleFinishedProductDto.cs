@@ -10,6 +10,10 @@ public class SimpleFinishedProductDto
     public float Costs { get; set; } 
     public float Profit { get; set; } 
     public float Price { get; set; }
+    public float TotalCosts { get; set; } = 0;
+    public float ProfitAmount { get; set; } = 0;
+    public float TotalPrice { get; set; } = 0;
+    public DateTime CreatedAt { get; set; }
     public List<SimpleProductSotageDto> ProductStorages { get; set; } 
 
     public SimpleFinishedProductDto()
