@@ -8,6 +8,7 @@ using SchoolCanteen.DATA.Repositories.ProductRepo;
 using SchoolCanteen.DATA.Repositories.ProductStorageRepo;
 using SchoolCanteen.DATA.Repositories.RecipeRepo;
 using SchoolCanteen.Logic.DTOs.ProductDTOs;
+using SchoolCanteen.Logic.DTOs.ProductStorageDTOs;
 using SchoolCanteen.Logic.Services.Authentication.Interfaces;
 using SchoolCanteen.Logic.Services.FinishedProductServices;
 
@@ -21,7 +22,7 @@ public class FinishedProductServiceTest
     {
         // Arrange
         var companyId = Guid.NewGuid();
-        var productDto = new SimpleFinishedProductDto(0, companyId, "NewProduct", 1, new List<ProductForListDto>());
+        var productDto = new SimpleFinishedProductDto(0, companyId, "NewProduct", 1, new List<SimpleProductSotageDto>());
         var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1, 10);
         var repositoryMock = new Mock<IFinishedProductRepository>();
         var repositoryRecipeMock = new Mock<IRecipeRepository>();
@@ -62,7 +63,7 @@ public class FinishedProductServiceTest
     {
         // Arrange
         var companyId = Guid.NewGuid();
-        var productDto = new SimpleFinishedProductDto(0, Guid.NewGuid(), "NewProduct", 1, new List<ProductForListDto>());
+        var productDto = new SimpleFinishedProductDto(0, Guid.NewGuid(), "NewProduct", 1, new List<SimpleProductSotageDto>());
         var createproductDto = new CreateFinishedProductDto(0, "NewProduct", 1, 10);
         var repositoryMock = new Mock<IFinishedProductRepository>();
         var tokenUtilMock = new Mock<ITokenUtil>();
