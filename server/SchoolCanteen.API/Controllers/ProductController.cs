@@ -133,4 +133,36 @@ public class ProductController :ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("/api/product/{productId}/increase-quantity"), Authorize(Roles = "User")]
+    public async Task<ActionResult<SimpleProductDto>> IncreaseQuantityAsync(int productId, [FromBody] AddQuantityToProduct quantityToAdd)
+    {
+        try
+        {
+            var isCreated = await _productService.IncreaseQuantityAsync(productId, quantityToAdd.Quantity);
+            if (isCreated == null) return NotFound("Product not found.");
+            return Ok(isCreated);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("/api/product/{productId}/decrease-quantity"), Authorize(Roles = "User")]
+    public async Task<ActionResult<SimpleProductDto>> DecreaseQuantityAsync(int productId, [FromBody] AddQuantityToProduct quantityToAdd)
+    {
+        try
+        {
+            var isCreated = await _productService.DecreaseQuantityAsync(productId, quantityToAdd.Quantity);
+            if (isCreated == null) return NotFound("Product not found or insufficient quantity.");
+            return Ok(isCreated);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
 }
