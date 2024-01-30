@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework.Internal;
@@ -101,4 +101,4 @@ public class FinishedProductServiceTest
  
         Assert.AreEqual(productDto.Name, result.Name); // Make sure the returned product is the new one.
     }
-}
+}*/

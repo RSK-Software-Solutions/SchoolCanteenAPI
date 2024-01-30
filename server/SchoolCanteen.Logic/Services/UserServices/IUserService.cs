@@ -10,7 +10,6 @@ public interface IUserService
     Task<IdentityResult> UpdateAsync(EditUserDTO userDto);
     Task<IdentityResult> DeleteAsync(Guid Id);
     Task<SimpleUserDTO> GetByNameAsync(string userLogin);
-    Task<IEnumerable<SimpleUserDTO>> GetAllAsync();
     Task<IEnumerable<SimpleUserDTO>> GetAllByCompanyAsync();
     Task<bool> IsRolesExists(IEnumerable<string> roles);
 
