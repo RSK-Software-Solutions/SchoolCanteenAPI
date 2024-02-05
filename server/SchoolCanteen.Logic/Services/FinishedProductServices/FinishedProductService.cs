@@ -56,7 +56,7 @@ public class FinishedProductService : IFinishedProductService
                 CompanyId = companyId,
                 ProductId = details.ProductId,
                 Price = details.Product.Price,
-                Quantity = details.Quantity * dto.Quantity
+                Quantity = details.Quantity
             };
 
             if (details.Product.Quantity < productStorage.Quantity) return null;
@@ -65,10 +65,10 @@ public class FinishedProductService : IFinishedProductService
             newFinishedProduct.ProductStorages.Add(productStorage);
         }
 
-        newFinishedProduct.Costs = (float)Math.Round(newFinishedProduct.ProductStorages.Average(x => x.Price), 2);
+        newFinishedProduct.Costs = (float)Math.Round(newFinishedProduct.ProductStorages.Sum(x => x.Price * x.Quantity), 2);
         newFinishedProduct.TotalCosts = (float)Math.Round(newFinishedProduct.Costs * dto.Quantity, 2);
         newFinishedProduct.Profit = dto.Profit;
-        newFinishedProduct.Price = (float)Math.Round(newFinishedProduct.Costs + newFinishedProduct.Costs * newFinishedProduct.Profit / 100, 2);
+        newFinishedProduct.Price = (float)Math.Round((newFinishedProduct.Costs + newFinishedProduct.Costs * newFinishedProduct.Profit / 100) , 2);
         newFinishedProduct.TotalPrice = (float)Math.Round(newFinishedProduct.Price * dto.Quantity, 2);
         newFinishedProduct.ProfitAmount = newFinishedProduct.TotalPrice - newFinishedProduct.TotalCosts;
 

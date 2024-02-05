@@ -176,7 +176,7 @@ namespace SchoolCanteen.Test
             userManager.Setup(x => x.GetRolesAsync(user2)).ReturnsAsync(roles2);
             userManager.Setup(x => x.GetRolesAsync(user3)).ReturnsAsync(roles3);
 
-            var result = await userService.Object.GetAllAsync();
+            var result = await userService.Object.GetAllByCompanyAsync();
 
             Assert.AreEqual(expectedResults.Count, result.Count());
 
