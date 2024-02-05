@@ -80,24 +80,6 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<IEnumerable<SimpleUserDTO>> GetAllAsync()
-    {
-        try
-        {
-            var users = await userManager.Users
-                .ToListAsync();
-
-            if (users.Count() == 0) return new List<SimpleUserDTO>();
-
-            return ConvertUserToDto(users);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex.Message, ex);
-            throw new Exception(ex.ToString());
-        }
-    }
-
     public async Task<IEnumerable<SimpleUserDTO>> GetAllByCompanyAsync()
     {
         try

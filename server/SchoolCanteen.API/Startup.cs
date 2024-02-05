@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SchoolCanteen.API.Extentions;
 using SchoolCanteen.DATA.DatabaseConnector;
 using SchoolCanteen.DATA.Models;
 using SchoolCanteen.DATA.Repositories.CompanyRepo;
@@ -106,6 +107,7 @@ public class Startup
         app.UseAuthentication();
         app.UseRouting();
         app.UseAuthorization();
+        app.UseMiddleware<ErrorHandlingMiddleware>();
 
 
         app.UseEndpoints(endpoints => 
