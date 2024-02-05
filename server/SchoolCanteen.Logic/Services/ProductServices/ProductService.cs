@@ -188,6 +188,23 @@ public class ProductService : IProductService
         }
     }
 
+    public async Task<IEnumerable<SimpleProductDto>> GetListByNameAsync(string name)
+    {
+        try
+        {
+            var existProducts = String.IsNullOrEmpty(name)
+                ? await repository.GetAllAsync(tokenUtil.GetIdentityCompany())
+                : await repository.GetListByNameAsync(name, tokenUtil.GetIdentityCompany());
+
+            return existProducts.Select(product => mapper.Map<SimpleProductDto>(product));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -214,5 +231,4 @@ public class ProductService : IProductService
             throw new Exception(ex.ToString());
         }
     }
-
 }

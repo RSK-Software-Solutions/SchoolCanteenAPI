@@ -122,6 +122,23 @@ public class ProductRepository : IProductRepository
         }
     }
 
+    public async Task<IEnumerable<Product>> GetListByNameAsync(string productName, Guid companyId)
+    {
+        try
+        {
+            return await ctx.Products
+                .Where(e => e.CompanyId == companyId && e.Name.Contains(productName))
+                .Include(u => u.Unit)
+                .OrderBy(e => e.ProductId)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
     /// <summary>
     /// Asynchronously updates a Product in the database.
     /// </summary>

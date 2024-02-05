@@ -26,11 +26,11 @@ public class ProductController :ControllerBase
     /// If an error occurs during the operation, returns a BadRequest result with the error message.
     /// </returns>
     [HttpGet("/api/products"), Authorize(Roles = "User")]
-    public async Task<ActionResult<IEnumerable<SimpleProductDto>>> GetAllAsync()
+    public async Task<ActionResult<IEnumerable<SimpleProductDto>>> GetAllAsync([FromQuery] string name)
     {
         try
         {
-            var products = await _productService.GetAllAsync();
+            var products = await _productService.GetListByNameAsync(name);
             if (products.Count() == 0) return NotFound($"No Product found.");
 
             return Ok(products);

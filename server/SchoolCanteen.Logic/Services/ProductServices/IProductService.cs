@@ -13,5 +13,6 @@ public interface IProductService
     Task<bool> DeleteAsync(int id);
     Task<SimpleProductDto> GetByIdAsync(int id);
     Task<SimpleProductDto> GetByNameAsync(string name);
+    Task<IEnumerable<SimpleProductDto>> GetListByNameAsync(string name);
     Task<IEnumerable<SimpleProductDto>> GetAllAsync();
 }
