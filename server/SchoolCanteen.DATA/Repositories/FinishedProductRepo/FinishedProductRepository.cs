@@ -96,8 +96,8 @@ public class FinishedProductRepository : IFinishedProductRepository
             return await ctx.FinishedProducts
                 .Include(x => x.ProductStorages)
                     .ThenInclude(p => p.Product)
-                .Where(x => x.CompanyId == companyId)
-                .FirstOrDefaultAsync(e => e.FinishedProductId == id);
+                .Where(x => x.CompanyId == companyId && x.FinishedProductId == id)
+                .FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
