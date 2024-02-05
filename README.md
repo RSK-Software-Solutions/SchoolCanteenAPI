@@ -22,42 +22,46 @@ Aplikacja oparta jest na architekturze Client - API, co umożliwia łatwą integ
 - Usuwanie produktów końcowych z magazynu.
 - Interfejs API:
 
-Udostępnianie interfejsu API do integracji z innymi aplikacjami.
-Zapewnienie dostępu do wszystkich funkcji poprzez API.
-Wymagania Techniczne
-Backend:
 
-Aplikacja została napisana w języku X.
-Wykorzystuje framework Y do obsługi żądań HTTP.
-Komunikuje się z bazą danych Z do przechowywania danych.
-Frontend:
+# Dane Techniczne
+## Backend:
 
-Interfejs użytkownika został zaimplementowany przy użyciu frameworka A.
+- Aplikacja została napisana w języku ASP.NET.
+- Wykorzystuje framework 7.0 do obsługi żądań HTTP.
+- Komunikuje się z bazą danych MariaDB 10.5.
+
+## Frontend:
+
+Interfejs użytkownika został zaimplementowany przy użyciu REACT, TypeScript, JavaScript.
 Komunikuje się z backendem poprzez zapytania API.
-Baza Danych:
 
-Wykorzystano bazę danych B do przechowywania informacji o produktach, przepisach i produktach końcowych.
-Instalacja i Uruchomienie
-Backend:
+## Baza Danych:
 
-Przejdź do folderu backend.
-Zainstaluj zależności poleceniem npm install (lub inne odpowiednie polecenie dla używanego języka).
-Uruchom aplikację poleceniem npm start (lub inne odpowiednie polecenie dla używanego języka).
-Frontend:
+Wykorzystano bazę danych MariaDB w wersji 10.5 uruchomioną na serwerze Linux Debian.
+
+
+# Instalacja i Uruchomienie
+## Backend:
+
+## Frontend:
 
 Przejdź do folderu frontend.
-Zainstaluj zależności poleceniem npm install (lub inne odpowiednie polecenie dla używanego frameworka).
-Uruchom aplikację poleceniem npm start (lub inne odpowiednie polecenie dla używanego frameworka).
-Baza Danych:
+Zainstaluj zależności poleceniem npm install.
+Uruchom aplikację poleceniem npm start.
+
+## Baza Danych:
 
 Zainstaluj i skonfiguruj bazę danych zgodnie z instrukcjami w pliku database-setup.md.
 Dostęp do API:
 
-Aplikacja API dostępna jest pod adresem http://localhost:3000 (lub innym, zależnie od konfiguracji).
+Aplikacja API dostępna jest pod adresem https://localhost:7093/api.
 Dokumentacja API
 Pełna dokumentacja API dostępna jest w pliku API-docs.md.
 
-Autorzy
-Nazwa Aplikacji została stworzona przez [Twoje Imię i Nazwisko].
+# Autorzy
+SchoolCanteen została stworzona przez zespół RSK Solution w składzie 
+- Kacper
+- Szymon
+- Robert
 
-Dla bardziej szczegółowych informacji i wsparcia, prosimy o kontakt pod adresem email@example.com.
+Dla bardziej szczegółowych informacji i wsparcia, prosimy o kontakt pod adresem mailToUs@rsksolution.com.
