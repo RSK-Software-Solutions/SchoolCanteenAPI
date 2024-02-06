@@ -67,6 +67,9 @@ namespace SchoolCanteen.Test
 
 
         [Test]
+
+
+
         public async Task CreateCompany_SuccesfulCreate()
         {
             var companyToAdd = new Company { CompanyId = Guid.NewGuid(), Name = "TESTSZYMONTEST" };
@@ -84,7 +87,6 @@ namespace SchoolCanteen.Test
             var existCompany = new Company { CompanyId = Guid.NewGuid(), City = "city1", Email = "email1@mail.com", Name = "city1Test" };
 
             var result = companyService.CreateCompanyAsync(existCompany.Name);
-
             Assert.IsNotNull(result);
             Assert.AreEqual("city1", existCompany.City);
             Assert.AreEqual("email1@mail.com", existCompany.Email);
