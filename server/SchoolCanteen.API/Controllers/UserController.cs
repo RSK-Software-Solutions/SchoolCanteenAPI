@@ -69,7 +69,7 @@ namespace SchoolCanteen.API.Controllers
             }
         }
 
-        [HttpPut("/api/user"), Authorize(Roles = "Admin")]
+        [HttpPut("/api/user"), Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<bool>> EditAsync([FromBody] EditUserDTO editUser)
         {
             try
