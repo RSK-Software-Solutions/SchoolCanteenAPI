@@ -85,6 +85,7 @@ public class FinishedProductService : IFinishedProductService
 
             if (details.Product.Quantity < productStorage.Quantity) return null;
             details.Product.Quantity -= productStorage.Quantity ;
+            newFinishedProduct.ExpirationDate = DateTime.Now.AddDays(recipe.ValidityPeriod);
 
             newFinishedProduct.ProductStorages.Add(productStorage);
         }

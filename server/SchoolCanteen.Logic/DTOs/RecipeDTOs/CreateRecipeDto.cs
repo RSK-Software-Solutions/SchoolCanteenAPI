@@ -10,4 +10,5 @@ public class CreateRecipeDto
     [Required] public string Name { get; set; }
     [Required] public int UnitId { get; set; }
     public float Quantity { get; set; } = 0;
+    public int ValidityPeriod { get; set; }
 }

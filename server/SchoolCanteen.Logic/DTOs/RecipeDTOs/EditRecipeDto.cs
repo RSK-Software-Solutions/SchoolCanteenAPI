@@ -12,4 +12,6 @@ public class EditRecipeDto
     [MaxLength(100)]
     [Required] public string Name { get; set; }
     public float Quantity { get; set; } = 0;
+    public int ValidityPeriod { get; set; }
+
 }

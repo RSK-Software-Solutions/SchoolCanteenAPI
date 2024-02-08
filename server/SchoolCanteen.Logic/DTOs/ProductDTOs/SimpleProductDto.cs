@@ -14,6 +14,7 @@ public class SimpleProductDto
 
     [Range(0, float.MaxValue, ErrorMessage = "Quantity must be a non-negative number.")]
     public float Quantity { get; set; } = 0;
+    public float MinQuantity { get; set; } = 0;
 
     [Range(0, float.MaxValue, ErrorMessage = "Quantity must be a non-negative number.")]
     public int ValidityPeriod { get; set; } = 0;
