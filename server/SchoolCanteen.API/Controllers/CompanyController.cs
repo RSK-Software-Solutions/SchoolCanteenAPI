@@ -65,7 +65,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var company = await _companyService.GetCompanyByIdAsync(Id);
+            var company = await _companyService.GetCompanyByIdAsync();
             logger.LogInformation("Information");
 
             return Ok(company);
@@ -92,7 +92,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var existingCompany = await _companyService.GetCompanyByIdAsync(editCompany.CompanyId);
+            var existingCompany = await _companyService.GetCompanyByIdAsync();
             if (existingCompany == null) return NotFound();
 
             return Ok(await _companyService.UpdateCompanyAsync(editCompany));

@@ -10,6 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using SchoolCanteen.Logic.Services.UnitServices;
+using SchoolCanteen.Logic.Services.Authentication.Interfaces;
+using SchoolCanteen.Logic.Services.Authentication;
 
 namespace SchoolCanteen.Logic.Services.CompanyServices;
 
@@ -17,7 +19,7 @@ public class CompanyService : ICompanyService
 {
     private readonly IMapper _mapper;
     private readonly ILogger _logger;
-
+    private readonly ITokenUtil _tokenUtil;
     private readonly ICompanyRepository _companyRepository;
     private readonly IUnitBaseService _unitService;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -26,6 +28,7 @@ public class CompanyService : ICompanyService
     public CompanyService(DatabaseApiContext databaseApiContext,
         IMapper mapper,
         ILogger<CompanyService> logger,
+        ITokenUtil tokenUtil,
         UserManager<ApplicationUser> userManager,
         IHttpContextAccessor context,
         ICompanyRepository companyRepository,
@@ -33,6 +36,7 @@ public class CompanyService : ICompanyService
     {
         _mapper = mapper;
         _logger = logger;
+        _tokenUtil = tokenUtil;
         _companyRepository = companyRepository;
         _unitService = unitService;
         _userManager = userManager;
@@ -71,8 +75,9 @@ public class CompanyService : ICompanyService
         return company;
     }
 
-    public async Task<EditCompanyDTO> GetCompanyByIdAsync(Guid companyId)
+    public async Task<EditCompanyDTO> GetCompanyByIdAsync()
     {
+        var companyId = _tokenUtil.GetIdentityCompany();
         var company = await _companyRepository.GetByIdAsync(companyId);
         if (company == null) return null;
 
@@ -81,9 +86,10 @@ public class CompanyService : ICompanyService
 
     public async Task<bool> UpdateCompanyAsync(EditCompanyDTO companyDto)
     {
-        if (!await IsUserMatchedWithCompany(companyDto.CompanyId)) return false;
+        var companyId = _tokenUtil.GetIdentityCompany(); 
+        if (!await IsUserMatchedWithCompany(companyId)) return false;
 
-        var existingCompany = await _companyRepository.GetByIdAsync(companyDto.CompanyId);
+        var existingCompany = await _companyRepository.GetByIdAsync(companyId);
         if (existingCompany == null) return false;
 
         _mapper.Map(companyDto, existingCompany);

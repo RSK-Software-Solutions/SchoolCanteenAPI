@@ -90,6 +90,7 @@ public class FinishedProductService : IFinishedProductService
             newFinishedProduct.ProductStorages.Add(productStorage);
         }
 
+        newFinishedProduct.Name = recipe.Name;
         newFinishedProduct.Costs = (float)Math.Round(newFinishedProduct.ProductStorages.Sum(x => x.Price * x.Quantity), 2);
         newFinishedProduct.TotalCosts = (float)Math.Round(newFinishedProduct.Costs * dto.Quantity, 2);
         newFinishedProduct.Profit = dto.Profit;

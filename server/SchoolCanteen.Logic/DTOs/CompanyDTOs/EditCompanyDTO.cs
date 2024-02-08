@@ -2,7 +2,6 @@
 
 public class EditCompanyDTO
 {
-    public Guid CompanyId { get; set; }
     public string Name { get; set; }
     public int Nip { get; set; }
     public string Street { get; set; }
