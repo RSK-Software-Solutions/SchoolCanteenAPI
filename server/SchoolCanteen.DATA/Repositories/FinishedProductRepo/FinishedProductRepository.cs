@@ -39,6 +39,36 @@ public class FinishedProductRepository : IFinishedProductRepository
         }
     }
 
+    public async Task<int> CountAsync(Guid companyId)
+    {
+        try
+        {
+            return await ctx.FinishedProducts
+                .Where(e => e.CompanyId == companyId)
+                .CountAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
+    public async Task<int> CountExpiredAsync( Guid companyId)
+    {
+        try
+        {
+            return await ctx.FinishedProducts
+                .Where(e => e.CompanyId == companyId && e.ExpirationDate < DateTime.Now )
+                .CountAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -73,7 +103,7 @@ public class FinishedProductRepository : IFinishedProductRepository
                 .Where(e => e.CompanyId == companyId)
                 .Include(x => x.ProductStorages)
                     .ThenInclude(p => p.Product)
-                .OrderBy(e => e.Name)
+                .OrderByDescending(fp => fp.CreatedAt)
                 .ToListAsync();
         }
         catch (Exception ex)

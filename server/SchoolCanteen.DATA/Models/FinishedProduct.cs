@@ -20,6 +20,7 @@ public class FinishedProduct
     public float ProfitAmount { get; set; } = 0;
     public float TotalPrice { get; set; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime ExpirationDate { get; set; } = DateTime.Now;
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }
     //public List<Product> Products { get; set;} = new List<Product>();
     public List<ProductStorage> ProductStorages { get; set; } = new List<ProductStorage>();

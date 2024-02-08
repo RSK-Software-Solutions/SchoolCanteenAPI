@@ -6,6 +6,7 @@ namespace SchoolCanteen.Logic.Services.FinishedProductServices;
 
 public interface IFinishedProductService
 {
+    Task<SimpleFinishedProductDto> DecreaseQuantityAsync(int productId, int quantity);
     Task<SimpleFinishedProductDto> CreateAsync(CreateFinishedProductDto dto);
     Task<bool> UpdateAsync(SimpleFinishedProductDto finshedProduct);
     Task<bool> DeleteAsync(int Id);

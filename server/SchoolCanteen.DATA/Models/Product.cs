@@ -14,6 +14,7 @@ public class Product
     [Required] public string Name { get; set; }
     public float Price { get; set; } = 0;
     public float Quantity { get; set; } = 0;
+    public float MinQuantity { get; set; } = 0;
     public bool Active { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     //public List<ProductFinishedProduct> ProductFinishedProducts { get; set; }

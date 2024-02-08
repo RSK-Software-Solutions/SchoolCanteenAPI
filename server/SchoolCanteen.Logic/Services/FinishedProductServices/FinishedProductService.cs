@@ -35,6 +35,30 @@ public class FinishedProductService : IFinishedProductService
         this.productStorageRepository = productStorageRepository;
     }
 
+    public async Task<SimpleFinishedProductDto> DecreaseQuantityAsync(int productId, int quantity)
+    {
+        try
+        {
+            var companyId = tokenUtil.GetIdentityCompany();
+
+            var existProduct = await repository.GetByIdAsync(productId, companyId);
+            if (existProduct == null) return null;
+
+            if (existProduct.Quantity < quantity) return null;
+
+            existProduct.Quantity -= quantity;
+
+            repository.UpdateAsync(existProduct);
+
+            return mapper.Map<SimpleFinishedProductDto>(existProduct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            throw new Exception(ex.ToString());
+        }
+    }
+
     /// <summary>
     /// Creates a new FinishedProduct asynchronously with the specified name.
     /// If a FinishedProduct with the same name already exists, returns the existing one.

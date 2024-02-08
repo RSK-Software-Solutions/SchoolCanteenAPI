@@ -20,6 +20,7 @@ using SchoolCanteen.Logic.Services.FinishedProductServices;
 using SchoolCanteen.Logic.Services.ProductServices;
 using SchoolCanteen.Logic.Services.RecipeServices;
 using SchoolCanteen.Logic.Services.Roles;
+using SchoolCanteen.Logic.Services.TotalSummaryServices;
 using SchoolCanteen.Logic.Services.UnitServices;
 using SchoolCanteen.Logic.Services.User;
 using SchoolCanteen.Logic.Services.UserServices;
@@ -80,6 +81,7 @@ public class Startup
         services.AddScoped<IUnitService, UnitService>();
         services.AddScoped<IUnitRepository, UnitRepository>();
 
+        services.AddScoped<ITotalSummaryService, TotalSummaryService>();
         services.AddScoped<IRolesService, RolesService>();
         
         services.AddScoped<IAuthService, AuthService>();

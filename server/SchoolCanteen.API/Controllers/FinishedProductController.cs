@@ -126,4 +126,20 @@ public class FinishedProductController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    [HttpPost("/api/article/{finishedProductId}/decrease-quantity"), Authorize(Roles = "User")]
+    public async Task<ActionResult<SimpleFinishedProductDto>> DecreaseQuantityAsync(int finishedProductId, [FromQuery] int quantity)
+    {
+        try
+        {
+            var result = await _finishedProductService.DecreaseQuantityAsync(finishedProductId, quantity);
+            if (result == null) return NotFound("Finished Product not found or insufficient quantity.");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            return BadRequest(ex.Message);
+        }
+    }
 }

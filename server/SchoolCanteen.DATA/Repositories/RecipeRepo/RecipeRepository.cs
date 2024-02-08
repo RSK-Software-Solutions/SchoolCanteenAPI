@@ -37,6 +37,13 @@ public class RecipeRepository : IRecipeRepository
         }
     }
 
+    public async Task<int> CountAsync(Guid companyId)
+    {
+        return await ctx.Recipes
+            .Where(e => e.CompanyId == companyId)
+            .CountAsync();
+    }
+
     /// <summary>
     /// Asynchronously deletes a Recipe from the database.
     /// </summary>

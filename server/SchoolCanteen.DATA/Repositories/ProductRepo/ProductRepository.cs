@@ -39,6 +39,20 @@ public class ProductRepository : IProductRepository
         }
     }
 
+    public async Task<int> CountAsync(Guid companyId)
+    {
+        return await ctx.Products
+            .Where(e => e.CompanyId == companyId)
+            .CountAsync();
+    }
+
+    public async Task<int> CountLowAsync(Guid companyId)
+    {
+        return await ctx.Products
+            .Where(e => e.CompanyId == companyId && e.Quantity < e.MinQuantity)
+            .CountAsync();
+    }
+
     /// <summary>
     /// Asynchronously deletes a Product from the database.
     /// </summary>

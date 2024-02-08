@@ -11,4 +11,5 @@ public interface IRecipeRepository
     Task<bool> AddAsync(Recipe recipe);
     Task<bool> DeleteAsync(Recipe recipe);
     Task<bool> UpdateAsync(Recipe recipe);
+    Task<int> CountAsync(Guid companyId);
 }

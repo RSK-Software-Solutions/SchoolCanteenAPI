@@ -11,4 +11,7 @@ public interface IFinishedProductRepository
     Task<bool> AddAsync(FinishedProduct finishedProduct);
     Task<bool> DeleteAsync(FinishedProduct finishedProduct);
     Task<bool> UpdateAsync(FinishedProduct finishedProduct);
+    Task<int> CountAsync(Guid companyId);
+    Task<int> CountExpiredAsync(Guid companyId);
+
 }
