@@ -5,6 +5,7 @@ public record AuthResult(
     bool Success,
     string Email,
     string UserName,
+    Guid ComanyId,
     string Token
     )
 {

@@ -43,7 +43,7 @@ namespace SchoolCanteen.Logic.Services.Authentication
 
             var accessToken = _tokenService.CreateToken(managedUser, roles);
 
-            return new AuthResult(true, managedUser.Email, managedUser.UserName, accessToken);
+            return new AuthResult(true, managedUser.Email, managedUser.UserName, managedUser.CompanyId, accessToken);
         }
         public async Task<AuthResult> RegisterAsync(string email, string username, string password, string role, string companyName)
         {
@@ -66,11 +66,11 @@ namespace SchoolCanteen.Logic.Services.Authentication
 
             await _userManager.AddToRoleAsync(newUser, role);
 
-            return new AuthResult(true, email, username, "");
+            return new AuthResult(true, email, username, newUser.CompanyId, "");
         }
         private static AuthResult FailedRegistration(IdentityResult result, string email, string username)
         {
-            var authResult = new AuthResult(false, email, username, "");
+            var authResult = new AuthResult(false, email, username, Guid.Empty, "");
 
             foreach (var error in result.Errors) authResult.ErrorMessages.Add(error.Code, error.Description);
 
@@ -78,19 +78,19 @@ namespace SchoolCanteen.Logic.Services.Authentication
         }
         private static AuthResult FailedRoleNotExists(string roleName)
         {
-            var result = new AuthResult(false, "", "", "");
+            var result = new AuthResult(false, "", "", Guid.Empty, "");
             result.ErrorMessages.Add("Bad role Name", $"Role {roleName} not exists");
             return result;
         }
         private static AuthResult InvalidPassword(string email, string userName)
         {
-            var result = new AuthResult(false, email, userName, "");
+            var result = new AuthResult(false, email, userName, Guid.Empty, "");
             result.ErrorMessages.Add("Bad credentials", "Invalid password or email");
             return result;
         }
         private static AuthResult InvalidEmail(string email)
         {
-            var result = new AuthResult(false, email, "", "");
+            var result = new AuthResult(false, email, "", Guid.Empty, "");
             result.ErrorMessages.Add("Bad credentials", "Invalid password or email");
             return result;
         }
